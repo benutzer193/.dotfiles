@@ -1,6 +1,5 @@
-# holman does dotfiles
-
-## dotfiles
+# HerrNieschnells dotfiles
+## dotfile organization forked from [holmans dotffiles](https://github.com/holman/dotfiles.git)
 
 Your dotfiles are how you personalize your system. These are mine.
 
