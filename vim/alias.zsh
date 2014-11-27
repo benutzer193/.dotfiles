@@ -1,1 +1,0 @@
-alias svim="sudo vim"
