@@ -1,14 +1,14 @@
-#!/usr/bin/env bash
+#!/bin/sh
 #
 # Run all dotfiles installers.
 
-set -e
-
 cd "$(dirname $0)"/..
 
-PACKMANAGER="sudo pacman -S"
-export PACKMANAGER
-# find the installers and run them iteratively
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
 
-unset PACKMANAGER
+# find the installers and run them iteratively
+find . -name install.sh | ( export APPS=""
+while read installer
+	do
+		. "${installer}"
+	done
+	sudo pacman -S $APPS</dev/tty )
