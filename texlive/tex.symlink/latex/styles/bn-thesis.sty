@@ -1,0 +1,25 @@
+\ProvidesPackage{bn-thesis}
+
+\usepackage[autostyle=true]{csquotes}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[%
+    style=authoryear-ibid%
+    ,ibidpage=true%
+    ,backend=biber%
+    ,maxcitenames=2%
+    ,maxbibnames=4]{biblatex}
+\usepackage{%
+    fontspec%
+    ,polyglossia%
+    ,microtype%
+    ,hyperref%
+    ,tabularx%
+}
+
+\setdefaultlanguage{german}
+
+\setmainfont{Arno Pro}
+\setsansfont{Arno Pro}
+\setmonofont{Arno Pro}
+
+\graphicspath{{./images/}}
