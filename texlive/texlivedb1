@@ -1,0 +1,316 @@
+name 00texlive.config
+depend minrelease/2014
+depend release/2014
+
+name 00texlive.installation
+depend opt_location:http://ctan.mirrors.hoobly.com/systems/texlive/tlnet
+depend opt_autobackup:1
+depend opt_backupdir:tlpkg/backups
+depend opt_create_formats:1
+depend opt_desktop_integration:1
+depend opt_file_assocs:1
+depend opt_post_code:1
+depend opt_sys_bin:/usr/local/bin
+depend opt_sys_info:/usr/local/share/info
+depend opt_sys_man:/usr/local/share/man
+depend opt_install_docfiles:0
+depend opt_install_srcfiles:0
+depend opt_w32_multi_user:1
+depend setting_available_architectures:x86_64-linux
+
+name amscls
+
+name amsfonts
+
+name amsmath
+
+name arara
+depend arara.ARCH
+
+name arara.x86_64-linux
+
+name babel
+
+name biber
+depend biber.ARCH
+
+name biber.x86_64-linux
+
+name biblatex
+
+name bibtex
+depend kpathsea
+depend bibtex.ARCH
+
+name bibtex.x86_64-linux
+
+name carlisle
+
+name chktex
+depend chktex.ARCH
+
+name chktex.x86_64-linux
+
+name cm
+
+name collection-basic
+depend texlive.infra
+depend amsfonts
+depend bibtex
+depend cm
+depend dvipdfmx
+depend dvipdfmx-def
+depend dvips
+depend enctex
+depend etex
+depend etex-pkg
+depend glyphlist
+depend gsftopk
+depend hyph-utf8
+depend hyphen-base
+depend ifluatex
+depend ifxetex
+depend knuth-lib
+depend knuth-local
+depend kpathsea
+depend lua-alt-getopt
+depend luatex
+depend makeindex
+depend metafont
+depend mflogo
+depend mfware
+depend pdftex
+depend plain
+depend tetex
+depend tex
+depend texconfig
+depend texlive-common
+depend texlive-docindex
+depend texlive-en
+depend texlive-msg-translations
+depend texlive-scripts
+depend xdvi
+
+name csquotes
+
+name dvipdfmx
+depend glyphlist
+depend dvipdfmx-def
+depend dvipdfmx.ARCH
+
+name dvipdfmx-def
+
+name dvipdfmx.x86_64-linux
+
+name dvips
+depend dvips.ARCH
+
+name dvips.x86_64-linux
+
+name enctex
+
+name etex
+
+name etex-pkg
+
+name etoolbox
+
+name euenc
+
+name fontspec
+depend iftex
+depend kastrup
+depend l3kernel
+depend l3packages
+depend lm
+
+name geometry
+
+name german
+
+name glyphlist
+
+name graphics
+
+name gsftopk
+depend gsftopk.ARCH
+
+name gsftopk.x86_64-linux
+
+name hyperref
+
+name hyph-utf8
+
+name hyphen-base
+
+name hyphen-german
+depend hyphen-base
+depend hyph-utf8
+
+name ifluatex
+
+name iftex
+
+name ifxetex
+
+name kastrup
+
+name knuth-lib
+
+name knuth-local
+
+name koma-script
+
+name kpathsea
+depend kpathsea.ARCH
+
+name kpathsea.x86_64-linux
+
+name l3kernel
+
+name l3packages
+
+name latex
+depend luatex
+depend pdftex
+depend latexconfig
+depend latex-fonts
+
+name latex-bin
+depend latex
+depend latex-bin.ARCH
+
+name latex-bin.x86_64-linux
+
+name latex-fonts
+
+name latexconfig
+
+name lm
+
+name logreq
+
+name lua-alt-getopt
+
+name lualibs
+
+name luaotfload
+depend luaotfload.ARCH
+
+name luaotfload.x86_64-linux
+
+name luatex
+depend luatex.ARCH
+
+name luatex.x86_64-linux
+
+name luatexbase
+
+name luatextra
+
+name makecmds
+
+name makeindex
+depend makeindex.ARCH
+
+name makeindex.x86_64-linux
+
+name mathtools
+
+name metafont
+depend kpathsea
+depend metafont.ARCH
+
+name metafont.x86_64-linux
+
+name mflogo
+
+name mfware
+depend mfware.ARCH
+
+name mfware.x86_64-linux
+
+name microtype
+
+name ntheorem
+
+name oberdiek
+
+name parskip
+
+name pdftex
+depend kpathsea
+depend pdftex.ARCH
+
+name pdftex-def
+
+name pdftex.x86_64-linux
+
+name plain
+
+name polyglossia
+depend etoolbox
+depend fontspec
+depend ifluatex
+depend makecmds
+depend xkeyval
+
+name scheme-minimal
+depend collection-basic
+
+name setspace
+
+name tetex
+depend tetex.ARCH
+
+name tetex.x86_64-linux
+
+name tex
+depend kpathsea
+depend plain
+depend tex.ARCH
+
+name tex.x86_64-linux
+
+name texconfig
+depend texconfig.ARCH
+
+name texconfig.x86_64-linux
+
+name texlive-common
+
+name texlive-docindex
+
+name texlive-en
+
+name texlive-msg-translations
+
+name texlive-scripts
+depend texlive.infra
+depend texlive-scripts.ARCH
+
+name texlive-scripts.x86_64-linux
+
+name texlive.infra
+depend texlive.infra.ARCH
+
+name texlive.infra.x86_64-linux
+
+name tipa
+
+name tools
+
+name url
+
+name wrapfig
+
+name xdvi
+depend xdvi.ARCH
+
+name xdvi.x86_64-linux
+
+name xkeyval
+
+name xunicode
+depend tipa
+
