@@ -1,4 +1,94 @@
-syntax on
+set nocompatible
+filetype off
 
-" Wrap gitcommit file types at the appropriate length
-filetype indent plugin on
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'kien/ctrlp.vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'scrooloose/syntastic'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'majutsushi/tagbar'
+Plugin 'LaTeX-Box-Team/LaTeX-Box'
+Plugin 'bling/vim-airline'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'Shougo/neocomplete.vim'
+Plugin 'SirVer/ultisnips'
+call vundle#end()
+
+filetype plugin indent on
+syntax enable
+
+" xcopy/xpaste
+" map <F7> :w !xclip -selection clipboard<CR> 
+" map <F6> :r!xclip -selection clipboard -o<CR> 
+
+""" variables
+let g:tex_flavor='latex'
+let g:ctrlp_cmd = 'CtrlPMRUFiles'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#fnameod = ':t'
+let g:neocomplete#enable_at_startup = 1
+let mapleader=","
+let g:mapleader=","
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<c-tab>"
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+let g:ctrlp_show_hidden = 1
+
+""" options
+set autowrite			" Autosave on buffer switch
+set hidden			" allow buffer switch without closing
+set visualbell			" Flash instead of beep
+set number			" Linenumbers
+set backup			" enable backup
+set laststatus=2		" tells if last window has statusline
+set backspace=indent,eol,start	" allow backspacing over everything in insert mode
+set background=dark		" dark background
+set hlsearch			" Search highlights
+set incsearch			" search while typing
+set undofile
+set undodir=~/.vim/tmp/undo//
+set ignorecase
+colorscheme solarized	" Solarize dark theme
+
+
+""" Latex Config
+function! CompileTex()
+       	silent write!
+	call setqflist([])
+	echon "compiling with arara ..."
+	exec "lcd %:h"
+	setlocal makeprg=arara\ -v\ %
+	silent make!
+	
+	if !empty(getqflist())
+		copen
+		wincmd J
+		redraw!
+	else
+		cclose
+		redraw!
+		echon "successfully compiled"
+	endif
+endfunction
+
+""" keymaps 
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+nmap <silent> ,/ :nohlsearch<CR>
+nmap <F8> :TagbarToggle<CR>
+nnoremap <F6> :call CompileTex()<CR>
+" Allow saving of files as sudo even when forgot typing sudo
+cmap w!! w !sudo tee > /dev/null %
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+autocmd FileType tex command -buffer W write | call CompileTex()<CR>
+autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
+
+""" startup
+autocmd VimEnter * if !argc() |CtrlPMixed|endif
