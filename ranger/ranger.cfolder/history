@@ -1,0 +1,50 @@
+find W
+find ra
+find ph
+find .co
+find ran
+shell vim .asoundrc
+find .as
+find .aso
+find ams
+find uni
+find ude
+search blk
+find mount
+mkdir .dotfiles
+open_with vim
+find zs
+cd 
+find .zpreztor
+search .vim
+mkdir latexdocs
+rename ZT_Blatt.pdf
+find Doc
+mkdir systemd
+find system
+shell mkdir .pkbuilds
+shell
+rename
+rename .pkgbuilds
+shell 7z e google-chrome-dev.tar.gz
+shell 7z e google-chrome-dev.tar
+shell mkdir chrome
+shell makepkg
+find samba
+x
+shell git add texlive
+shell git add texlivedb1 texlivedb texlivedb1_ alias.zsh
+shell mkdir mutt
+shell git add mutt
+shell git rm -r atom.symlink
+shell git rm -r ruby
+shell git rm -r python
+shell vim _path.zsh
+shell cat _path.zsh >> path.zsh
+open_with 
+rename path.zsh
+shell vim path.zsh
+delete
+rename aliases.zsh
+
+shell git add aliases.zsh 
