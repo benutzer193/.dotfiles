@@ -1,3 +1,8 @@
+# global aliases
+alias -g LL=" | less -R"
+alias -g GG=" | grep"
+alias -g grep="grep --color"
+
 # ls commands
 alias ls="ls -X --color=auto"
 alias la="ls -a"
