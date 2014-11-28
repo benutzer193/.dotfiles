@@ -1,7 +1,4 @@
 # Vim mode
-bindkey -v
-
-
 function zle-keymap-select zle-line-init zle-line-finish {
   if (( ${+terminfo[smkx]} )); then
     printf '%s' ${terminfo[smkx]}
