@@ -22,6 +22,7 @@ setopt CORRECT
 
 setopt IGNORE_EOF
 unsetopt BEEP
+
 # Completion
 setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
 setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
@@ -34,11 +35,3 @@ unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
 
 zle -N newtab
-
-bindkey '^[^[[D' backward-word
-bindkey '^[^[[C' forward-word
-bindkey '^[[5D' beginning-of-line
-bindkey '^[[5C' end-of-line
-bindkey '^[[3~' delete-char
-bindkey '^[^N' newtab
-bindkey '^?' backward-delete-char
