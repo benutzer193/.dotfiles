@@ -11,6 +11,8 @@ alias shutdown="sudo shutdown"
 alias reboot="sudo reboot"
 
 # cd commands
+alias d='dirs -v'                                                   # show cd history
+for index ({1..9}) alias "$index"="cd +${index}"; unset index       # go through history
 alias cd..='cd ..'
 alias ..='cd ..'
 alias ...='cd ../../'
