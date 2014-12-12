@@ -1,8 +1,8 @@
 #!bin/bash
-SCREENSHOT	= "/tmp/screenshot.jpg"
+SCREENSHOT="/tmp/screenshot.jpg"
 screenshot_blur () {
 	gm import -window root $SCREENSHOT
-	gm mogrify -blur 0.5 $SCREENSHOT
+	gm mogrify -scale 10% scale -1000% $SCREENSHOT
 }
 
 lock() {
