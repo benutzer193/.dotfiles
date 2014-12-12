@@ -1,0 +1,16 @@
+#!/bin/bash
+# add ip to client!
+ip link set up $1
+ip addr add 192.168.123.100/24 dev $1
+sleep 2
+ 
+sysctl net.ipv4.ip_forward=1
+iptables -t nat -A POSTROUTING -o internet0 -j MASQUERADE
+iptables -A FORWARD -i net0 -o internet0 -j ACCEPT
+iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+ 
+#start hostapd
+hostapd -d /etc/hostapd/hostapd.conf
+
+#start in background
+# hostapd -B /etc/hostapd/hostapd.conf
