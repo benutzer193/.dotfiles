@@ -1,3 +1,9 @@
 [submodule "vim/vim.symlink/bundle/Vundle.vim"]
 	path = vim/vim.symlink/bundle/Vundle.vim
 	url = https://github.com/gmarik/Vundle.vim.git
+[submodule "zsh/--force"]
+	path = zsh/--force
+	url = https://github.com/HerrNieschnell/zsh-history-substring-search.git
+[submodule "zsh/zsh-syntax-highlighting"]
+	path = zsh/zsh-syntax-highlighting
+	url = https://github.com/HerrNieschnell/zsh-syntax-highlighting.git

@@ -44,7 +44,7 @@ shell cat _path.zsh >> path.zsh
 open_with 
 rename path.zsh
 shell vim path.zsh
-delete
 rename aliases.zsh
 
 shell git add aliases.zsh 
+delete
