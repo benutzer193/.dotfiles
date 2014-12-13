@@ -25,19 +25,18 @@ font pango:DejaVu Sans Mono 8
 
 for_window [class="Uzbl-core"] focus child, layout stacking,  focus
 
-mode  "(l)ock (s)leep (h)ybernate (p)owersave (r)estart shut(d)own" {
-	bindsym l exec --no-startup-id i3lock; mode "default"
-	bindsym g exec i3-msg exit: mode "default"
-        bindsym s exec --no-startup-id i3lock && sudo systemctl suspend; mode "default"
-        bindsym h exec --no-startup-id i3lock && sudo systemctl hibernate; mode "default"
-        bindsym p exec sudo pm-powersave; mode "default"
-        bindsym d exec sudo 'shutdown -h now'; mode "default"
-        bindsym r exec sudo 'shutdown -r now'; mode "default"
+set $power_menu Power Menu: - (e)xit - (l)ock - (s)leep - (r)eboot - shut(d)own
+mode "$power_menu" {
+	bindsym l exec --no-startup-id i3pm lock; mode "default"
+	bindsym e exec --no-startup-id i3pm exit; mode "default"
+	bindsym s exec --no-startup-id i3pm suspend; mode "default"
+	bindsym d exec --no-startup-id i3pm shutdown; mode "default"
+	bindsym e exec --no-startup-id i3pm reboot; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
 }
-bindsym $mod+Escape mode "(l)ock (s)leep (h)ybernate (p)owersave (r)estart shut(d)own"
+bindsym $mod+Escape mode "$power_menu"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -45,6 +44,7 @@ floating_modifier $mod
 # start applications
 bindsym $mod+u exec uzbl-browser
 bindsym $mod+Return exec urxvtc
+bindsym $mod+g exec google-chrome-unstable
 
 # kill focused window
 bindsym $mod+Shift+q kill
