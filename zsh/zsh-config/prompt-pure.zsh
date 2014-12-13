@@ -123,3 +123,4 @@ prompt_pure_setup() {
 }
 
 prompt_pure_setup "$@"
+promp pure
