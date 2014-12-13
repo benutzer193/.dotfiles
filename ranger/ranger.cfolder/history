@@ -1,4 +1,3 @@
-find W
 find ra
 find ph
 find .co
@@ -13,7 +12,6 @@ search blk
 find mount
 mkdir .dotfiles
 open_with vim
-find zs
 cd 
 find .zpreztor
 search .vim
@@ -48,3 +46,5 @@ rename aliases.zsh
 
 shell git add aliases.zsh 
 delete
+find .do
+find zs

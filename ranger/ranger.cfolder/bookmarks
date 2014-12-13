@@ -1,6 +1,6 @@
 m:/mnt/misc
-k:/home/bnichell/.vim
-b:/mnt/BNHSdata
-d:/home/bnichell/.dotfiles
-':/home/bnichell
 1:/home
+d:/home/bnichell/.dotfiles
+b:/mnt/BNHSdata
+':/home/bnichell/.dotfiles/zsh/zsh-config
+k:/home/bnichell/.vim
