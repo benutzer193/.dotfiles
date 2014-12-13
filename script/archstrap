@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#functions
+# toggle choice
+installapps () {
+	declare -a applist=("${!1}")
+	echo "${applist[@]}"
+	local APPS=""
+	echo "${$applist[@]}}"
+	echo "available applications"
+	for i in "${!$applist[@]}"
+	do
+		printf "%s\t%s\n" "$i" "${$applist[$i]}"
+	done
+	echo "choose applications to install [enter numbers]:"
+	read CHOICES 
+	for i in "${!$applist[@]}"
+	do
+		if [[ $i == *$CHOICES* ]]
+		then
+			APPS="$APPS ${$applist[@]}"
+		fi
+	done
+	printf "installing $APPS"
+	pacman -S $APPS
+}
+
+# applications
+mail=("mutt" "thunderbird")
+
+installapps mail[@]
+
+# virtual wifi cards
+iw dev wlp3s0 interface add wlan_ap type __ap
+iw dev wlp3s0 interface add wlan_client type station
+ip link set dev wlan_client address 00:19:e3:01:ed:95
+
