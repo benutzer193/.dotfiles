@@ -11,6 +11,7 @@ CLIENT="${INTERFACE}.client"
 AP="${INTERFACE}.ap"
 HOSTAPDCONF=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../system && pwd )
 
+echo "$HOSTAPDCONF"
 echo "Adding virtual wlan interfaces"
 echo ""
 echo "Setting MAC adress"
@@ -28,8 +29,8 @@ iw dev wlp3s0 interface add $AP type __ap
 
 ip link set dev $CLIENT address ${$1:-00:19:e3:01:ed:95}
 
-ip link set up $CLIENT
-ip link set up $AP
+systemctl start netctl-auto@${CLIENT}.service
+ip link set $AP up
 ip addr add 192.168.123.100/24 dev $AP
 
 wait
@@ -38,8 +39,9 @@ sysctl net.ipv4.ip_forward=1
 iptables -t nat -A POSTROUTING -o internet0 -j MASQUERADE
 iptables -A FORWARD -i net0 -o internet0 -j ACCEPT
 iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
- 
-#start hostapd
+
+wait
+
 hostapd -B $HOSTAPDCONF
 
 echo ""
@@ -53,9 +55,9 @@ echo "Restarting systemd services!"
 echo ""
 echo ""
 echo ""
-echo "Exiting script!"
+echo "Stopping script!"
 
-ip link set down $CLIENT
+systemctl stop netctl-auto@${CLIENT}.service
 ip link set down $AP
 iw dev $CLIENT del
 iw dev $AP del
