@@ -34,8 +34,8 @@ mode "$power_menu" {
 	bindsym l exec --no-startup-id i3pm lock; mode "default"
 	bindsym e exec --no-startup-id i3pm exit; mode "default"
 	bindsym s exec --no-startup-id i3pm suspend; mode "default"
-	bindsym d exec --no-startup-id i3pm shutdown; mode "default"
-	bindsym e exec --no-startup-id i3pm reboot; mode "default"
+	bindsym d exec --no-startup-id i3pm poweroff; mode "default"
+	bindsym r exec --no-startup-id i3pm reboot; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"

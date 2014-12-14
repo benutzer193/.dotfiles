@@ -19,13 +19,13 @@ order += "disk /"
 order += "disk /home"
 order += "run_watch DHCP"
 order += "run_watch VPN"
-order += "wireless wlan_client"
+order += "wireless wlp3s0"
 order += "ethernet enp4s0f2"
 order += "battery 0"
 order += "load"
 order += "tztime local"
 
-wireless wlan_client {
+wireless wlp3s0 {
         format_up = "W: (%quality at %essid) %ip"
         format_down = "W: down"
 }
