@@ -10,6 +10,7 @@ INTERFACE="$(iw dev | grep Interface | awk '{print $2}')"
 CLIENT="${INTERFACE}.client"
 AP="${INTERFACE}.ap"
 HOSTAPDCONF=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../system && pwd )
+NETCTLSERV="netctl-auto@${INTERFACE}.service"
 
 echo "$HOSTAPDCONF"
 echo "Adding virtual wlan interfaces"
@@ -23,7 +24,8 @@ echo ""
 echo "Edit settings in ~/.dotfiles/system/hostapd.conf"
 echo "Add allowed devices in ~/.dotfiles/system/hostapd.accept"
 
-systemctl stop netctl-auto@${INTERFACE}.service
+
+systemctl stop $NETCTLSERV
 iw dev wlp3s0 interface add $CLIENT type station
 iw dev wlp3s0 interface add $AP type __ap
 wait
@@ -42,7 +44,7 @@ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 wait
 
-hostapd -B ${HOSTAPDCONF}.conf
+hostapd -B ${HOSTAPDCONF}/hostapd.conf
 
 echo ""
 echo ""
@@ -62,4 +64,4 @@ ip link set down $AP
 iw dev $CLIENT del
 iw dev $AP del
 
-systemctl start netctl-auto@${INTERFACE}.service
+systemctl start $NETCTLSERV
