@@ -27,8 +27,9 @@ systemctl stop netctl-auto@${INTERFACE}.service
 iw dev wlp3s0 interface add $CLIENT type station
 iw dev wlp3s0 interface add $AP type __ap
 
-ip link set dev $CLIENT address ${$1:-00:19:e3:01:ed:95}
+ip link set dev $CLIENT address 00:19:e3:01:ed:95
 
+netctl start ${1:-ANAE_CL1}
 systemctl start netctl-auto@${CLIENT}.service
 ip link set $AP up
 ip addr add 192.168.123.100/24 dev $AP
