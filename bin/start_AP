@@ -26,11 +26,10 @@ echo "Add alowed devices in ~/.dotfiles/system/hostapd.accept"
 systemctl stop netctl-auto@${INTERFACE}.service
 iw dev wlp3s0 interface add $CLIENT type station
 iw dev wlp3s0 interface add $AP type __ap
-
+wait
 ip link set dev $CLIENT address 00:19:e3:01:ed:95
-
+wait
 netctl start ${1:-ANAE_CL1}
-systemctl start netctl-auto@${CLIENT}.service
 ip link set $AP up
 ip addr add 192.168.123.100/24 dev $AP
 
@@ -43,7 +42,7 @@ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 wait
 
-hostapd -B $HOSTAPDCONF
+hostapd -B ${HOSTAPDCONF}.conf
 
 echo ""
 echo ""
@@ -58,7 +57,7 @@ echo ""
 echo ""
 echo "Stopping script!"
 
-systemctl stop netctl-auto@${CLIENT}.service
+netctl stop ${1:-ANAE_CL1}
 ip link set down $AP
 iw dev $CLIENT del
 iw dev $AP del
