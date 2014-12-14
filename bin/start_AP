@@ -44,7 +44,7 @@ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 wait
 
-hostapd -B ${HOSTAPDCONF}/hostapd.conf
+hostapd ${HOSTAPDCONF}/hostapd.conf 1> /dev/null
 
 echo ""
 echo ""
@@ -59,6 +59,7 @@ echo ""
 echo ""
 echo "Stopping script!"
 
+killall 
 netctl stop ${1:-ANAE_CL1}
 ip link set down $AP
 wait

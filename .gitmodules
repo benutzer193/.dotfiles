@@ -7,6 +7,3 @@
 [submodule "zsh/zsh-syntax-highlighting"]
 	path = zsh/zsh-syntax-highlighting
 	url = https://github.com/HerrNieschnell/zsh-syntax-highlighting.git
-[submodule "bin/create_ap"]
-	path = bin/create_ap
-	url = https://github.com/HerrNieschnell/create_ap.git
