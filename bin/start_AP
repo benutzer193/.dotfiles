@@ -61,6 +61,7 @@ echo "Stopping script!"
 
 netctl stop ${1:-ANAE_CL1}
 ip link set down $AP
+wait
 iw dev $CLIENT del
 iw dev $AP del
 
