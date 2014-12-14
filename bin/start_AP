@@ -44,7 +44,7 @@ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 wait
 
-hostapd $-d {HOSTAPDCONF}/hostapd.conf #1> /dev/null
+hostapd -d ${HOSTAPDCONF}/hostapd.conf #1> /dev/null
 
 echo ""
 echo ""
