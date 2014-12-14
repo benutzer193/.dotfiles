@@ -1,0 +1,48 @@
+\ProvidesPackage{bn-mtutorium}
+
+%---------------------------------%
+%	Packages
+%---------------------------------%
+
+\usepackage{polyglossia}
+\usepackage[automark]{scrlayer-scrpage}
+\usepackage{mathtools}
+\usepackage[amsmath,thmmarks,standard]{ntheorem}
+\usepackage{amssymb}
+\usepackage{fontspec}
+\usepackage{unicode-math}
+\usepackage{microtype}
+
+\setmainfont{TeX Gyre Termes}
+\setmathfont{TeX Gyre Termes Math}
+
+\setdefaultlanguage{german}
+
+
+
+
+%---------------------------------%
+%	Custom options
+%---------------------------------%
+
+%% page
+
+\defpagestyle{mystyle}{%
+	{\hfill\headmark}{\headmark\hfill}{\hfill}
+}{%
+	{\hfill\pagemark}{\pagemark\hfill}{\hfill}
+}
+\pagestyle{mystyle}
+
+\let\tempmargin\oddsidemargin
+\let\oddsidemargin\evensidemargin%
+\let\evensidemargin\tempmargin%
+\reversemarginpar%
+
+
+%% math
+
+\theoremstyle{nonumberplain}
+\theoremheaderfont{\normalfont\bfseries}\theorembodyfont{\slshape}
+\theoremseparator{:}
+\newtheorem{beh}{Behauptung}
