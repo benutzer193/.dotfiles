@@ -28,11 +28,15 @@ echo "Add allowed devices in ~/.dotfiles/system/hostapd.accept"
 systemctl stop $NETCTLSERV
 iw dev wlp3s0 interface add $CLIENT type station
 iw dev wlp3s0 interface add $AP type __ap
+
 wait
+
 ip link set dev $CLIENT address 00:19:e3:01:ed:95
+
 wait
+
 netctl start ${1:-ANAE_CL1}
-ip link set up dev $AP
+#ip link set up dev $AP
 ip addr add 192.168.123.100/24 dev $AP
 
 wait
@@ -44,11 +48,11 @@ iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 wait
 
-hostapd -d ${HOSTAPDCONF}/hostapd.conf #1> /dev/null
+hostapd -B ${HOSTAPDCONF}/hostapd.conf #1> /dev/null
 
 echo ""
 echo ""
-echo "Press any key to exit"
+echo "Press ENTER to exit"
 read keypress
 echo ""
 echo "Deleting virtual interfaces!"

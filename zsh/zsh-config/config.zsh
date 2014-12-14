@@ -21,7 +21,7 @@ setopt PROMPT_SUBST
 setopt CORRECT
 
 setopt IGNORE_EOF
-unsetopt BEEP
+setopt NO_BEEP
 
 
 
