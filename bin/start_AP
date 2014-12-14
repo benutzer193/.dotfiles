@@ -21,7 +21,7 @@ echo ""
 echo "On Client device set static IP 192.168.123.100!"
 echo ""
 echo "Edit settings in ~/.dotfiles/system/hostapd.conf"
-echo "Add alowed devices in ~/.dotfiles/system/hostapd.accept"
+echo "Add allowed devices in ~/.dotfiles/system/hostapd.accept"
 
 systemctl stop netctl-auto@${INTERFACE}.service
 iw dev wlp3s0 interface add $CLIENT type station
