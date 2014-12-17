@@ -1,0 +1,21 @@
+% ls-R -- filename database for kpathsea; do not change this line.
+./:
+.:
+ls-R
+tex
+
+
+./tex:
+latex
+
+./tex/latex:
+styles
+
+./tex/latex/styles:
+bn-bachelor.sty
+bn-fthesis.sty
+bn-fthesis.sty~
+bn-fthesis.sty~~
+.bn-fthesis.sty~.swp
+bn-mtutorium.sty
+bn-thesis.sty

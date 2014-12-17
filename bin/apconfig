@@ -1,0 +1,69 @@
+#!/bin/bash
+# add ip to client!
+
+if [ "$(whoami)" != "root" ]; then
+	echo "Sorry, you are not root."
+	exit 1
+fi
+
+if [ "$1" == "" ]; then
+	echo "Usage: apconfig PASSPHRASE"
+	exit 1
+fi
+
+INTERFACE="$(iw dev | grep Interface | awk '{print $2}')"
+HOSTAPDCONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../system && pwd )"
+HOSTAPDFILE="${HOSTAPDCONF}/hostapd-${INTERFACE}.conf"
+NETCTL="netctl-auto@${INTERFACE}.service"
+EMPTY="echo -e \n\n"
+INTERNET="$(ip route ls | grep default | awk '{print $5}')"
+
+clear
+$EMPTY
+echo "On Client device set static IP 192.168.123.100 for $(hostname)-AP!"
+$EMPTY
+echo "Add MAC addresses of allowed devices in ~/.dotfiles/system/hostapd.accept"
+$EMPTY
+
+systemctl stop $NETCTL
+ip addr add 192.168.123.100/24 dev $INTERFACE
+
+wait
+
+sysctl net.ipv4.ip_forward=1 1> /dev/null
+#iptables -t nat -A POSTROUTING -o $INTERNET -j MASQUERADE
+#iptables -A FORWARD -i $INTERFACE -o $INTERNET -j ACCEPT
+#iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+
+cat << EOF > $HOSTAPDFILE
+ssid=$(hostname)-AP
+interface=${INTERFACE}
+driver=nl80211
+auth_algs=1
+macaddr_acl=1
+accept_mac_file=${HOSTAPDCONF}/hostapd.accept
+hw_mode=g
+ieee80211n=1
+max_num_sta=5
+channel=${2:-7}
+ignore_broadcast_ssid=0
+wpa=3
+wpa_passphrase=$1
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP CCMP
+rsn_pairwise=CCMP
+EOF
+wait
+
+
+hostapd -B $HOSTAPDFILE 1> /dev/null
+
+echo "Press ENTER to exit"
+read keypress
+
+iptables -F
+ip addr del 192.168.123.100/24 dev $INTERFACE
+clear
+echo "Access Point has been stopped!"
+
+systemctl start $NETCTL
