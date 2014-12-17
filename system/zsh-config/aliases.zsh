@@ -12,8 +12,6 @@ alias l.="ls -d .*"
 # sudo
 alias mount="sudo mount"
 alias umount="sudo umount"
-alias shutdown="sudo shutdown"
-alias reboot="sudo reboot"
 
 # cd commands
 alias d='dirs -v'                                                   # show cd history
@@ -28,6 +26,15 @@ alias .3='cd ../../../'
 alias .4='cd ../../../../'
 alias .5='cd ../../../../../'
 
-# copy / paste
-alias xclip="xclip -selection c"
+# cp / mv / rm commands
+alias cp="cp -iv"
+alias trash="mv -t ~/trash"
+alias mv="mv -iv"
+
+alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection clipboard -o"
+
+# systemd
+alias journalctl-errors="journalctl -p 0..3 -xn"
+alias shutdown="systemctl poweroff"
+alias reboot="systemctl reboot"
