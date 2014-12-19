@@ -1,0 +1,14 @@
+set	alias_file="~/.mutt/config/alias"
+
+unset	beep
+unset	beep_new
+set	check_new
+
+set	certificate_file="~/.mutt/certificates"
+set	editor="$EDITOR"
+
+set	history=30
+set	history_file="~/.mutt/histry"
+
+# set	from="mail-adress"
+# set	realname="NAME"

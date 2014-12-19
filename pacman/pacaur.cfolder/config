@@ -1,0 +1,7 @@
+editor=vim
+editpkgbuild=true
+editinstall=true
+fallback=true
+clean=true
+sortbyvotes=true
+sudoloop=true
