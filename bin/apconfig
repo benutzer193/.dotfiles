@@ -1,5 +1,4 @@
 #!/bin/bash
-# add ip to client!
 
 if [ "$(whoami)" != "root" ]; then
 	echo "Sorry, you are not root."
@@ -11,37 +10,47 @@ if [ "$1" == "" ]; then
 	exit 1
 fi
 
-INTERFACE="$(iw dev | grep Interface | awk '{print $2}')"
-HOSTAPDCONF="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../system && pwd )"
-HOSTAPDFILE="${HOSTAPDCONF}/hostapd-${INTERFACE}.conf"
-NETCTL="netctl-auto@${INTERFACE}.service"
+IN="$(iw dev | grep Interface | awk '{print $2}')"
+NETCTL="netctl-auto@${IN}.service"
+
+systemctl stop $NETCTL
+
+OUT="$(ip route ls | grep default | awk '{print $5}')"
+
+CONFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../config-files && pwd )"
+HOSTAPDCONF="${CONFDIR}/hostapd-${IN}.conf"
+DNSCONF="${CONFDIR}/dnsmasq-${IN}.conf"
+
+
 EMPTY="echo -e \n\n"
-INTERNET="$(ip route ls | grep default | awk '{print $5}')"
 
 clear
 $EMPTY
-echo "On Client device set static IP 192.168.123.100 for $(hostname)-AP!"
-$EMPTY
-echo "Add MAC addresses of allowed devices in ~/.dotfiles/system/hostapd.accept"
+echo "Add MAC addresses of allowed devices in ~/.dotfiles/config-files/hostapd.accept"
 $EMPTY
 
-systemctl stop $NETCTL
-ip addr add 192.168.123.100/24 dev $INTERFACE
+
+ip addr add 10.0.0.1/24 dev $IN
 
 wait
 
 sysctl net.ipv4.ip_forward=1 1> /dev/null
-#iptables -t nat -A POSTROUTING -o $INTERNET -j MASQUERADE
-#iptables -A FORWARD -i $INTERFACE -o $INTERNET -j ACCEPT
-#iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
-cat << EOF > $HOSTAPDFILE
+cat << EOF > $DNSCONF
+no-resolv
+interface=${IN}
+dhcp-range=10.0.0.3,10.0.0.20,12h
+server=8.8.8.8
+server=8.8.4.4
+EOF
+
+cat << EOF > $HOSTAPDCONF
 ssid=$(hostname)-AP
-interface=${INTERFACE}
+interface=${IN}
 driver=nl80211
 auth_algs=1
 macaddr_acl=1
-accept_mac_file=${HOSTAPDCONF}/hostapd.accept
+accept_mac_file=${CONFDIR}/hostapd.accept
 hw_mode=g
 ieee80211n=1
 max_num_sta=5
@@ -55,15 +64,29 @@ rsn_pairwise=CCMP
 EOF
 wait
 
+dnsmasq --conf-file=$DNSCONF 1> /dev/null
 
-hostapd -B $HOSTAPDFILE 1> /dev/null
+iptables --flush
+iptables --table nat --flush
+iptables --delete-chain
+iptables --table nat --delete-chain
+iptables --table nat --append POSTROUTING --out-interface $OUT --jump MASQUERADE
+iptables --append FORWARD --in-interface $IN --jump ACCEPT
+
+sysctl -w net.ipv4.ip_forward=1
+
+wait
+
+hostapd -B $HOSTAPDCONF 1> /dev/null
 
 echo "Press ENTER to exit"
-read keypress
+read dummy_keypress
 
+rm -f $DNSCONF $HOSTAPDCONF
+killall dnsmasq
 iptables -F
-ip addr del 192.168.123.100/24 dev $INTERFACE
+ip addr del 10.0.0.1/24 dev $IN
 clear
-echo "Access Point has been stopped!"
 
+echo "Access Point has been stopped!"
 systemctl start $NETCTL

@@ -31,6 +31,10 @@ alias pacman-list-orphans="sudo pacman --query --deps --unrequired"
 # Removes orphan packages.
 alias pacman-remove-orphans="sudo pacman --remove --recursive \$(pacman --quiet --query --deps --unrequired)"
 
+# Clean package cache
+alias pacman-clean-cache="echo "fehlt noch""
+
+
 # Synchronizes the local package and Arch Build System databases against the
 # repositories.
 if (( $+commands[abs] )); then
@@ -42,3 +46,13 @@ fi
 # Synchronizes the local package database against the repositories then
 # upgrades outdated packages.
 alias pacU="sudo pacman --sync --refresh --sysupgrade"
+
+# Update Mirrors
+alias pacman-update-mirrors="sudo reflector --verbose -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist"
+
+
+
+# pacaur
+alias auri="pacaur -S"
+alias aurU="pacaur -Syu"
+alias pacq="pacaur -Si"
