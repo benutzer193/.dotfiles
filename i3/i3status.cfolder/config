@@ -16,7 +16,6 @@ general {
 
 order += "ipv6"
 order += "disk /"
-order += "disk /home"
 order += "run_watch DHCP"
 order += "run_watch VPN"
 order += "wireless wlp3s0"
@@ -57,9 +56,5 @@ load {
 }
 
 disk "/" {
-        format = "root: %avail"
-}
-
-disk "/home" {
-        format = "home: %avail"
+        format = "available space: %avail"
 }
