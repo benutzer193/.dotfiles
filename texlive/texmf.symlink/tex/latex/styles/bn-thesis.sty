@@ -1,27 +1,40 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               thesis                                %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \ProvidesPackage{bn-thesis}
 
+
+%%%%%%%%%%%%%%
+%  packages  %
+%%%%%%%%%%%%%%
+
+
+\usepackage{tabularx}
+\usepackage{fontspec}
+\usepackage{polyglossia}
 \usepackage[autostyle=true]{csquotes}
+\usepackage{microtype}
+\usepackage{hyperref}
 \usepackage[onehalfspacing]{setspace}
 
-\usepackage[%
-style=authoryear-ibid,%
-ibidpage=true,%
-backend=biber,%
-maxcitenames=2,%
-maxbibnames=4]{biblatex}
+\usepackage[style=authoryear-icomp,ibidpage=true,backend=biber,maxcitenames=2,maxbibnames=4]{biblatex}
 
-\usepackage{
-	fontspec,
-	polyglossia,
-	microtype,
-	hyperref,
-	tabularx,
-}
+
+%%%%%%%%%%%%%%
+%  settings  %
+%%%%%%%%%%%%%%
+
 
 \setdefaultlanguage{german}
 
-\setmainfont{Arno Pro}
-\setsansfont{Arno Pro}
-\setmonofont{Arno Pro}
+\setmainfont{TeX Gyre Termes}
+\setsansfont{TeX Gyre Termes}
+\setmonofont{TeX Gyre Termes}
+
+%\setmainfont{Arno Pro}
+%\setsansfont{Arno Pro}
+%\setmonofont{Arno Pro}
+
 
 \graphicspath{{./images/}}

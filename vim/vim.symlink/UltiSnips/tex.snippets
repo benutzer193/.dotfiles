@@ -120,18 +120,18 @@ snippet lp "Long parenthesis"
 endsnippet
 
 snippet au "autocite"
-\autocite[${1}]{${2}}${0}
+\autocite[${1:prenote}]${2:postnote}{${3:bibkey}}${0}
 endsnippet
 
-snippet aus "autocites"
-\autocites[${1}]{${2}}${0}
+snippet aus "autocite (multi)"
+\autocites[${1:multi prenote}]${2:multi postnote}[${3:prenote #1}]${4:postnote #1}{${5:bibkey #1}}[${6:prenote #2}]${7:postnote #2}{${8:bibkey #2}}${0}
 endsnippet
 
 snippet tc "textcite"
-\textcite[${1}]{${2}}${0}
+\textcite[${1:prenote}]${2:postnote}{${3:bibkey}}${0}
 endsnippet
 
-snippet tcs "textcites"
-\textcites[${1}]{${2}}${0}
+snippet tcs "textcite (multi)"
+\textcites[${1:multi prenote}]${2:multi postnote}[${3:prenote #1}]${4:postnote #1}{${5:bibkey #1}}[${6:prenote #2}]${7:postnote #2}{${8:bibkey #2}}${0}
 endsnippet
 # vim:ft=snippets:

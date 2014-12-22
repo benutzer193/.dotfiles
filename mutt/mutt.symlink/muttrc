@@ -33,6 +33,7 @@ set mbox_type		= maildir
 set pipe_decode
 set thorough_search
 set wait_key		= no
+set sidebar_visible 	= yes
 
 ################
 #  status bar  #
@@ -58,6 +59,7 @@ hdr_order from: to: cc: date: subject:
 
 source $alias_file
 source ~/.mutt/config/base.muttrc
+source ~/.mutt/config/colorscheme-solarize.muttrc
  
 ###############
 #  account 1  #
@@ -110,4 +112,7 @@ bind compose p          pgp-menu
 bind attach <return>    view-mailcap
 
 # macros
+macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
+macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
+
 macro index gw       "<change-folder> =WEB/INBOX<enter>"       "go to Inbox"

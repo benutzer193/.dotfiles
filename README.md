@@ -17,7 +17,7 @@ Run this:
 
 ```sh
 cd
-git clone https://github.com/HerrNieschnell/.dotfiles.git
+git clone --recursive https://github.com/HerrNieschnell/.dotfiles.git
 cd .dotfiles
 script/bootstrap
 ```
