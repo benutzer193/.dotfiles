@@ -33,6 +33,7 @@ let g:ctrlp_cmd = 'CtrlPMRUFiles'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnameod = ':t'
 let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
+let g:LatexBox_Folding = 1
 let g:neocomplete#enable_at_startup = 1
 let mapleader=","
 let g:UltiSnipsExpandTrigger="<tab>"
@@ -59,7 +60,7 @@ set undodir=~/.vim/tmp/undo//
 set ignorecase
 set smartcase
 colorscheme solarized	" Solarize dark theme
-
+set spell spelllang=de_DE
 
 """ Latex Config
 function! CompileTex()

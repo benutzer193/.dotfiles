@@ -1,40 +1,93 @@
-## muttrc
+#######################################################################
+#                               muttrc                                #
+#######################################################################
 
-# folder and files 
+
+#######################
+#  files and folders  #
+#######################
+
 set folder		= ~/Mail
 set alias_file		= ~/.mutt/config/alias.muttrc
 set header_cache	= ~/.mutt/cache/headers
 set message_cachedir	= ~/.mutt/cache/bodies
 set certificate_file	= ~/.mutt/certificates.muttrc
+set tmpdir		= ~/.mutt/tmp
+set signature		= ~/.mutt/config/signature.muttrc
 
-# index options
+#####################
+#  generel options  #
+#####################
+#
+set date_format = "%m/%d"
+set index_format = "[%Z]  %D  %-20.20F  %s"
 set sort		= threads
 set sort_aux		= reverse-last-date-received
 set uncollapse_jump
 
 unset imap_passive
+unset mark_old
 set imap_check_subscribed
 set imap_keepalive	= 300
 set mbox_type		= maildir
+set pipe_decode
+set thorough_search
+set wait_key		= no
 
+################
+#  status bar  #
+################
 
-# headers to show
+set status_chars  = " *%A"
+set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+
+####################
+#  header options  #
+####################
+
 ignore *
 unignore from: to: cc: date: subject:
 hdr_order from: to: cc: date: subject:
 
 # mailboxes
-mailboxes +WEB/INBOX +WEB/Archive +WEB/Sent +WEB/Draft +WEB/Trash
+# mailboxes +WEB/INBOX +WEB/Archive +WEB/Sent +WEB/Draft +WEB/Trash
 
-# sourced files
+###################
+#  sourced files  #
+###################
+
 source $alias_file
 source ~/.mutt/config/base.muttrc
-source ~/.mutt/accounts/bushbuster.muttrc
  
-# accounts  
-folder-hook WEB/* 'source ~/.mutt/accounts/bushbuster.muttrc' 
+###############
+#  account 1  #
+###############
 
-# keybindings
+source "~/.mutt/accounts/bushbuster.muttrc"
+folder-hook $folder 'source ~/.mutt/accounts/bushbuster.muttrc' 
+
+#####################
+#  composing mails  #
+#####################
+
+set sig_dashes
+set edit_headers
+set fast_reply
+set askcc
+set fcc_attach
+unset mime_forward
+set forward_format	= "Fwd: %s"
+set forward_decode
+set attribution		= "On %d, %n wrote:"
+set reply_to
+set reverse_name
+set include
+set forward_quote
+
+#################
+#  keybindings  #
+#################
+
 bind pager q            exit
 bind pager /            search
 bind pager <up>         previous-line

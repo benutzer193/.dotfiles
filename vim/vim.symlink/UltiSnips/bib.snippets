@@ -51,3 +51,20 @@ snippet inb "In Book reference" b
 }
 $0
 endsnippet
+
+snippet report "Report reference" b
+@report{${1:name},
+	author={${2:author}},
+	institution={${3:institution}}
+	title={${4:title}},
+	%subtitle={${5:subtitle}},
+	%url={${6:url}}
+	%year={${7:YYYY}},
+	%location={${8:somewhere}},
+	%doi={${9:DOI}}
+	%pages={${10:NN}--${11:NN}}
+	%pagetotal={${12:NN}}
+}
+$0
+
+endsnippet
