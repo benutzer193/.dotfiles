@@ -60,7 +60,7 @@ set undodir=~/.vim/tmp/undo//
 set ignorecase
 set smartcase
 colorscheme solarized	" Solarize dark theme
-set spell spelllang=de_DE
+set spell spelllang=de
 
 """ Latex Config
 function! CompileTex()

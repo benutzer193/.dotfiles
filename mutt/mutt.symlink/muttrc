@@ -83,6 +83,7 @@ set reply_to
 set reverse_name
 set include
 set forward_quote
+set send_charset	= "utf-8"
 
 #################
 #  keybindings  #
