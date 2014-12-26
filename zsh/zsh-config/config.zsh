@@ -23,6 +23,8 @@ setopt CORRECT
 setopt IGNORE_EOF
 setopt NO_BEEP
 
+BASE16_SHELL="$HOME/.dotfiles/zsh/colorschemes/base16-default.dark.sh"
+[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 
 
 zle -N newtab

@@ -1,14 +1,19 @@
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"    vim config
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                   vimrc                                    "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocompatible
 filetype off
+
+""""""""""""
+"  Vundle  "
+""""""""""""
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'kien/ctrlp.vim'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'chriskempson/base16-vim'
 Plugin 'scrooloose/syntastic'
 Plugin 'gmarik/Vundle.vim'
 Plugin 'majutsushi/tagbar'
@@ -23,46 +28,124 @@ call vundle#end()
 filetype plugin indent on
 syntax enable
 
+"""""""""""""""""""
+"  vim variables  "
+"""""""""""""""""""
+
+let mapleader=","
+let g:clipbrdDefaultReg="+"
+
+"""""""""""""
+"  options  "
+"""""""""""""
+
+set autowrite			" Autosave on buffer switch
+set backspace=indent,eol,start	" allow backspacing over everything in insert mode
+set backup			" enable backup
+set backupdir=~/.vim/backupdir
+set hidden			" allow buffer switch without closing
+set hlsearch			" Search highlights
+set ignorecase
+set incsearch			" search while typing
+set laststatus=2		" tells if last window has statusline
+set mouse=a
+set number			" Linenumbers
+set smartcase
+set spell spelllang=de
+set textwidth=80
+set ttimeoutlen=50
+set undodir=~/.vim/tmp/undo
+set undofile
+set undolevels=1000
+set undoreload=10000
+set visualbell			" Flash instead of beep
+
+"""""""""""""""""""""
+"  vim keybindings  "
+"""""""""""""""""""""
+
+map j gj
+map k gk
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap * *zzzv
+nnoremap # #zzzv
+nnoremap g* g*zzzv
+nnoremap g# g#zzzv
+nnoremap g; g;zz
+nnoremap g, g,zz
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+nmap <silent> <leader>/ :nohlsearch<CR>
+cmap w!! w !sudo tee > /dev/null %
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
+nnoremap <space> za
+
 " xcopy/xpaste
 " map <F7> :w !xclip -selection clipboard<CR>
 " map <F6> :r!xclip -selection clipboard -o<CR>
 
-""" variables
-let g:tex_flavor='latex'
-let g:ctrlp_cmd = 'CtrlPMRUFiles'
+""""""""""""""""""
+"  autocommands  "
+""""""""""""""""""
+
+autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+autocmd VimEnter * if argc()==0|CtrlPMRUFiles|endif
+
+"""""""""""""""""
+"  vim-airline  "
+"""""""""""""""""
+
+set noshowmode
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#fnameod = ':t'
-let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
-let g:LatexBox_Folding = 1
-let g:neocomplete#enable_at_startup = 1
-let mapleader=","
+
+"""""""""""
+"  Ctrlp  "
+"""""""""""
+
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_cmd = 'CtrlPMRUFiles'
+
+"""""""""""""""
+"  ultisnips  "
+"""""""""""""""
+
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<c-tab>"
-" If you want :UltiSnipsEdit to split your window.
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsUsePythonVersion = 2
-let g:ctrlp_show_hidden = 1
 
-""" options
-set autowrite			" Autosave on buffer switch
-set hidden			" allow buffer switch without closing
-set visualbell			" Flash instead of beep
-set number			" Linenumbers
-set backup			" enable backup
-set laststatus=2		" tells if last window has statusline
-set backspace=indent,eol,start	" allow backspacing over everything in insert mode
-set background=dark		" dark background
-set hlsearch			" Search highlights
-set incsearch			" search while typing
-set undofile
-set undodir=~/.vim/tmp/undo//
-set ignorecase
-set smartcase
-colorscheme solarized	" Solarize dark theme
-set spell spelllang=de
+"""""""""""""""""
+"  neocomplete  "
+"""""""""""""""""
 
-""" Latex Config
+let g:neocomplete#enable_at_startup = 1
+
+""""""""""""
+"  base16  "
+""""""""""""
+
+set background=dark
+let base16colorspace=256
+colorscheme base16-default
+
+"""""""""""""""
+"  Latex-Box  "
+"""""""""""""""
+
+let g:tex_flavor='latex'
+let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
+let g:LatexBox_Folding = 1
+
+nnoremap <F6> :call CompileTex()<CR>
+autocmd FileType tex setlocal omnifunc=LatexBox_Complete
+autocmd FileType tex command -buffer W write | call CompileTex()<CR>
+
 function! CompileTex()
 	silent write!
 	call setqflist([])
@@ -82,30 +165,10 @@ function! CompileTex()
 	endif
 endfunction
 
-""" keymaps
-" search matches in the middle of the screen
-nnoremap n nzzzv
-nnoremap N Nzzzv
-nnoremap * *zzzv
-nnoremap # #zzzv
-nnoremap g* g*zzzv
-nnoremap g# g#zzzv
-nnoremap g; g;zz
-nnoremap g, g,zz
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
-nmap <silent> ,/ :nohlsearch<CR>
+""""""""""""
+"  tagbar  "
+""""""""""""
+
 nmap <F8> :TagbarToggle<CR>
-nnoremap <F6> :call CompileTex()<CR>
-" Allow saving of files as sudo even when forgot typing sudo
-cmap w!! w !sudo tee > /dev/null %
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
-autocmd FileType tex setlocal omnifunc=LatexBox_Complete
-autocmd FileType tex command -buffer W write | call CompileTex()<CR>
 autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
-
-""" startup
-autocmd VimEnter * if argc()==0|CtrlPMRUFiles|endif
