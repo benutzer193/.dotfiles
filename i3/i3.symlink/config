@@ -19,7 +19,7 @@ exec_always --no-startup-id pulseaudio --start
 # is used in the bar {} block below.
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 8
+font pango:Adobe Source Code Pro 10
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
 # The font above is very space-efficient, that is, it looks good, sharp and
@@ -48,7 +48,14 @@ floating_modifier $mod
 # start applications
 bindsym $mod+u exec uzbl-browser
 bindsym $mod+Return exec urxvtc
-bindsym $mod+g exec google-chrome-unstable
+bindsym $mod+g exec google-chrome-unstable --disk-cache-dir=/tmp/cache
+
+bindsym XF86AudioLowerVolume exec ponymix decrease 5
+bindsym XF86AudioRaiseVolume exec ponymix increase 5
+bindsym XF86AudioMute exec $(amixer get Master | grep off > /dev/null && amixer -q set Master unmute) || amixer -q set Master mute
+
+bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+bindsym XF86MonBrightnessDown exec xbacklight -dec 20
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -229,39 +236,18 @@ client.urgent 	 		$yellow $yellow $baseB3 $orange
 #client.focused_inactive 	$baseB0 $custom $baseB2 $violet
 
 bar {
-        status_command i3status
-
+	status_command $HOME/.i3/conky
+	#status_command i3status
+	font pango:FontAwesome 10
+	position top
 	colors {
- 		# status
 		separator $blue
- 		background $baseA3
+		 background $baseA3
 		statusline $baseB2
-		
- 		###################
-		# solarized (clean)
-		###################
- 		# workclass 			border  backgr. text
- 		#focused_workspace		$green  $green  $baseA3
- 		#active_workspace		$cyan   $cyan   $baseA2
- 		#inactive_workspace		$baseA2 $baseA2 $baseB1
- 		#urgent_workspace		$orange $orange $baseB3
- 		#urgent_workspace		$yellow $yellow $baseB3
-		
-		#####################
-		# solarized (borders)
-		#####################
-		# workclass 			border backgr. text
-		focused_workspace 		$baseB0 $green  $baseA3
+		 focused_workspace 		$baseB0 $green  $baseA3
 		active_workspace 		$baseB0 $cyan   $baseA2
 		inactive_workspace 		$baseB0 $baseA2 $baseB1
-		#urgent_workspace 		$baseB0 $orange $baseB3
 		urgent_workspace 		$baseB0 $orange $baseB3
-		
-		###############################
-		# disable cyan? (clean/borders)
-		###############################
-		#active_workspace		$custom $custom $baseB2
-		#active_workspace 		$baseB0 $custom $baseB2
 	}
 }
 
