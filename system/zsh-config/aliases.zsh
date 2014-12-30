@@ -10,6 +10,7 @@ alias ll="ls -lh"
 alias l.="ls -d .*"
 
 # sudo
+alias please='sudo $(fc -ln -1)'
 alias mount="sudo mount"
 alias umount="sudo umount"
 

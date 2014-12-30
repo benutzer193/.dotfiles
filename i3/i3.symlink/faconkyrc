@@ -22,27 +22,29 @@ cpu_avg_samples 2
 TEXT
 [
   {
-    "full_text"	: " ${exec whoami}@${nodename} ",
+    "full_text"	: "  ${exec whoami}@${nodename} ",
     "color"	: "\#BA8BAF"
   },
 
-${if_empty ${exec amixer get Master,0 | egrep -oE '\[off\]'}}
+${if_match ${exec ponymix get-volume}>60}
   {
-    "full_text"	: " VOL ${exec ponymix get-volume} ",
-    "color"	: ${if_match ${exec ponymix get-volume}>60}"\#A1B56C"\
-      ${else}${if_match ${exec ponymix get-volume}>20}"\#DC9656"\
-      ${else}"\#AB4642"\
-      ${endif}${endif}
+    "full_text"	: "  ${exec ponymix get-volume} ",
+    "color"	:"\#A1B56C"
+  },
+${else}${if_match ${exec ponymix get-volume}>0}
+  {
+    "full_text"	: "  ${exec ponymix get-volume} ",
+    "color"	:"\#DC9656"
   },
 ${else}
   {
-    "full_text"	: " MUTE ",
+    "full_text"	: "  ",
     "color"	:"\#AB4642"
   },
-${endif}
+${endif}${endif}
 
   {
-    "full_text" : " RAM ${memperc} ",
+    "full_text" : "  ${memperc} ",
     "color"	: ${if_match ${memperc}<70}"\#A1B56C"\
       ${else}${if_match ${memperc}<90}"\#DC9656"\
       ${else}"\#AB4642"\
@@ -50,7 +52,7 @@ ${endif}
   },
 
   {
-    "full_text"	: " CPU ${cpu} ",
+    "full_text"	: "  ${cpu} ",
     "color"	: ${if_match ${cpu}<70}"\#A1B56C"\
       ${else}${if_match ${cpu}<90}"\#DC9656"\
       ${else}"\#AB4642"\
@@ -58,23 +60,23 @@ ${endif}
   },
 
   {
-    "full_text"	: " I/O ${diskio /dev/sda} ",
+    "full_text"	: " ⇅ ${diskio /dev/sda} ",
     "color"	: "\#7CAFC2"
   },
 
   {
-    "full_text"	: " UP ${upspeed} ",
+    "full_text"	: " ▲ ${upspeed} ",
     "color"	: "\#AB4642"
   },
 
   {
-    "full_text"	: " DOWN ${downspeed} ",
+    "full_text"	: " ▼ ${downspeed} ",
     "color"	: "\#A1B56C"
   },
 
 ${if_existing /sys/class/power_supply/AC/online 0}
   {
-    "full_text"	: " BATT ${battery_percent} ",
+    "full_text"	: "  ${battery_percent} ",
     "color"	: ${if_match ${battery_percent}>60}"\#A1B56C"
       ${else}${if_match ${battery_percent}>15}"\#DC9656"
       ${else}"\#AB4642"
@@ -82,13 +84,13 @@ ${if_existing /sys/class/power_supply/AC/online 0}
   },
 ${else}
   {
-    "full_text"	: " A/C ${battery_percent} ",
+    "full_text"	: "  ${battery_percent} ",
     "color"	: "\#7CAFC2"
   },
 ${endif}
 
   {
-    "full_text"	: " ${time %a %d %b} ${time %H:%M:%S} ",
+    "full_text"	: "  ${time %a %d %b}  ${time %H:%M:%S} ",
     "color"	: "\#7CAFC2"
   }
 ],
