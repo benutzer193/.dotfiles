@@ -31,10 +31,6 @@ alias pacman-list-orphans="sudo pacman --query --deps --unrequired"
 # Removes orphan packages.
 alias pacman-remove-orphans="sudo pacman --remove --recursive \$(pacman --quiet --query --deps --unrequired)"
 
-# Clean package cache
-alias pacman-clean-cache="echo "fehlt noch""
-
-
 # Synchronizes the local package and Arch Build System databases against the
 # repositories.
 if (( $+commands[abs] )); then

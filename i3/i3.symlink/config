@@ -11,13 +11,13 @@ set $mod Mod4
 set $ws1 workspace 1: main
 set $ws2 workspace 2: browser
 set $ws3 workspace 3: workspace
-set $ws4 workspace 4: misc
-set $ws5 workspace 5
+set $ws4 workspace 4: term
+set $ws5 workspace 5: misc
 set $ws6 workspace 6
 set $ws7 workspace 7
 set $ws8 workspace 8: J + B
 set $ws9 workspace 9: mail
-set $ws10 workspace 10:processes
+set $ws10 workspace 10: processes
 
 set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
 #
@@ -33,21 +33,21 @@ assign [title="^mutt mail$"] 9: mail
 #  autostart  #
 ###############
 
-exec_always --no-startup-id urxvtd -q -f -o
-exec_always --no-startup-id pulseaudio --start
+exec --no-startup-id urxvtd -q -f -o
+exec --no-startup-id pulseaudio --start
 
 exec --no-startup-id i3-msg $ws2; exec $chrome
 exec --no-startup-id i3-msg $ws1; exec urxvtc -e ranger
 exec --no-startup-id exec urxvtc -title 'mutt mail' -e mutt -n
 
-
+new_window 1pixel
 font pango:Adobe Source Code Pro 10
 
 ################
 #  power menu  #
 ################
 
-set $power_menu Power Menu: - (e)xit - (l)ock - (s)leep - (r)eboot - shut(d)own
+set $power_menu Power Menu: (e)xit | (l)ock | (s)leep | (r)eboot | shut(d)own
 mode "$power_menu" {
 	bindsym l exec --no-startup-id i3pm lock; mode "default"
 	bindsym e exec --no-startup-id i3pm exit; mode "default"
@@ -107,7 +107,8 @@ bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
 # split mode/layout
-bindsym $mod+v focus child layout toggle split
+bindsym $mod+v split v
+bindsym $mod+c split h
 
 bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
@@ -173,32 +174,31 @@ bindsym $mod+r mode "resize"
 #  colorscheme  #
 #################
 
-set $yellow	#f7ca88
-set $orange	#dc9656
-set $red	#ab4642
-set $magenta	#a16946
-set $violet	#ba8baf
-set $blue	#7cafc2
-set $cyan	#86c1b9
-set $green	#a1b56c
-
-set $baseA3 #181818
-set $baseA2 #282828
-set $baseA1 #383838
-set $baseA0 #585858
-set $baseB0 #b8b8b8
-set $baseB1 #d8d8d8
-set $baseB2 #e8e8e8
-set $baseB3 #f8f8f8
+set $BASE00	#181818
+set $BASE01	#282828
+set $BASE02	#383838
+set $BASE03	#585858
+set $BASE04	#B8B8B8
+set $BASE05	#D8D8D8
+set $BASE06	#E8E8E8
+set $BASE07	#F8F8F8
+set $BASE08	#AB4642
+set $BASE09	#DC9656
+set $BASE0A	#F7CA88
+set $BASE0B	#A1B56C
+set $BASE0C	#86C1B9
+set $BASE0D	#7CAFC2
+set $BASE0E	#BA8BAf
+set $BASE0F	#A16946
 
 # background
-exec_always --no-startup-id xsetroot -solid '$baseA2'
+exec_always --no-startup-id xsetroot -solid '$BASE01'
 
 # clientclass 			border  backgr. text 	indicator
-client.focused 			$green	$green	$baseB3 $blue
-client.focused_inactive		$cyan	$cyan	$baseB2 $violet
-client.unfocused  		$baseA2 $baseA2 $baseB1 $baseA1
-client.urgent 	 		$yellow $yellow $baseB3 $orange
+client.focused 			$BASE0B	$BASE0B	$BASE01 $BASE09
+client.focused_inactive		$BASE01	$BASE01	$BASE05 $BASE09
+client.unfocused  		$BASE03 $BASE03 $BASE05 $BASE09
+client.urgent 	 		$BASE08 $BASE08 $BASE05 $BASE09
 
 bar {
 	#status_command i3status -c $HOME/.i3/i3status
@@ -208,13 +208,13 @@ bar {
 	#status_command $HOME/.i3/faconky
 	position top
 	colors {
-		separator $blue
-		background $baseA3
-		statusline $baseB2
-
-		focused_workspace 		$baseB0 $green  $baseA3
-		active_workspace 		$baseB0 $cyan   $baseA2
-		inactive_workspace 		$baseB0 $baseA2 $baseB1
-		urgent_workspace 		$baseB0 $orange $baseB3
+		separator	$BASE02
+		background	$BASE00
+		statusline	$BASE06
+		# clientclass		border	backgr	text
+		focused_workspace	$BASE01 $BASE01 $BASE0B
+		active_workspace	$BASE01 $BASE01 $BASE0C
+		inactive_workspace	$BASE01 $BASE01 $BASE05
+		urgent_workspace	$BASE08 $BASE08 $BASE01
 	}
 }

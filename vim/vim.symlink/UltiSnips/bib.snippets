@@ -1,14 +1,5 @@
 priority -50
 
-snippet online "Online resource" b
-@online{${1:name},
-	author={${2:author}},
-	title={${3:title}},
-	date={${4:date}},
-	url={${5:url}}
-}
-$0
-endsnippet
 
 snippet article "Article reference" b
 @article{${1:name},
@@ -66,5 +57,17 @@ snippet report "Report reference" b
 	%pagetotal={${12:NN}}
 }
 $0
+endsnippet
 
+snippet online "Online Documents" b
+@online{${1:name},
+	title={${2:title}},
+	subtitle={${3:subtitle}},
+	author={${4:author}},
+	year={${5:year}},
+	url={${6:url}},
+	urldate={${7:urldate}},
+	organization={${8:organization}}
+}
+$0
 endsnippet

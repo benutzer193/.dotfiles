@@ -74,7 +74,7 @@ ${endif}
 
 ${if_existing /sys/class/power_supply/AC/online 0}
   {
-    "full_text"	: " BATT ${battery_percent} ",
+    "full_text"	: " BATT ${battery_percent} ${if_empty $battery_time}${else}${if_match ${battery_time}="unknown"}${else} (${battery_time})${endif}${endif}",
     "color"	: ${if_match ${battery_percent}>60}"\#A1B56C"
       ${else}${if_match ${battery_percent}>15}"\#DC9656"
       ${else}"\#AB4642"
@@ -82,7 +82,7 @@ ${if_existing /sys/class/power_supply/AC/online 0}
   },
 ${else}
   {
-    "full_text"	: " A/C ${battery_percent} ",
+    "full_text"	: " A/C ${battery_percent} ${if_empty $battery_time}${else}${if_match ${battery_time}="unknown"}${else} (${battery_time})${endif}${endif}",
     "color"	: "\#7CAFC2"
   },
 ${endif}

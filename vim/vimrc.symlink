@@ -50,6 +50,7 @@ set incsearch			" search while typing
 set laststatus=2		" tells if last window has statusline
 set mouse=a
 set number			" Linenumbers
+set relativenumber
 set smartcase
 set spell spelllang=de
 set textwidth=80
@@ -83,7 +84,7 @@ cmap w!! w !sudo tee > /dev/null %
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
 nnoremap <space> za
-
+nmap <silent> <leader><CR> i<CR><ESC>
 " xcopy/xpaste
 " map <F7> :w !xclip -selection clipboard<CR>
 " map <F6> :r!xclip -selection clipboard -o<CR>
@@ -138,6 +139,7 @@ colorscheme base16-default
 "  Latex-Box  "
 """""""""""""""
 
+let g:LatexBox_ignore_warnings=['Underfull', 'Overfull', 'specifier changed to', 'Using preliminary']
 let g:tex_flavor='latex'
 let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
 let g:LatexBox_Folding = 1
@@ -151,7 +153,7 @@ function! CompileTex()
 	call setqflist([])
 	echon "compiling with arara ..."
 	exec "lcd %:h"
-	setlocal makeprg=arara\ -v\ %
+	setlocal makeprg=arara\ --verbose\ --log\ %
 	silent make!
 
 	if !empty(getqflist())

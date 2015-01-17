@@ -1,3 +1,6 @@
+set window-title-basename	"true"
+set adjust-open			"width"
+
 #############################
 #  colorscheme base16-dark  #
 #############################
@@ -33,4 +36,5 @@ set notification-fg             "#151515" #00
 
 set recolor-lightcolor          "#151515" #00
 set recolor-darkcolor           "#E0E0E0" #06
+set recolor-keephue		"true"
 set recolor                     "true"

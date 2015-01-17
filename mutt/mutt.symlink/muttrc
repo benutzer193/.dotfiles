@@ -8,28 +8,32 @@
 #######################
 
 set folder		= ~/Mail
-set alias_file		= ~/.mutt/config/alias.muttrc
 set header_cache	= ~/.mutt/cache/headers
 set message_cachedir	= ~/.mutt/cache/bodies
-set certificate_file	= ~/.mutt/certificates.muttrc
 set tmpdir		= ~/.mutt/tmp
 set signature		= ~/.mutt/config/signature.muttrc
+set alias_file		= ~/.mutt/config/alias.muttrc
+set certificate_file	= ~/.mutt/certificates.muttrc
+set mailcap_path	= ~/.mutt/config/mailcap.muttrc
 
 #####################
 #  generel options  #
 #####################
 #
-set date_format = "%m/%d"
-set index_format = "[%Z]  %D  %-20.20F  %s"
+set date_format		= "%m/%d"
+set index_format	= "[%Z]  %D  %-20.20F  %s"
 set sort		= threads
 set sort_aux		= reverse-last-date-received
 set uncollapse_jump
 
+set editor		= "/usr/bin/vim -c 'set tw=80 ft=mail' -c 'set wrap' -c 'set nocp' -c '+/^--.$/-1'"
+set sleep_time		= 0
+set mail_check		= 0
 unset imap_passive
 unset mark_old
 set imap_check_subscribed
 set imap_keepalive	= 300
-set mbox_type		= maildir
+set mbox_type		= Maildir
 set pipe_decode
 set thorough_search
 set wait_key		= no
@@ -37,6 +41,22 @@ set sidebar_visible 	= yes
 set sidebar_width	= 40
 set sidebar_delim	= '|'
 set sidebar_sort=yes
+
+###########
+#  pager  #
+###########
+
+set pager_index_lines	= 10
+set pager_context	= 5
+set pager_stop
+set menu_scroll
+set smart_wrap
+set tilde
+unset markers
+set quote_regexp	= "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+set status_on_top
+auto_view text/html
+alternative_order text/plain text/enriched text/html
 
 ################
 #  status bar  #
@@ -63,17 +83,16 @@ hdr_order from: to: cc: date: subject:
 source $alias_file
 source ~/.mutt/config/base.muttrc
 source ~/.mutt/config/colorscheme-solarize.muttrc
-
-###############
-#  account 1  #
-###############
-
 source "gpg2 -dq $HOME/.mutt/accounts/.my-pwds.gpg |"
-source "~/.mutt/accounts/bushbuster.muttrc"
-folder-hook $folder 'source ~/.mutt/accounts/bushbuster.muttrc'
-source "~/.mutt/accounts/herrnieschnell.muttrc"
-folder-hook $folder 'source ~/.mutt/accounts/herrnieschnell.muttrc"
+source "~/.mutt/accounts/gmail.muttrc
+##############
+#  accounts  #
+##############
 
+folder-hook $folder 'source ~/.mutt/accounts/gmail.muttrc'
+
+#source "~/.mutt/accounts/bushbuster.muttrc"
+#folder-hook $folder 'source ~/.mutt/accounts/bushbuster.muttrc'
 
 #####################
 #  composing mails  #
@@ -123,7 +142,10 @@ bind index,pager \CJ 	sidebar-next
 bind index,pager \CO 	sidebar-open
 
 # macros
+macro index,pager <F1> "<shell-escape>less /usr/share/doc/mutt/manual.txt<enter>" "Show Mutt documentation"
+macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help status line"
+macro index,pager <F5> ":source ~/.mutt/muttrc\n"              "Reload the muttrc"
 macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
 macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
-
-macro index gw       "<change-folder> =WEB/INBOX<enter>"       "go to Inbox"
+macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/bushbuster.muttrc<enter><change-folder>!<enter>'
+macro index gh		'<sync-mailbox><enter-command>source ~/.mutt/accounts/herrnieschnell.muttrc<enter><change-folder>!<enter>'
