@@ -43,6 +43,7 @@ set autowrite			" Autosave on buffer switch
 set backspace=indent,eol,start	" allow backspacing over everything in insert mode
 set backup			" enable backup
 set backupdir=~/.vim/backupdir
+set foldlevelstart=99
 set hidden			" allow buffer switch without closing
 set hlsearch			" Search highlights
 set ignorecase
@@ -117,7 +118,7 @@ let g:ctrlp_cmd = 'CtrlPMRUFiles'
 
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<c-tab>"
+let g:UltiSnipsJumpBackwardTrigger="<C-tab>"
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsUsePythonVersion = 2
 

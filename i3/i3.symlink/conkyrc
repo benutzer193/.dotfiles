@@ -58,19 +58,50 @@ ${endif}
   },
 
   {
-    "full_text"	: " I/O ${diskio /dev/sda} ",
+    "full_text" : " FS ${fs_used /} /${fs_size /} ",
+    "color"	: ${if_match ${fs_used_perc /}<50}"\#A1B56C"\
+      ${else}${if_match ${fs_used_perc /}<90}"\#DC9656"\
+      ${else}"\#AB4642"\
+      ${endif}${endif}
+  },
+
+
+    {
+    "full_text"	: " I/O ${diskio /} ",
     "color"	: "\#7CAFC2"
   },
 
+${if_up enp4s0f2}
   {
-    "full_text"	: " UP ${upspeed} ",
-    "color"	: "\#AB4642"
+    "full_text"	: " ETH (${addr enp4s0f2}) ",
+    "color"	: "\#7CAFC2"
   },
 
+ #{
+    #"full_text"	: " UP ${upspeed enp4s0f2} ",
+    #"color"	: "\#AB4642"
+  #},
+
+  #{
+    #"full_text"	: " DOWN ${downspeed enp4s0f2} ",
+    #"color"	: "\#A1B56C"
+#  },
+${else}
   {
-    "full_text"	: " DOWN ${downspeed} ",
-    "color"	: "\#A1B56C"
+    "full_text"	: " WIFI${wireless_link_qual_perc wlp3s0} (${wireless_essid wlp3s0}) ",
+    "color"	: "\#7CAFC2"
   },
+
+# {
+    #"full_text"	: " UP ${upspeed wlp3s0} ",
+    #"color"	: "\#AB4642"
+  #},
+
+  #{
+    #"full_text"	: " DOWN ${downspeed wlp3s0} ",
+    #"color"	: "\#A1B56C"
+#  },
+${endif}
 
 ${if_existing /sys/class/power_supply/AC/online 0}
   {

@@ -8,6 +8,46 @@ snippet "b(egin)?" "begin{} / end{}" br
 \end{$1}
 endsnippet
 
+snippet arara "arara standard config" b
+% arara: lualatex: {action: batchmode, draft: yes, options: "-halt-on-error -file-line-error-style"}
+% arara: biber
+% arara: lualatex: {action: batchmode, draft: yes, options: "-halt-on-error -file-line-error-style"}
+% arara: lualatex: {synctex: yes, action: nonstopmode, options: "-halt-on-error -file-line-error-style"}
+
+$0
+endsnippet
+
+snippet scrartcl "Description" b
+${1:% arara: lualatex: {action: batchmode, draft: yes, options: "-halt-on-error -file-line-error-style"}
+% arara: biber
+% arara: lualatex: {action: batchmode, draft: yes, options: "-halt-on-error-file-line-error-style"}}
+% arara: lualatex: {synctex: yes, action: nonstopmode, options: "-halt-on-error -file-line-error-style"}
+
+\documentclass[a4paper,${2:12pt},${3:parskip=full+},pagesize,toc=bib]{scrartcl}
+
+\usepackage{bn-${4:thesis}}
+
+
+\addbibresource{./parts/${5:doc}.bib}
+\input{./parts/$5_commands.tex}
+%\includeonly{./parts/$5}
+\begin{document}
+
+\include{./parts/$5_title}
+\newpage
+\thispagestyle{empty}
+\mbox{}
+\include{./parts/$5_declaration}
+\onehalfspacing%
+\tableofcontents%
+\listoffigures%
+\include{./parts/$5_1}
+$0
+\onespacing%
+\printbibliography%
+\end{document}
+endsnippet
+
 snippet tab "tabular / array environment" b
 \begin{${1:t}${1/(t)$|(a)$|(.*)/(?1:abular)(?2:rray)/}}{${2:c}}
 $0${2/((?<=.)c|l|r)|./(?1: & )/g}

@@ -13,6 +13,7 @@ styles
 
 ./tex/latex/styles:
 bn-bachelor.sty
+.bn-bachelor.sty.swp
 bn-fthesis.sty
 bn-mtutorium.sty
 bn-thesis.sty
