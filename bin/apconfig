@@ -1,9 +1,9 @@
 #!/bin/bash
-
-if [ "$(whoami)" != "root" ]; then
-	echo "Sorry, you are not root."
-	exit 1
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
 fi
+
 
 if [ "$1" == "" ]; then
 	echo "Usage: apconfig PASSPHRASE"
@@ -53,6 +53,7 @@ rsn_pairwise=CCMP
 EOF
 wait
 
+systemctl stop dnsmasq
 dnsmasq --no-hosts --conf-file=$DNSCONF 1> /dev/null
 
 iptables --flush
@@ -89,3 +90,4 @@ clear
 echo "Processes have bin stopped"
 echo "Access Point has been stopped!"
 systemctl start $NETCTL
+systemctl start dnsmasq
