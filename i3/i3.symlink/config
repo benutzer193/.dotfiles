@@ -25,9 +25,13 @@ set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
 #  application settings  #
 ##########################
 
-#for_window [class="Uzbl-core"] focus child, layout stacking,  focus
 assign [title="^mutt mail$"] 9: mail
 
+###############
+#  assign ws  #
+###############
+
+assign [class="Uzbl-core|Google-chrome"] 2: browser
 
 ###############
 #  autostart  #

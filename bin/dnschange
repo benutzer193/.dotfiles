@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+switch() {
+DNSCONF="/etc/dnsmasq.conf"
+
+/bin/cat << EOF > $DNSCONF
+listen-address=127.0.0.1
+domain-needed
+bogus-priv
+no-resolv
+server=8.8.8.8
+server=8.8.4.4
+EOF
+
+case "$1" in
+		us)
+/bin/cat << EOF >> $DNSCONF
+server=/netflix.com/netflix.net/nflximg.com/104.131.127.184
+server=/netflix.com/netflix.net/nflximg.com/192.241.137.65
+EOF
+;;
+esac
+}
+
+dnsrestart(){
+	systemctl restart dnsmasq
+}
+
+case "$1" in
+	-u|--us)
+		switch us && dnsrestart
+		;;
+	-n|--normal)
+		switch && dnsrestart
+		;;
+	*)
+		echo "Usage sudo dnschange [-u|--us] [-n|--normal]"
+		;;
+esac
+
+# vim: set filetye=sh
