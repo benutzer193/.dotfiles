@@ -1,4 +1,4 @@
-# HerrNieschnells dotfiles
+# my dotfiles
 ## dotfile organization forked from [holmans dotfiles](https://github.com/holman/dotfiles.git)
 
 If you're interested in the philosophy behind why projects like these are
