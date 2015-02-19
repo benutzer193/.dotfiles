@@ -25,9 +25,11 @@ while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 	case "$opt" in
 		-c|--channel)
 			CHANNEL="$1"
+			shift
 			;;
 		-p|--password|--pass|--passphrase)
 			PASS="$1"
+			shift
 			;;
 		-h|--help)
 			usage
