@@ -28,7 +28,9 @@ usage(){
 	echo -n "                 -h | --help                         "
 	echo "Show this help."
 	echo
-	echo "Add MAC addresses of allowed clients in:"
+	echo "MAC config:"
+	echo -n "If not running with [-m|--no-mac] add MAC addresses of "
+	echo "allowed clients in:"
 	echo "~/.dotfiles/config-files/hostapd.accept"
 }
 
@@ -39,33 +41,26 @@ while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 	case "$opt" in
 		-c|--channel)
 			CHANNEL="$1"
-			shift
-			;;
+			shift ;;
 		-p|--password|--pass|--passphrase)
 			PASS="$1"
-			shift
-			;;
+			shift ;;
 		-m|--no-mac)
-			NO_MAC_ACL=true
-			;;
+			NO_MAC_ACL=true ;;
 		-h|--help)
 			usage
-			exit 0
-			;;
+			exit 0 ;;
 		*)
 			echo "Wrong option: $opt $1"
 			echo ""
 			usage
-			exit 0
-			;;
+			exit 0 ;;
 	esac
 done
 
 if [[ -z ${PASS+x} ]]; then
 	read -p  "Enter passphrase or use default [test1234]:" PASS
-	if [[ -z "$PASS" ]]; then
-		PASS="test1234"
-	fi
+	[[ -z "$PASS" ]] && PASS="test1234"
 fi
 
 ###############
@@ -80,6 +75,25 @@ get_in() {
 	iw dev | grep Interface | awk '{print $2}'
 }
 
+clean_iptables() {
+	iptables --flush
+	iptables --table nat --flush
+	iptables --delete-chain
+	iptables --table nat --delete-chain
+}
+
+cleanup() {
+	rm -f $DNSCONF $HOSTAPDCONF
+	clean_iptables
+	killall dnsmasq
+	killall hostapd
+	ip addr del 10.0.0.1/24 dev $IN
+	systemctl start dnsmasq
+	sleep 1
+	systemctl start $NETCTL
+}
+
+
 IN="$(get_in)"
 NETCTL="netctl-auto@${IN}.service"
 
@@ -89,11 +103,14 @@ systemctl stop dnsmasq
 
 OUT="$(get_out)"
 
-while [[ $(get_out) == "" ]]; do
-	OUT="$(get_out)"
+if [[ $(get_out) == "" ]]; then
 	clear
 	echo "Connect ethernet first!"
-done
+	while [[ $(get_out) == "" ]]; do
+		OUT="$(get_out)"
+	done
+fi
+
 wait
 
 CONFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../config-files && pwd )"
@@ -136,16 +153,13 @@ accept_mac_file=${CONFDIR}/hostapd.accept
 EOF
 fi
 
-iptables --flush
-iptables --table nat --flush
-iptables --delete-chain
-iptables --table nat --delete-chain
+dnsmasq --no-hosts --conf-file=$DNSCONF 1> /dev/null
+
+clean_iptables
 iptables --table nat --append POSTROUTING --out-interface $OUT --jump MASQUERADE
 iptables --append FORWARD --in-interface $IN --jump ACCEPT
 
 sysctl -w net.ipv4.ip_forward=1
-
-
 hostapd -B $HOSTAPDCONF 1> /dev/null
 
 clear
@@ -155,18 +169,4 @@ usage
 $EMPTY
 echo "Press ENTER to exit"
 read dummy_keypress
-
-rm -f $DNSCONF $HOSTAPDCONF
-iptables --flush
-iptables --table nat --flush
-iptables --delete-chain
-iptables --table nat --delete-chain
-killall dnsmasq
-killall hostapd
-ip addr del 10.0.0.1/24 dev $IN
-clear
-wait
-echo "Processes have been stopped!"
-echo "Access Point has been stopped!"
-systemctl start $NETCTL
-systemctl start dnsmasq
+( cleanup && clear && echo "AP and inherent processes stopped" ) || echo "cleanup not succesfull"
