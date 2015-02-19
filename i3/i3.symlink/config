@@ -8,6 +8,7 @@
 
 set $mod Mod4
 
+set $move move container to
 set $ws1 workspace 1: main
 set $ws2 workspace 2: browser
 set $ws3 workspace 3: workspace
@@ -20,18 +21,14 @@ set $ws9 workspace 9: mail
 set $ws10 workspace 10: processes
 
 set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
-#
+
 ##########################
 #  application settings  #
 ##########################
 
 assign [title="^mutt mail$"] 9: mail
-
-###############
-#  assign ws  #
-###############
-
 assign [class="Uzbl-core|Google-chrome"] 2: browser
+for_window [class="Uzbl-core|Google-chrome"] focus
 
 ###############
 #  autostart  #
@@ -44,8 +41,17 @@ exec --no-startup-id i3-msg $ws2; exec $chrome
 exec --no-startup-id i3-msg $ws1; exec urxvtc -e ranger
 exec --no-startup-id exec urxvtc -title 'mutt mail' -e mutt -n
 
-new_window 1pixel
+##############
+#  settings  #
+##############
+
+new_window pixel 1
+new_float pixel 3
+hide_edge_borders both
 font pango:Adobe Source Code Pro 10
+popup_during_fullscreen smart
+workspace_auto_back_and_forth yes
+force_display_urgency_hint 500 ms
 
 ################
 #  power menu  #
@@ -74,7 +80,7 @@ floating_modifier $mod
 # applications
 bindsym $mod+u exec uzbl-browser
 bindsym $mod+Return exec urxvtc
-bindsym $mod+g exec $chrome
+bindsym $mod+g exec $chrome; focus
 bindsym $mod+d exec dmenu_run
 bindsym $mod+m exec urxvtc -title 'mutt mail' -e mutt -n; exec i3-msg $ws9
 
@@ -110,7 +116,7 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
-# split mode/layout
+# layout
 bindsym $mod+v split v
 bindsym $mod+c split h
 
@@ -122,6 +128,8 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 bindsym $mod+f fullscreen
+
+bindsym $mod+b bar mode toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -142,16 +150,16 @@ bindsym $mod+9 $ws9
 bindsym $mod+0 $ws10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to $ws1
-bindsym $mod+Shift+2 move container to $ws2
-bindsym $mod+Shift+3 move container to $ws3
-bindsym $mod+Shift+4 move container to $ws4
-bindsym $mod+Shift+5 move container to $ws5
-bindsym $mod+Shift+6 move container to $ws6
-bindsym $mod+Shift+7 move container to $ws7
-bindsym $mod+Shift+8 move container to $ws8
-bindsym $mod+Shift+9 move container to $ws9
-bindsym $mod+Shift+0 move container to $ws10
+bindsym $mod+Shift+1 $move $ws1
+bindsym $mod+Shift+2 $move $ws2
+bindsym $mod+Shift+3 $move $ws3
+bindsym $mod+Shift+4 $move $ws4
+bindsym $mod+Shift+5 $move $ws5
+bindsym $mod+Shift+6 $move $ws6
+bindsym $mod+Shift+7 $move $ws7
+bindsym $mod+Shift+8 $move $ws8
+bindsym $mod+Shift+9 $move $ws9
+bindsym $mod+Shift+0 $move $ws10
 
 # reload/restart the configuration file
 bindsym $mod+Shift+c reload
@@ -214,7 +222,7 @@ bar {
 	colors {
 		separator	$BASE02
 		background	$BASE00
-		statusline	$BASE06
+		statusline	$BASE03
 		# clientclass		border	backgr	text
 		focused_workspace	$BASE01 $BASE01 $BASE0B
 		active_workspace	$BASE01 $BASE01 $BASE0C
@@ -222,3 +230,6 @@ bar {
 		urgent_workspace	$BASE08 $BASE08 $BASE01
 	}
 }
+
+
+# vim:filetype=i3

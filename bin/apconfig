@@ -1,19 +1,70 @@
 #!/bin/bash
+################################################################################
+#                             Access point script                              #
+################################################################################
+
+
+
+###############
+#  arguments  #
+###############
+
+usage(){
+	echo    "Usage: apconfig  [option]             <argument>"
+	echo -n "                 -c | --channel       <number>       "
+	echo "Use specific Channel [default=7]"
+	echo -n "                 -p | --pass(phrase)  <passphrase>   "
+	echo "Change passphrase [default=test1234]"
+	echo -n "                 -h | --help                         "
+	echo "Show this help."
+}
+
+while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
+	opt="$1";
+	shift;
+	case "$opt" in
+		-c|--channel)
+			CHANNEL="$1"
+			;;
+		-p|--password|--pass|--passphrase)
+			PASS="$1"
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		*)
+			echo "Wrong option: $opt $1"
+			echo ""
+			usage
+			exit 0
+			;;
+	esac
+done
+
+if [[ -z "${PASS+x}" ]]; then
+	read -p  "Enter passphrase or use default [test1234]:" PASS
+	if [[ -z "$PASS" ]]; then
+		PASS="test1234"
+	fi
+fi
+
+###############
+#  superuser  #
+###############
+
 if [ $EUID != 0 ]; then
     sudo "$0" "$@"
     exit $?
 fi
 
 
-if [ "$1" == "" ]; then
-	echo "Usage: apconfig PASSPHRASE"
-	exit 1
-fi
 
 IN="$(iw dev | grep Interface | awk '{print $2}')"
 NETCTL="netctl-auto@${IN}.service"
 
 systemctl stop $NETCTL
+systemctl stop dnsmasq
 
 OUT="$(ip route ls | grep default | awk '{print $5}')"
 
@@ -43,17 +94,16 @@ macaddr_acl=1
 accept_mac_file=${CONFDIR}/hostapd.accept
 hw_mode=g
 ieee80211n=1
-channel=${2:-7}
+channel=${CHANNEL:-7}
 ignore_broadcast_ssid=0
 wpa=3
-wpa_passphrase=$1
+wpa_passphrase=${PASS}
 wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 EOF
 wait
 
-systemctl stop dnsmasq
 dnsmasq --no-hosts --conf-file=$DNSCONF 1> /dev/null
 
 iptables --flush
@@ -73,6 +123,12 @@ echo "Acces Point: $(hostname)-AP"
 echo ""
 echo "Add MAC addresses of allowed clients in:"
 echo "~/.dotfiles/config-files/hostapd.accept"
+if [ "$PASS" == "" ]; then
+	echo ""
+	echo "Using default passphrase: test1234"
+	echo ""
+	usage
+fi
 $EMPTY
 echo "Press ENTER to exit"
 read dummy_keypress
@@ -86,8 +142,8 @@ killall dnsmasq
 killall hostapd
 ip addr del 10.0.0.1/24 dev $IN
 clear
-
-echo "Processes have bin stopped"
+wait
+echo "Processes have been stopped!"
 echo "Access Point has been stopped!"
 systemctl start $NETCTL
 systemctl start dnsmasq
