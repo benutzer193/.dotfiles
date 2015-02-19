@@ -23,10 +23,16 @@ usage(){
 	echo "Use specific Channel [default=7]"
 	echo -n "                 -p | --pass(phrase)  <passphrase>   "
 	echo "Change passphrase [default=test1234]"
+	echo -n "                 -m | --no-mac                       "
+	echo "No filtering of MAC addresses"
 	echo -n "                 -h | --help                         "
 	echo "Show this help."
+	echo
+	echo "Add MAC addresses of allowed clients in:"
+	echo "~/.dotfiles/config-files/hostapd.accept"
 }
 
+NO_MAC_ACL=false
 while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 	opt="$1"
 	shift
@@ -38,6 +44,9 @@ while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 		-p|--password|--pass|--passphrase)
 			PASS="$1"
 			shift
+			;;
+		-m|--no-mac)
+			NO_MAC_ACL=true
 			;;
 		-h|--help)
 			usage
@@ -109,8 +118,6 @@ ssid=$(hostname)-AP
 interface=${IN}
 driver=nl80211
 auth_algs=1
-macaddr_acl=1
-accept_mac_file=${CONFDIR}/hostapd.accept
 hw_mode=g
 ieee80211n=1
 channel=${CHANNEL:-7}
@@ -121,9 +128,13 @@ wpa_key_mgmt=WPA-PSK
 wpa_pairwise=TKIP
 rsn_pairwise=CCMP
 EOF
-wait
 
-dnsmasq --no-hosts --conf-file=$DNSCONF 1> /dev/null
+if [[ $NO_MAC_ACL != true ]]; then
+cat << EOF >> $HOSTAPDCONF
+macaddr_acl=1
+accept_mac_file=${CONFDIR}/hostapd.accept
+EOF
+fi
 
 iptables --flush
 iptables --table nat --flush
@@ -139,9 +150,6 @@ hostapd -B $HOSTAPDCONF 1> /dev/null
 
 clear
 echo "Acces Point: $(hostname)-AP"
-echo
-echo "Add MAC addresses of allowed clients in:"
-echo "~/.dotfiles/config-files/hostapd.accept"
 echo
 usage
 $EMPTY
