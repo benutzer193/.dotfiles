@@ -3,6 +3,14 @@
 #                             Access point script                              #
 ################################################################################
 
+###############
+#  superuser  #
+###############
+
+if [ $EUID != 0 ]; then
+    sudo "$0" "$@"
+    exit $?
+fi
 
 
 ###############
@@ -20,8 +28,8 @@ usage(){
 }
 
 while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
-	opt="$1";
-	shift;
+	opt="$1"
+	shift
 	case "$opt" in
 		-c|--channel)
 			CHANNEL="$1"
@@ -43,8 +51,8 @@ while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 			;;
 	esac
 done
-wait
-if [[ -z "${PASS+x}" ]]; then
+
+if [[ -z ${PASS+x} ]]; then
 	read -p  "Enter passphrase or use default [test1234]:" PASS
 	if [[ -z "$PASS" ]]; then
 		PASS="test1234"
@@ -52,23 +60,32 @@ if [[ -z "${PASS+x}" ]]; then
 fi
 
 ###############
-#  superuser  #
+#  functions  #
 ###############
 
-if [ $EUID != 0 ]; then
-    sudo "$0" "$@"
-    exit $?
-fi
+get_out() {
+	ip route ls | grep default | awk '{print $5}'
+}
 
+get_in() {
+	iw dev | grep Interface | awk '{print $2}'
+}
 
-
-IN="$(iw dev | grep Interface | awk '{print $2}')"
+IN="$(get_in)"
 NETCTL="netctl-auto@${IN}.service"
 
 systemctl stop $NETCTL
 systemctl stop dnsmasq
 
-OUT="$(ip route ls | grep default | awk '{print $5}')"
+
+OUT="$(get_out)"
+
+while [[ $(get_out) == "" ]]; do
+	OUT="$(get_out)"
+	clear
+	echo "Connect ethernet first!"
+done
+wait
 
 CONFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../config-files && pwd )"
 HOSTAPDCONF="${CONFDIR}/hostapd-${IN}.conf"
@@ -122,7 +139,7 @@ hostapd -B $HOSTAPDCONF 1> /dev/null
 
 clear
 echo "Acces Point: $(hostname)-AP"
-echo ""
+echo
 echo "Add MAC addresses of allowed clients in:"
 echo "~/.dotfiles/config-files/hostapd.accept"
 echo
