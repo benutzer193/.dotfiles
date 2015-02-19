@@ -41,7 +41,7 @@ while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
 			;;
 	esac
 done
-
+wait
 if [[ -z "${PASS+x}" ]]; then
 	read -p  "Enter passphrase or use default [test1234]:" PASS
 	if [[ -z "$PASS" ]]; then
@@ -123,12 +123,8 @@ echo "Acces Point: $(hostname)-AP"
 echo ""
 echo "Add MAC addresses of allowed clients in:"
 echo "~/.dotfiles/config-files/hostapd.accept"
-if [ "$PASS" == "" ]; then
-	echo ""
-	echo "Using default passphrase: test1234"
-	echo ""
-	usage
-fi
+echo
+usage
 $EMPTY
 echo "Press ENTER to exit"
 read dummy_keypress
