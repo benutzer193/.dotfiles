@@ -103,12 +103,13 @@ systemctl stop dnsmasq
 
 OUT="$(get_out)"
 
-if [[ $(get_out) == "" ]]; then
+if [[ -z $(get_out) ]]; then
 	clear
 	echo "Connect ethernet first!"
-	while [[ $(get_out) == "" ]]; do
-		OUT="$(get_out)"
+	while [[ -z $(get_out) ]]; do
+		sleep 1
 	done
+	OUT="$(get_out)"
 fi
 
 wait
