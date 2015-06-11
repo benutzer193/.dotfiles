@@ -9,16 +9,19 @@
 set $mod Mod4
 
 set $move move container to
-set $ws1 workspace 1: main
-set $ws2 workspace 2: browser
-set $ws3 workspace 3: workspace
-set $ws4 workspace 4: term
-set $ws5 workspace 5: misc
-set $ws6 workspace 6
-set $ws7 workspace 7
-set $ws8 workspace 8: J + B
-set $ws9 workspace 9: mail
-set $ws10 workspace 10: processes
+set $ws workspace
+set $ws1 1: main
+set $ws2 2: browser
+set $ws3 3: workspace
+set $ws4 4: term
+set $ws5 5: misc
+set $ws6 6
+set $ws7 7: remote
+set $ws8 8: J + B
+set $ws9 9: mail
+set $ws10 10: processes
+
+set $noid --no-startup-id
 
 set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
 
@@ -26,20 +29,22 @@ set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
 #  application settings  #
 ##########################
 
-assign [title="^mutt mail$"] 9: mail
-assign [class="Uzbl-core|Google-chrome"] 2: browser
-for_window [class="Uzbl-core|Google-chrome"] focus
+assign [title="^mutt mail$"] $ws9
+assign [class="^xfreerdp"] $ws7
+assign [class="Uzbl-core|Google-chrome"] $ws2
+assign [class="libreoffice"] $ws3
+for_window [class="^xfreerdp|Uzbl-core|Google-chrome|libreoffice"] focus
 
 ###############
 #  autostart  #
 ###############
 
-exec --no-startup-id urxvtd -q -f -o
-exec --no-startup-id pulseaudio --start
+exec $noid urxvtd -q -f -o
+#exec $noid pulseaudio --start
 
-exec --no-startup-id i3-msg $ws2; exec $chrome
-exec --no-startup-id i3-msg $ws1; exec urxvtc -e ranger
-exec --no-startup-id exec urxvtc -title 'mutt mail' -e mutt -n
+exec $chrome
+exec $noid i3-msg $ws $ws1
+exec $noid sh -c 'sleep 2'; exec urxvtc -e ranger; exec urxvtc -title 'mutt mail' -e mutt -n
 
 ##############
 #  settings  #
@@ -47,7 +52,7 @@ exec --no-startup-id exec urxvtc -title 'mutt mail' -e mutt -n
 
 new_window pixel 1
 new_float pixel 3
-hide_edge_borders both
+#hide_edge_borders both
 font pango:Adobe Source Code Pro 10
 popup_during_fullscreen smart
 workspace_auto_back_and_forth yes
@@ -59,11 +64,11 @@ force_display_urgency_hint 500 ms
 
 set $power_menu Power Menu: (e)xit | (l)ock | (s)leep | (r)eboot | shut(d)own
 mode "$power_menu" {
-	bindsym l exec --no-startup-id i3pm lock; mode "default"
-	bindsym e exec --no-startup-id i3pm exit; mode "default"
-	bindsym s exec --no-startup-id i3pm suspend; mode "default"
-	bindsym d exec --no-startup-id i3pm poweroff; mode "default"
-	bindsym r exec --no-startup-id i3pm reboot; mode "default"
+	bindsym l exec --no-startup-id sh ~/.i3/i3pm lock; mode "default"
+	bindsym e exec --no-startup-id sh ~/.i3/i3pm exit; mode "default"
+	bindsym s exec --no-startup-id sh ~/.i3/i3pm suspend; mode "default"
+	bindsym d exec --no-startup-id sh ~/.i3/i3pm poweroff; mode "default"
+	bindsym r exec --no-startup-id sh ~/.i3/i3pm reboot; mode "default"
 
         bindsym Return mode "default"
         bindsym Escape mode "default"
@@ -80,10 +85,10 @@ floating_modifier $mod
 # applications
 bindsym $mod+u exec uzbl-browser
 bindsym $mod+Return exec urxvtc
+bindsym $mod+t exec urxvtc
 bindsym $mod+g exec $chrome; focus
 bindsym $mod+d exec dmenu_run
-bindsym $mod+m exec urxvtc -title 'mutt mail' -e mutt -n; exec i3-msg $ws9
-
+bindsym $mod+m exec i3-msg $ws $ws9; exec urxvtc -title 'mutt mail' -e mutt -n
 bindsym XF86AudioLowerVolume exec ponymix decrease 5
 bindsym XF86AudioRaiseVolume exec ponymix increase 5
 bindsym XF86AudioMute exec $(amixer get Master | grep off > /dev/null && amixer -q set Master unmute) || amixer -q set Master mute
@@ -138,28 +143,28 @@ bindsym $mod+a focus parent
 #bindsym $mod+d focus child
 
 # switch to workspace
-bindsym $mod+1 $ws1
-bindsym $mod+2 $ws2
-bindsym $mod+3 $ws3
-bindsym $mod+4 $ws4
-bindsym $mod+5 $ws5
-bindsym $mod+6 $ws6
-bindsym $mod+7 $ws7
-bindsym $mod+8 $ws8
-bindsym $mod+9 $ws9
-bindsym $mod+0 $ws10
+bindsym $mod+1 $ws $ws1
+bindsym $mod+2 $ws $ws2
+bindsym $mod+3 $ws $ws3
+bindsym $mod+4 $ws $ws4
+bindsym $mod+5 $ws $ws5
+bindsym $mod+6 $ws $ws6
+bindsym $mod+7 $ws $ws7
+bindsym $mod+8 $ws $ws8
+bindsym $mod+9 $ws $ws9
+bindsym $mod+0 $ws $ws10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 $move $ws1
-bindsym $mod+Shift+2 $move $ws2
-bindsym $mod+Shift+3 $move $ws3
-bindsym $mod+Shift+4 $move $ws4
-bindsym $mod+Shift+5 $move $ws5
-bindsym $mod+Shift+6 $move $ws6
-bindsym $mod+Shift+7 $move $ws7
-bindsym $mod+Shift+8 $move $ws8
-bindsym $mod+Shift+9 $move $ws9
-bindsym $mod+Shift+0 $move $ws10
+bindsym $mod+Shift+1 $move $ws $ws1
+bindsym $mod+Shift+2 $move $ws $ws2
+bindsym $mod+Shift+3 $move $ws $ws3
+bindsym $mod+Shift+4 $move $ws $ws4
+bindsym $mod+Shift+5 $move $ws $ws5
+bindsym $mod+Shift+6 $move $ws $ws6
+bindsym $mod+Shift+7 $move $ws $ws7
+bindsym $mod+Shift+8 $move $ws $ws8
+bindsym $mod+Shift+9 $move $ws $ws9
+bindsym $mod+Shift+0 $move $ws $ws10
 
 # reload/restart the configuration file
 bindsym $mod+Shift+c reload

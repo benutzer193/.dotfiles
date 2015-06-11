@@ -1,27 +1,20 @@
 #!/usr/bin/env bash
+[[ $EUID != 0 ]] && exec sudo -- "$0" "$@"
 
-if [ $EUID != 0 ]; then
-    sudo "$0" "$@"
-    exit $?
-fi
-
-switch() {
 DNSCONF="/etc/dnsmasq.conf"
 
-/bin/cat << EOF > $DNSCONF
-listen-address=127.0.0.1
-domain-needed
-bogus-priv
-no-resolv
-server=8.8.8.8
-server=8.8.4.4
-EOF
-
+dnsadd(){
 case "$1" in
 		us)
 /bin/cat << EOF >> $DNSCONF
 server=/netflix.com/netflix.net/nflximg.com/104.131.127.184
 server=/netflix.com/netflix.net/nflximg.com/192.241.137.65
+EOF
+;;
+		uni)
+/bin/cat << EOF >> $DNSCONF
+server=134.93.8.13
+server=134.93.8.159
 EOF
 ;;
 esac
@@ -31,16 +24,34 @@ dnsrestart(){
 	systemctl restart dnsmasq
 }
 
-case "$1" in
-	-u|--us)
-		switch us && dnsrestart
-		;;
-	-n|--normal)
-		switch && dnsrestart
-		;;
-	*)
-		echo "Usage sudo dnschange [-u|--us] [-n|--normal]"
-		;;
-esac
+/bin/cat << EOF > $DNSCONF
+listen-address=127.0.0.1
+bind-interfaces
+domain-needed
+bogus-priv
+all-servers
+cache-size=10000
+no-resolv
+no-hosts
+server=8.8.8.8
+server=8.8.4.4
+server=/bit/bbs/dyn/free/fur/geek/glue/gopher/indy/ing/micro/neo/null/oss/oz/parody/pirate/stl/62.113.200.106
+server=/bit/bbs/dyn/free/fur/geek/glue/gopher/indy/ing/micro/neo/null/oss/oz/parody/pirate/stl/108.61.210.58
+EOF
 
+for item in $@
+do
+	case "${item}" in
+		-u|--us)
+			dnsadd us
+			;;
+		--uni)
+			dnsadd uni
+			;;
+		-h|--help)
+			echo "Usage sudo dnschange [-u|--us] [--uni]"
+			;;
+	esac
+done
+dnsrestart
 # vim: set filetye=sh

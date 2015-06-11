@@ -73,8 +73,8 @@ ignore *
 unignore from: to: cc: date: subject:
 hdr_order from: to: cc: date: subject:
 
-# mailboxes
-# mailboxes +WEB/INBOX +WEB/Archive +WEB/Sent +WEB/Draft +WEB/Trash
+#mailboxes
+#mailboxes +WEB/INBOX +WEB/Archive +WEB/Sent +WEB/Draft +WEB/Trash
 
 ###################
 #  sourced files  #
@@ -84,15 +84,15 @@ source $alias_file
 source ~/.mutt/config/base.muttrc
 source ~/.mutt/config/colorscheme-solarize.muttrc
 source "gpg2 -dq $HOME/.mutt/accounts/.my-pwds.gpg |"
-source "~/.mutt/accounts/gmail.muttrc
+source "~/.mutt/accounts/account_2.muttrc
 ##############
 #  accounts  #
 ##############
 
-folder-hook $folder 'source ~/.mutt/accounts/gmail.muttrc'
+folder-hook $folder 'source ~/.mutt/accounts/account_2.muttrc'
 
-#source "~/.mutt/accounts/bushbuster.muttrc"
-#folder-hook $folder 'source ~/.mutt/accounts/bushbuster.muttrc'
+source "~/.mutt/accounts/account_1.muttrc"
+folder-hook $folder 'source ~/.mutt/accounts/account_1.muttrc'
 
 #####################
 #  composing mails  #
@@ -147,5 +147,5 @@ macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help stat
 macro index,pager <F5> ":source ~/.mutt/muttrc\n"              "Reload the muttrc"
 macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
 macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
-macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/bushbuster.muttrc<enter><change-folder>!<enter>'
-macro index gh		'<sync-mailbox><enter-command>source ~/.mutt/accounts/herrnieschnell.muttrc<enter><change-folder>!<enter>'
+macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_1.muttrc<enter><change-folder>!<enter>'
+macro index gh		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_2.muttrc<enter><change-folder>!<enter>'
