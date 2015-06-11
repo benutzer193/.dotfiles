@@ -1,0 +1,35 @@
+#!bin/bash
+SCREENSHOT="/tmp/screenshot.png"
+screenshot_blur () {
+	gm import -window root $SCREENSHOT
+	gm mogrify -scale 10% -scale 1000% $SCREENSHOT
+}
+
+lock() {
+	screenshot_blur
+	i3lock -i $SCREENSHOT
+}
+
+case "$1" in
+	lock)
+		lock
+		;;
+	exit)
+		i3-msg exit
+		;;
+	suspend)
+		lock && systemctl suspend
+		;;
+	reboot)
+		systemctl reboot
+		;;
+	poweroff)
+		systemctl poweroff
+		;;
+	*)
+		echo "Usage: $0 {lock|exit|suspend|reboot|poweroff}"
+		exit 2
+esac
+
+exit 0
+
