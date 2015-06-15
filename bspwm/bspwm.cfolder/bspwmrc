@@ -27,6 +27,6 @@ bspc rule -a Gimp desktop=^8 follow=on
 bspc rule -a google-chrome-dev follow=on desktop=^1
 
 
-~/.dotfiles/bspwm/bar/panel &
+~/.dotfiles/bspwm/lemonbar/panel &
 sxhkd -c ~/.dotfiles/bspwm/sxhkd.cfolder/sxhkdrc &
 urxvtd -q -f -o &

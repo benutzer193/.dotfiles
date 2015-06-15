@@ -1,5 +1,5 @@
 # global aliases
-alias -g LL=" | less -R"
+alias -g LL=" | less"
 alias -g GG=" | grep"
 alias -g grep="grep --color"
 
@@ -27,15 +27,16 @@ alias .3='cd ../../../'
 alias .4='cd ../../../../'
 alias .5='cd ../../../../../'
 
-# cp / mv / rm commands
+# cp / mv / rm / mkdir commands
 alias cp="cp -iv"
 alias trash="mv -t ~/trash"
-alias mv="mv -iv"
-
+alias mv=" timeout 8 mv -iv"
+alias mkdir="mkdir -pv"
+alias rm=" timeout 3 rm -Iv --one-file-system"
 alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection clipboard -o"
 
 # systemd
-alias journalctl-errors="journalctl -p 0..3 -xn"
+alias journalctl-errors="journalctl -p 0..4 -xlkr"
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"

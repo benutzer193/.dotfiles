@@ -1,0 +1,4 @@
+#!/bin/bash
+big-files(){
+    du -ha ${1:-~} | sort -hr | head -n 25
+}

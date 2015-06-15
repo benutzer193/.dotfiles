@@ -1,1 +1,14 @@
-[[ -z $DISPLAY && $(tty) = "/dev/tty1" ]] && exec startx -- -keeptty -nolisten tcp > .xlog 2>&1
+if [[ -z $DISPLAY ]]; then
+    if [[ $(tty) = "/dev/tty1" ]]; then
+        exec startx > .xlog 2>&1
+    elif [[ $(tty) = "/dev/tty2" ]]; then
+        session=$(dialog --stdout \
+            --backtitle "HerrNieschnells Display Manager" \
+            --title "WM / DE Selection" \
+            --menu "Use the UP and DOWN arrow keys to select a Window Manager or a Desktop Environment."\
+            15 50 2 \
+            i3 "i3 Window Manager" \
+            b "bspwm")
+        exec xinit $session > .xlog 2>&1
+    fi
+fi

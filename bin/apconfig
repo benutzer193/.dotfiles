@@ -14,49 +14,49 @@
 ###############
 
 usage(){
-	echo    "Usage: apconfig  [option]             <argument>"
-	echo -n "                 -c | --channel       <number>       "
-	echo "Use specific Channel [default=7]"
-	echo -n "                 -p | --pass(phrase)  <passphrase>   "
-	echo "Change passphrase [default=test1234]"
-	echo -n "                 -m | --no-mac                       "
-	echo "No filtering of MAC addresses"
-	echo -n "                 -h | --help                         "
-	echo "Show this help."
-	echo
-	echo "MAC config:"
-	echo -n "If not running with [-m|--no-mac] add MAC addresses of "
-	echo "allowed clients in:"
-	echo "~/.dotfiles/config-files/hostapd.accept"
+    echo    "Usage: apconfig  [option]             <argument>"
+    echo -n "                 -c | --channel       <number>       "
+    echo "Use specific Channel [default=7]"
+    echo -n "                 -p | --pass(phrase)  <passphrase>   "
+    echo "Change passphrase [default=test1234]"
+    echo -n "                 -m | --no-mac                       "
+    echo "No filtering of MAC addresses"
+    echo -n "                 -h | --help                         "
+    echo "Show this help."
+    echo
+    echo "MAC config:"
+    echo -n "If not running with [-m|--no-mac] add MAC addresses of "
+    echo "allowed clients in:"
+    echo "~/.dotfiles/config-files/hostapd.accept"
 }
 
 NO_MAC_ACL=false
 while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
-	opt="$1"
-	shift
-	case "$opt" in
-		-c|--channel)
-			CHANNEL="$1"
-			shift ;;
-		-p|--password|--pass|--passphrase)
-			PASS="$1"
-			shift ;;
-		-m|--no-mac)
-			NO_MAC_ACL=true ;;
-		-h|--help)
-			usage
-			exit 0 ;;
-		*)
-			echo "Wrong option: $opt $1"
-			echo ""
-			usage
-			exit 0 ;;
-	esac
+    opt="$1"
+    shift
+    case "$opt" in
+        -c|--channel)
+            CHANNEL="$1"
+            shift ;;
+        -p|--password|--pass|--passphrase)
+            PASS="$1"
+            shift ;;
+        -m|--no-mac)
+            NO_MAC_ACL=true ;;
+        -h|--help)
+            usage
+            exit 0 ;;
+        *)
+            echo "Wrong option: $opt $1"
+            echo ""
+            usage
+            exit 0 ;;
+    esac
 done
 
 if [[ -z ${PASS+x} ]]; then
-	read -p  "Enter passphrase or use default [test1234]:" PASS
-	[[ -z "$PASS" ]] && PASS="test1234"
+    read -p  "Enter passphrase or use default [test1234]:" PASS
+    [[ -z "$PASS" ]] && PASS="test1234"
 fi
 
 ###############
@@ -64,32 +64,32 @@ fi
 ###############
 
 get_out() {
-	ip route ls | grep default | awk '{print $5}'
+    ip route ls | grep default | awk '{print $5}'
 }
 
 get_in() {
-	iw dev | grep Interface | awk '{print $2}'
+    iw dev | grep Interface | awk '{print $2}'
 }
 
 clean_iptables() {
-	iptables --flush
-	iptables --table nat --flush
-	iptables --delete-chain
-	iptables --table nat --delete-chain
+    iptables --flush
+    iptables --table nat --flush
+    iptables --delete-chain
+    iptables --table nat --delete-chain
 }
 
 cleanup() {
-	clean_iptables &
-	sysctl -w net.ipv4.ip_forward=0 1> /dev/null &
-	killall dnsmasq &
-	killall hostapd &
-	ip addr del 10.0.0.1/24 dev $IN &
-	wait
-	systemctl start dnsmasq &
-	rm -f $DNSCONF $HOSTAPDCONF &
-	wait
-	sleep 1
-	systemctl start $NETCTL
+    clean_iptables &
+    sysctl -w net.ipv4.ip_forward=0 1> /dev/null &
+    killall dnsmasq &
+    killall hostapd &
+    ip addr del 10.0.0.1/24 dev $IN &
+    wait
+    systemctl start dnsmasq &
+    rm -f $DNSCONF $HOSTAPDCONF &
+    wait
+    sleep 1
+    systemctl start $NETCTL
 }
 
 APNAME="$(hostname)-AP"
@@ -101,11 +101,11 @@ systemctl stop dnsmasq &
 wait
 
 if [[ -z $(get_out) ]]; then
-	clear
-	echo "Connect ethernet first!"
-	while [[ -z $(get_out) ]]; do
-		sleep 1
-	done
+    clear
+    echo "Connect ethernet first!"
+    while [[ -z $(get_out) ]]; do
+        sleep 1
+    done
 fi
 
 OUT="$(get_out)"
