@@ -40,3 +40,6 @@ alias xpaste="xclip -selection clipboard -o"
 alias journalctl-errors="journalctl -p 0..4 -xlkr"
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"
+
+# steam
+alias weam="WINEDEBUG=-all primusrun wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Steam/Steam.exe >/dev/null 2>&1 &"

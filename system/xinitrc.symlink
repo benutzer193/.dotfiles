@@ -13,6 +13,7 @@ session=${1:-i3}
 
 case $session in
     b )
+        sxhkd &
         exec bspwm;;
     dwm )
         exec dwm;;
@@ -26,6 +27,12 @@ case $session in
         exec startkde;;
     mate )
         exec mate-session;;
+    s )
+        bspwm -c ~/.config/bspwm/bspwmblank &
+        exec steam steam://open/bigpicture;;
+    c )
+        exec google-chrome-unstable --disk-cache-dir=/tmp/cache \
+            --window-size=1920,1080;;
     * )
         exec $1;;
 esac

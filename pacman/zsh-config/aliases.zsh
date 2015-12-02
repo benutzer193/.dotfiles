@@ -1,4 +1,4 @@
-# Pacman.
+# Pacman
 alias pac="pacman"
 
 # Installs packages from repositories.

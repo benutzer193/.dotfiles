@@ -79,7 +79,7 @@
 
 URxvt.scrollBar: 	false
 URxvt.intensityStyles: 	false
-URxvt*font:		xft:Source Code Pro:pixelsize=12:style=Regular
-URxvt*boldFont:		xft:Source Code Pro:pixelsize=12:style=Semibold
+URxvt*font:		xft:Monoid:pixelsize=12:style=Regular
+URxvt*boldFont:		xft:Monoid:pixelsize=12:style=Bold
 URxvt.secondaryScreen:	1
 URxvt.secondaryScroll:	0

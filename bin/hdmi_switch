@@ -24,7 +24,7 @@ if (xrandr | grep "$EXT disconnected"); then
 	sleep 2
 	switch_audio $ANALOG
 else
-	xrandr --output $IN --auto --primary --output $EXT --auto --above $IN
+	xrandr --output $IN --auto --primary --output $EXT --auto -r 60 --above $IN
 	sleep 2
 	switch_audio $HDMISOUND
 fi

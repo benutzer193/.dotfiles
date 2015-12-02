@@ -41,10 +41,7 @@ for_window [class="^xfreerdp|Uzbl-core|Google-chrome|libreoffice"] focus
 
 exec $noid urxvtd -q -f -o
 #exec $noid pulseaudio --start
-
 exec $chrome
-exec $noid i3-msg $ws $ws1
-exec $noid sh -c 'sleep 2'; exec urxvtc -e ranger; exec urxvtc -title 'mutt mail' -e mutt -n
 
 ##############
 #  settings  #
@@ -53,7 +50,7 @@ exec $noid sh -c 'sleep 2'; exec urxvtc -e ranger; exec urxvtc -title 'mutt mail
 new_window pixel 1
 new_float pixel 3
 #hide_edge_borders both
-font pango:Adobe Source Code Pro 10
+font pango:Monoid 10
 popup_during_fullscreen smart
 workspace_auto_back_and_forth yes
 force_display_urgency_hint 500 ms
@@ -222,6 +219,7 @@ bar {
 	status_command $HOME/.i3/conky
 	# conky with FontAwesome
 	#font pango:FontAwesome 10
+	font pango: Monoid 8
 	#status_command $HOME/.i3/faconky
 	position top
 	colors {
