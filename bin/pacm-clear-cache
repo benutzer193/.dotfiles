@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+[[ $EUID != 0 ]] && exec sudo -- "$0" "$@"
+
+
+paccache -r
+paccache -ruk0

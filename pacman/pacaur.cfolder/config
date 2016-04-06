@@ -1,7 +1,6 @@
 editor=vim
-editpkgbuild=true
-editinstall=true
+displaybuildfiles=diff
 fallback=true
-clean=true
-sortbyvotes=true
+sortby=popularity
 sudoloop=true
+clonedir=~/.builds

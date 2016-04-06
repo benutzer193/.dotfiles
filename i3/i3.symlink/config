@@ -23,7 +23,7 @@ set $ws10 10: processes
 
 set $noid --no-startup-id
 
-set $chrome google-chrome-unstable --disk-cache-dir=/tmp/cache
+set $chrome chromium --disk-cache-dir=/tmp/cache
 
 ##########################
 #  application settings  #

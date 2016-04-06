@@ -7,8 +7,8 @@ dnsadd(){
 case "$1" in
 		us)
 /bin/cat << EOF >> $DNSCONF
-server=/netflix.com/netflix.net/nflximg.com/104.131.127.184
-server=/netflix.com/netflix.net/nflximg.com/192.241.137.65
+server=/netflix.com/netflix.net/nflximg.com/192.169.69.169
+server=/netflix.com/netflix.net/nflximg.com/192.169.69.168
 EOF
 ;;
 		uni)

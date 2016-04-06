@@ -1,10 +1,10 @@
 #! /bin/sh
+#
+# Example panel for LemonBoy's bar
 
-################################################################################
-#                               lemonbar config                                #
-################################################################################
+WD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. panel_colors
+. ${WD}/panel_colors
 
 num_mon=$(bspc query -M | wc -l)
 

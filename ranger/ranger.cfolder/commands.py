@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2009-2013  Roman Zimbelmann <hut@lavabit.com>
+# This file is part of ranger, the console file manager.
 # This configuration file is licensed under the same terms as ranger.
+# ===================================================================
+#
+# NOTE: If you copied this file to ~/.config/ranger/commands_full.py,
+# then it will NOT be loaded by ranger, and only serve as a reference.
+#
 # ===================================================================
 # This file contains ranger's commands.
 # It's all in python; lines beginning with # are comments.
@@ -16,10 +21,12 @@
 # ===================================================================
 # Every class defined here which is a subclass of `Command' will be used as a
 # command in ranger.  Several methods are defined to interface with ranger:
-#   execute(): called when the command is executed.
-#   cancel():  called when closing the console.
-#   tab():     called when <TAB> is pressed.
-#   quick():   called after each keypress.
+#   execute():   called when the command is executed.
+#   cancel():    called when closing the console.
+#   tab(tabnum): called when <TAB> is pressed.
+#   quick():     called after each keypress.
+#
+# tab() argument tabnum is 1 for <TAB> and -1 for <S-TAB> by default
 #
 # The return values for tab() can be either:
 #   None: There is no tab completion
@@ -42,9 +49,9 @@
 #      the user pressed 6X, self.quantifier will be 6.
 # self.arg(n): The n-th argument, or an empty string if it doesn't exist.
 # self.rest(n): The n-th argument plus everything that followed.  For example,
-#      If the command was "search foo bar a b c", rest(2) will be "bar a b c"
-# self.start(n): The n-th argument and anything before it.  For example,
-#      If the command was "search foo bar a b c", rest(2) will be "bar a b c"
+#      if the command was "search foo bar a b c", rest(2) will be "bar a b c"
+# self.start(n): Anything before the n-th argument.  For example, if the
+#      command was "search foo bar a b c", start(2) will be "search foo"
 #
 # ===================================================================
 # And this is a little reference for common ranger functions and objects:
@@ -80,7 +87,6 @@ from ranger.api.commands import *
 
 class alias(Command):
     """:alias <newcommand> <oldcommand>
-
     Copies the oldcommand as newcommand.
     """
 
@@ -93,9 +99,17 @@ class alias(Command):
         else:
             self.fm.commands.alias(self.arg(1), self.rest(2))
 
+
+class echo(Command):
+    """:echo <text>
+    Display the text in the statusbar.
+    """
+    def execute(self):
+        self.fm.notify(self.rest(1))
+
+
 class cd(Command):
     """:cd [-r] <dirname>
-
     The cd command changes the directory.
     The command 'cd -' is equivalent to typing ``.
     Using the option "-r" will get you to the real path.
@@ -107,7 +121,8 @@ class cd(Command):
             self.shift()
             destination = os.path.realpath(self.rest(1))
             if os.path.isfile(destination):
-                destination = os.path.dirname(destination)
+                self.fm.select_file(destination)
+                return
         else:
             destination = self.rest(1)
 
@@ -119,7 +134,7 @@ class cd(Command):
         else:
             self.fm.cd(destination)
 
-    def tab(self):
+    def tab(self, tabnum):
         import os
         from os.path import dirname, basename, expanduser, join
 
@@ -154,7 +169,8 @@ class cd(Command):
             pass
         else:
             dirnames.sort()
-            dirnames = bookmarks + dirnames
+            if self.fm.settings.cd_bookmarks:
+                dirnames = bookmarks + dirnames
 
             # no results, return None
             if len(dirnames) == 0:
@@ -171,7 +187,6 @@ class cd(Command):
 
 class chain(Command):
     """:chain <command1>; <command2>; ...
-
     Calls multiple commands at once, separated by semicolons.
     """
     def execute(self):
@@ -190,14 +205,10 @@ class shell(Command):
             flags = ''
             command = self.rest(1)
 
-        if not command and 'p' in flags:
-            command = 'cat %f'
         if command:
-            if '%' in command:
-                command = self.fm.substitute_macros(command, escape=True)
             self.fm.execute_command(command, flags=flags)
 
-    def tab(self):
+    def tab(self, tabnum):
         from ranger.ext.get_executables import get_executables
         if self.arg(1) and self.arg(1)[0] == '-':
             command = self.rest(2)
@@ -219,7 +230,7 @@ class shell(Command):
         else:
             before_word, start_of_word = self.line.rsplit(' ', 1)
             return (before_word + ' ' + file.shell_escaped_basename \
-                    for file in self.fm.thisdir.files \
+                    for file in self.fm.thisdir.files or [] \
                     if file.shell_escaped_basename.startswith(start_of_word))
 
 class open_with(Command):
@@ -231,12 +242,11 @@ class open_with(Command):
                 flags = flags,
                 mode = mode)
 
-    def tab(self):
+    def tab(self, tabnum):
         return self._tab_through_executables()
 
     def _get_app_flags_mode(self, string):
         """Extracts the application, flags and mode from a string.
-
         examples:
         "mplayer f 1" => ("mplayer", "f", 1)
         "aunpack 4" => ("aunpack", "", 4)
@@ -319,7 +329,6 @@ class open_with(Command):
 
 class set_(Command):
     """:set <option name>=<python expression>
-
     Gives an option a new value.
     """
     name = 'set'  # don't override the builtin set class
@@ -328,26 +337,34 @@ class set_(Command):
         name, value, _ = self.parse_setting_line()
         self.fm.set_option_from_string(name, value)
 
-    def tab(self):
+    def tab(self, tabnum):
+        from ranger.gui.colorscheme import get_all_colorschemes
         name, value, name_done = self.parse_setting_line()
         settings = self.fm.settings
         if not name:
             return sorted(self.firstpart + setting for setting in settings)
         if not value and not name_done:
-            return (self.firstpart + setting for setting in settings \
+            return sorted(self.firstpart + setting for setting in settings \
                     if setting.startswith(name))
         if not value:
+            # Cycle through colorschemes when name, but no value is specified
+            if name == "colorscheme":
+                return sorted(self.firstpart + colorscheme for colorscheme \
+                        in get_all_colorschemes())
             return self.firstpart + str(settings[name])
         if bool in settings.types_of(name):
             if 'true'.startswith(value.lower()):
                 return self.firstpart + 'True'
             if 'false'.startswith(value.lower()):
                 return self.firstpart + 'False'
+        # Tab complete colorscheme values if incomplete value is present
+        if name == "colorscheme":
+            return sorted(self.firstpart + colorscheme for colorscheme \
+                    in get_all_colorschemes() if colorscheme.startswith(value))
 
 
 class setlocal(set_):
-    """:setlocal path=<python string> <option name>=<python expression>
-
+    """:setlocal path=<regular expression> <option name>=<python expression>
     Gives an option a new value.
     """
     PATH_RE = re.compile(r'^\s*path="?(.*?)"?\s*$')
@@ -370,7 +387,6 @@ class setlocal(set_):
 
 class setintag(setlocal):
     """:setintag <tag or tags> <option name>=<option value>
-
     Sets an option for directories that are tagged with a specific tag.
     """
     def execute(self):
@@ -380,9 +396,51 @@ class setintag(setlocal):
         self.fm.set_option_from_string(name, value, tags=tags)
 
 
+class default_linemode(Command):
+    def execute(self):
+        import re
+        from ranger.container.fsobject import FileSystemObject
+
+        if len(self.args) < 2:
+            self.fm.notify("Usage: default_linemode [path=<regexp> | tag=<tag(s)>] <linemode>", bad=True)
+
+        # Extract options like "path=..." or "tag=..." from the command line
+        arg1 = self.arg(1)
+        method = "always"
+        argument = None
+        if arg1.startswith("path="):
+            method = "path"
+            argument = re.compile(arg1[5:])
+            self.shift()
+        elif arg1.startswith("tag="):
+            method = "tag"
+            argument = arg1[4:]
+            self.shift()
+
+        # Extract and validate the line mode from the command line
+        linemode = self.rest(1)
+        if linemode not in FileSystemObject.linemode_dict:
+            self.fm.notify("Invalid linemode: %s; should be %s" %
+                    (linemode, "/".join(FileSystemObject.linemode_dict)), bad=True)
+
+        # Add the prepared entry to the fm.default_linemodes
+        entry = [method, argument, linemode]
+        self.fm.default_linemodes.appendleft(entry)
+
+        # Redraw the columns
+        if hasattr(self.fm.ui, "browser"):
+            for col in self.fm.ui.browser.columns:
+                col.need_redraw = True
+
+    def tab(self, tabnum):
+        mode = self.arg(1)
+        return (self.arg(0) + " " + linemode
+                for linemode in self.fm.thisfile.linemode_dict.keys()
+                if linemode.startswith(self.arg(1)))
+
+
 class quit(Command):
     """:quit
-
     Closes the current tab.  If there is only one tab, quit the program.
     """
 
@@ -394,7 +452,6 @@ class quit(Command):
 
 class quitall(Command):
     """:quitall
-
     Quits the program immediately.
     """
 
@@ -404,7 +461,6 @@ class quitall(Command):
 
 class quit_bang(quitall):
     """:quit!
-
     Quits the program immediately.
     """
     name = 'quit!'
@@ -413,7 +469,6 @@ class quit_bang(quitall):
 
 class terminal(Command):
     """:terminal
-
     Spawns an "x-terminal-emulator" starting in the current directory.
     """
     def execute(self):
@@ -429,52 +484,63 @@ class terminal(Command):
 
 class delete(Command):
     """:delete
-
-    Tries to delete the selection.
-
+    Tries to delete the selection or the files passed in arguments (if any).
+    The arguments use a shell-like escaping.
     "Selection" is defined as all the "marked files" (by default, you
     can mark files with space or v). If there are no marked files,
     use the "current file" (where the cursor is)
-
     When attempting to delete non-empty directories or multiple
     marked files, it will require a confirmation.
     """
 
     allow_abbrev = False
+    escape_macros_for_shell = True
 
     def execute(self):
         import os
-        if self.rest(1):
-            self.fm.notify("Error: delete takes no arguments! It deletes "
-                    "the selected file(s).", bad=True)
-            return
+        import shlex
+        from functools import partial
+        from ranger.container.file import File
 
-        cwd = self.fm.thisdir
-        cf = self.fm.thisfile
-        if not cwd or not cf:
-            self.fm.notify("Error: no file selected for deletion!", bad=True)
-            return
+        def is_directory_with_files(f):
+            import os.path
+            return (os.path.isdir(f) and not os.path.islink(f) \
+                and len(os.listdir(f)) > 0)
+
+        if self.rest(1):
+            files = shlex.split(self.rest(1))
+            many_files = (len(files) > 1 or is_directory_with_files(files[0]))
+        else:
+            cwd = self.fm.thisdir
+            cf = self.fm.thisfile
+            if not cwd or not cf:
+                self.fm.notify("Error: no file selected for deletion!", bad=True)
+                return
+
+            # relative_path used for a user-friendly output in the confirmation.
+            files = [f.relative_path for f in self.fm.thistab.get_selection()]
+            many_files = (cwd.marked_items or is_directory_with_files(cf.path))
 
         confirm = self.fm.settings.confirm_on_delete
-        many_files = (cwd.marked_items or (cf.is_directory and not cf.is_link \
-                and len(os.listdir(cf.path)) > 0))
-
         if confirm != 'never' and (confirm != 'multiple' or many_files):
+            filename_list = files
             self.fm.ui.console.ask("Confirm deletion of: %s (y/N)" %
-                ', '.join(f.basename for f in self.fm.thistab.get_selection()),
-                self._question_callback, ('n', 'N', 'y', 'Y'))
+                ', '.join(files),
+                partial(self._question_callback, files), ('n', 'N', 'y', 'Y'))
         else:
             # no need for a confirmation, just delete
-            self.fm.delete()
+            self.fm.delete(files)
 
-    def _question_callback(self, answer):
+    def tab(self, tabnum):
+        return self._tab_directory_content()
+
+    def _question_callback(self, files, answer):
         if answer == 'y' or answer == 'Y':
-            self.fm.delete()
+            self.fm.delete(files)
 
 
 class mark_tag(Command):
     """:mark_tag [<tags>]
-
     Mark all tags that are tagged with either of the given tags.
     When leaving out the tag argument, all tagged files are marked.
     """
@@ -483,7 +549,7 @@ class mark_tag(Command):
     def execute(self):
         cwd = self.fm.thisdir
         tags = self.rest(1).replace(" ","")
-        if not self.fm.tags:
+        if not self.fm.tags or not cwd.files:
             return
         for fileobj in cwd.files:
             try:
@@ -498,7 +564,6 @@ class mark_tag(Command):
 
 class console(Command):
     """:console <command>
-
     Open the console with the given command.
     """
     def execute(self):
@@ -514,7 +579,6 @@ class console(Command):
 
 class load_copy_buffer(Command):
     """:load_copy_buffer
-
     Load the copy buffer from confdir/copy_buffer
     """
     copy_buffer_filename = 'copy_buffer'
@@ -535,7 +599,6 @@ class load_copy_buffer(Command):
 
 class save_copy_buffer(Command):
     """:save_copy_buffer
-
     Save the copy buffer to confdir/copy_buffer
     """
     copy_buffer_filename = 'copy_buffer'
@@ -553,7 +616,6 @@ class save_copy_buffer(Command):
 
 class unmark_tag(mark_tag):
     """:unmark_tag [<tags>]
-
     Unmark all tags that are tagged with either of the given tags.
     When leaving out the tag argument, all tagged files are unmarked.
     """
@@ -562,27 +624,25 @@ class unmark_tag(mark_tag):
 
 class mkdir(Command):
     """:mkdir <dirname>
-
     Creates a directory with the name <dirname>.
     """
 
     def execute(self):
         from os.path import join, expanduser, lexists
-        from os import mkdir
+        from os import makedirs
 
         dirname = join(self.fm.thisdir.path, expanduser(self.rest(1)))
         if not lexists(dirname):
-            mkdir(dirname)
+            makedirs(dirname)
         else:
             self.fm.notify("file/directory exists!", bad=True)
 
-    def tab(self):
+    def tab(self, tabnum):
         return self._tab_directory_content()
 
 
 class touch(Command):
     """:touch <fname>
-
     Creates a file with the name <fname>.
     """
 
@@ -595,13 +655,12 @@ class touch(Command):
         else:
             self.fm.notify("file/directory exists!", bad=True)
 
-    def tab(self):
+    def tab(self, tabnum):
         return self._tab_directory_content()
 
 
 class edit(Command):
     """:edit <filename>
-
     Opens the specified file in vim
     """
 
@@ -611,17 +670,15 @@ class edit(Command):
         else:
             self.fm.edit_file(self.rest(1))
 
-    def tab(self):
+    def tab(self, tabnum):
         return self._tab_directory_content()
 
 
 class eval_(Command):
     """:eval [-q] <python code>
-
     Evaluates the python code.
     `fm' is a reference to the FM instance.
     To display text, use the function `p'.
-
     Examples:
     :eval fm
     :eval len(fm.directories)
@@ -657,7 +714,6 @@ class eval_(Command):
 
 class rename(Command):
     """:rename <newname>
-
     Changes the name of the currently highlighted file to <newname>
     """
 
@@ -667,32 +723,59 @@ class rename(Command):
 
         new_name = self.rest(1)
 
+        tagged = {}
+        old_name = self.fm.thisfile.relative_path
+        for f in self.fm.tags.tags:
+            if str(f).startswith(self.fm.thisfile.path):
+                tagged[f] = self.fm.tags.tags[f]
+                self.fm.tags.remove(f)
+
         if not new_name:
             return self.fm.notify('Syntax: rename <newname>', bad=True)
 
-        if new_name == self.fm.thisfile.basename:
+        if new_name == old_name:
             return
 
         if access(new_name, os.F_OK):
             return self.fm.notify("Can't rename: file already exists!", bad=True)
 
-        self.fm.rename(self.fm.thisfile, new_name)
-        f = File(new_name)
-        self.fm.thisdir.pointed_obj = f
-        self.fm.thisfile = f
+        if self.fm.rename(self.fm.thisfile, new_name):
+            f = File(new_name)
+            # Update bookmarks that were pointing on the previous name
+            obsoletebookmarks = [b for b in self.fm.bookmarks
+                                 if b[1].path == self.fm.thisfile]
+            if obsoletebookmarks:
+                for key, _ in obsoletebookmarks:
+                    self.fm.bookmarks[key] = f
+                self.fm.bookmarks.update_if_outdated()
 
-    def tab(self):
+            self.fm.thisdir.pointed_obj = f
+            self.fm.thisfile = f
+            for t in tagged:
+                self.fm.tags.tags[t.replace(old_name,new_name)] = tagged[t]
+                self.fm.tags.dump()
+
+    def tab(self, tabnum):
         return self._tab_directory_content()
 
+class rename_append(Command):
+    """:rename_append
+    Creates an open_console for the rename command, automatically placing the cursor before the file extension.
+    """
+
+    def execute(self):
+        cf = self.fm.thisfile
+        path = cf.relative_path.replace("%", "%%")
+        if path.find('.') != 0 and path.rfind('.') != -1 and not cf.is_directory:
+            self.fm.open_console('rename ' + path, position=(7 + path.rfind('.')))
+        else:
+            self.fm.open_console('rename ' + path)
 
 class chmod(Command):
     """:chmod <octal number>
-
     Sets the permissions of the selection to the octal number.
-
     The octal number is between 0 and 777. The digits specify the
     permissions for the user, the group and others.
-
     A 1 permits execution, a 2 permits writing, a 4 permits reading.
     Add those numbers to combine them. So a 7 permits everything.
     """
@@ -726,11 +809,9 @@ class chmod(Command):
 
 class bulkrename(Command):
     """:bulkrename
-
     This command opens a list of selected files in an external editor.
     After you edit and save the file, it will generate a shell script
     which does bulk renaming according to the changes you did in the file.
-
     This shell script is opened in an editor for you to review.
     After you close it, it will be executed.
     """
@@ -739,48 +820,71 @@ class bulkrename(Command):
         import tempfile
         from ranger.container.file import File
         from ranger.ext.shell_escape import shell_escape as esc
-        py3 = sys.version > "3"
+        py3 = sys.version_info[0] >= 3
 
         # Create and edit the file list
-        filenames = [f.basename for f in self.fm.thistab.get_selection()]
-        listfile = tempfile.NamedTemporaryFile()
+        filenames = [f.relative_path for f in self.fm.thistab.get_selection()]
+        listfile = tempfile.NamedTemporaryFile(delete=False)
+        listpath = listfile.name
 
         if py3:
             listfile.write("\n".join(filenames).encode("utf-8"))
         else:
             listfile.write("\n".join(filenames))
-        listfile.flush()
-        self.fm.execute_file([File(listfile.name)], app='editor')
-        listfile.seek(0)
-        if py3:
-            new_filenames = listfile.read().decode("utf-8").split("\n")
-        else:
-            new_filenames = listfile.read().split("\n")
         listfile.close()
+        self.fm.execute_file([File(listpath)], app='editor')
+        listfile = open(listpath, 'r')
+        new_filenames = listfile.read().split("\n")
+        listfile.close()
+        os.unlink(listpath)
         if all(a == b for a, b in zip(filenames, new_filenames)):
             self.fm.notify("No renaming to be done!")
             return
 
-        # Generate and execute script
+        # Generate script
         cmdfile = tempfile.NamedTemporaryFile()
-        cmdfile.write(b"# This file will be executed when you close the editor.\n")
-        cmdfile.write(b"# Please double-check everything, clear the file to abort.\n")
+        script_lines = []
+        script_lines.append("# This file will be executed when you close the editor.\n")
+        script_lines.append("# Please double-check everything, clear the file to abort.\n")
+        script_lines.extend("mv -vi -- %s %s\n" % (esc(old), esc(new)) \
+                for old, new in zip(filenames, new_filenames) if old != new)
+        script_content = "".join(script_lines)
         if py3:
-            cmdfile.write("\n".join("mv -vi -- " + esc(old) + " " + esc(new) \
-                for old, new in zip(filenames, new_filenames) \
-                if old != new).encode("utf-8"))
+            cmdfile.write(script_content.encode("utf-8"))
         else:
-            cmdfile.write("\n".join("mv -vi -- " + esc(old) + " " + esc(new) \
-                for old, new in zip(filenames, new_filenames) if old != new))
+            cmdfile.write(script_content)
         cmdfile.flush()
+
+        # Open the script and let the user review it, then check if the script
+        # was modified by the user
         self.fm.execute_file([File(cmdfile.name)], app='editor')
+        cmdfile.seek(0)
+        script_was_edited = (script_content != cmdfile.read())
+
+        # Do the renaming
         self.fm.run(['/bin/sh', cmdfile.name], flags='w')
         cmdfile.close()
 
+        # Retag the files, but only if the script wasn't changed during review,
+        # because only then we know which are the source and destination files.
+        if not script_was_edited:
+            tags_changed = False
+            for old, new in zip(filenames, new_filenames):
+                if old != new:
+                    oldpath = self.fm.thisdir.path + '/' + old
+                    newpath = self.fm.thisdir.path + '/' + new
+                    if oldpath in self.fm.tags:
+                        old_tag = self.fm.tags.tags[oldpath]
+                        self.fm.tags.remove(oldpath)
+                        self.fm.tags.tags[newpath] = old_tag
+                        tags_changed = True
+            if tags_changed:
+                self.fm.tags.dump()
+        else:
+            fm.notify("files have not been retagged")
 
 class relink(Command):
     """:relink <newpath>
-
     Changes the linked path of the currently highlighted symlink to <newpath>
     """
 
@@ -794,7 +898,7 @@ class relink(Command):
             return self.fm.notify('Syntax: relink <newpath>', bad=True)
 
         if not cf.is_link:
-            return self.fm.notify('%s is not a symlink!' % cf.basename, bad=True)
+            return self.fm.notify('%s is not a symlink!' % cf.relative_path, bad=True)
 
         if new_path == os.readlink(cf.path):
             return
@@ -809,7 +913,7 @@ class relink(Command):
         self.fm.thisdir.pointed_obj = cf
         self.fm.thisfile = cf
 
-    def tab(self):
+    def tab(self, tabnum):
         if not self.rest(1):
             return self.line+os.readlink(self.fm.thisfile.path)
         else:
@@ -818,24 +922,28 @@ class relink(Command):
 
 class help_(Command):
     """:help
-
     Display ranger's manual page.
     """
     name = 'help'
     def execute(self):
-        if self.quantifier == 1:
-            self.fm.dump_keybindings()
-        elif self.quantifier == 2:
-            self.fm.dump_commands()
-        elif self.quantifier == 3:
-            self.fm.dump_settings()
-        else:
-            self.fm.display_help()
+        def callback(answer):
+            if answer == "q":
+                return
+            elif answer == "m":
+                self.fm.display_help()
+            elif answer == "c":
+                self.fm.dump_commands()
+            elif answer == "k":
+                self.fm.dump_keybindings()
+            elif answer == "s":
+                self.fm.dump_settings()
+
+        c = self.fm.ui.console.ask("View [m]an page, [k]ey bindings,"
+                " [c]ommands or [s]ettings? (press q to abort)", callback, list("mkcsq") + [chr(27)])
 
 
 class copymap(Command):
     """:copymap <keys> <newkeys1> [<newkeys2>...]
-
     Copies a "browser" keybinding from <keys> to <newkeys>
     """
     context = 'browser'
@@ -850,7 +958,6 @@ class copymap(Command):
 
 class copypmap(copymap):
     """:copypmap <keys> <newkeys1> [<newkeys2>...]
-
     Copies a "pager" keybinding from <keys> to <newkeys>
     """
     context = 'pager'
@@ -858,7 +965,6 @@ class copypmap(copymap):
 
 class copycmap(copymap):
     """:copycmap <keys> <newkeys1> [<newkeys2>...]
-
     Copies a "console" keybinding from <keys> to <newkeys>
     """
     context = 'console'
@@ -866,7 +972,6 @@ class copycmap(copymap):
 
 class copytmap(copymap):
     """:copycmap <keys> <newkeys1> [<newkeys2>...]
-
     Copies a "taskview" keybinding from <keys> to <newkeys>
     """
     context = 'taskview'
@@ -874,7 +979,6 @@ class copytmap(copymap):
 
 class unmap(Command):
     """:unmap <keys> [<keys2>, ...]
-
     Remove the given "browser" mappings
     """
     context = 'browser'
@@ -886,7 +990,6 @@ class unmap(Command):
 
 class cunmap(unmap):
     """:cunmap <keys> [<keys2>, ...]
-
     Remove the given "console" mappings
     """
     context = 'browser'
@@ -894,7 +997,6 @@ class cunmap(unmap):
 
 class punmap(unmap):
     """:punmap <keys> [<keys2>, ...]
-
     Remove the given "pager" mappings
     """
     context = 'pager'
@@ -902,7 +1004,6 @@ class punmap(unmap):
 
 class tunmap(unmap):
     """:tunmap <keys> [<keys2>, ...]
-
     Remove the given "taskview" mappings
     """
     context = 'taskview'
@@ -910,9 +1011,7 @@ class tunmap(unmap):
 
 class map_(Command):
     """:map <keysequence> <command>
-
     Maps a command to a keysequence in the "browser" context.
-
     Example:
     map j move down
     map J move down 10
@@ -922,14 +1021,15 @@ class map_(Command):
     resolve_macros = False
 
     def execute(self):
+        if not self.arg(1) or not self.arg(2):
+            return self.fm.notify("Not enough arguments", bad=True)
+
         self.fm.ui.keymaps.bind(self.context, self.arg(1), self.rest(2))
 
 
 class cmap(map_):
     """:cmap <keysequence> <command>
-
     Maps a command to a keysequence in the "console" context.
-
     Example:
     cmap <ESC> console_close
     cmap <C-x> console_type test
@@ -939,7 +1039,6 @@ class cmap(map_):
 
 class tmap(map_):
     """:tmap <keysequence> <command>
-
     Maps a command to a keysequence in the "taskview" context.
     """
     context = 'taskview'
@@ -947,7 +1046,6 @@ class tmap(map_):
 
 class pmap(map_):
     """:pmap <keysequence> <command>
-
     Maps a command to a keysequence in the "pager" context.
     """
     context = 'pager'
@@ -955,11 +1053,9 @@ class pmap(map_):
 
 class scout(Command):
     """:scout [-FLAGS] <pattern>
-
     Swiss army knife command for searching, traveling and filtering files.
     The command takes various flags as arguments which can be used to
     influence its behaviour:
-
     -a = automatically open a file on unambiguous match
     -e = open the selected file when pressing enter
     -f = filter files that match the current search pattern
@@ -973,7 +1069,6 @@ class scout(Command):
     -s = smart case; like -i unless pattern contains upper case letters
     -t = apply filter and search pattern as you type
     -v = inverts the match
-
     Multiple flags can be combined.  For example, ":scout -gpt" would create
     a :filter-like command using globbing.
     """
@@ -1007,14 +1102,14 @@ class scout(Command):
         self.fm.thistab.last_search = regex
         self.fm.set_search_method(order="search")
 
-        if self.MARK in flags or self.UNMARK in flags:
+        if (self.MARK in flags or self.UNMARK in flags) and thisdir.files:
             value = flags.find(self.MARK) > flags.find(self.UNMARK)
             if self.FILTER in flags:
                 for f in thisdir.files:
                     thisdir.mark_item(f, value)
             else:
                 for f in thisdir.files:
-                    if regex.search(f.basename):
+                    if regex.search(f.relative_path):
                         thisdir.mark_item(f, value)
 
         if self.PERM_FILTER in flags:
@@ -1032,9 +1127,12 @@ class scout(Command):
 
         if self.KEEP_OPEN in flags and thisdir != self.fm.thisdir:
             # reopen the console:
-            self.fm.open_console(self.line[0:-len(pattern)])
+            if not pattern:
+                self.fm.open_console(self.line)
+            else:
+                self.fm.open_console(self.line[0:-len(pattern)])
 
-        if thisdir != self.fm.thisdir and pattern != "..":
+        if self.quickly_executed and thisdir != self.fm.thisdir and pattern != "..":
             self.fm.block_input(0.5)
 
     def cancel(self):
@@ -1053,8 +1151,8 @@ class scout(Command):
             return True
         return False
 
-    def tab(self):
-        self._count(move=True, offset=1)
+    def tab(self, tabnum):
+        self._count(move=True, offset=tabnum)
 
     def _build_regex(self):
         if self._regex is not None:
@@ -1107,7 +1205,7 @@ class scout(Command):
         cwd     = self.fm.thisdir
         pattern = self.pattern
 
-        if not pattern:
+        if not pattern or not cwd.files:
             return 0
         if pattern == '.':
             return 0
@@ -1119,7 +1217,7 @@ class scout(Command):
         i = offset
         regex = self._build_regex()
         for fsobj in deq:
-            if regex.search(fsobj.basename):
+            if regex.search(fsobj.relative_path):
                 count += 1
                 if move and count == 1:
                     cwd.move(to=(cwd.pointer + i) % len(cwd.files))
@@ -1131,9 +1229,33 @@ class scout(Command):
         return count == 1
 
 
+class filter_inode_type(Command):
+    """
+    :filter_inode_type [dfl]
+    Displays only the files of specified inode type. Parameters
+    can be combined.
+        d display directories
+        f display files
+        l display links
+    """
+
+    FILTER_DIRS  = 'd'
+    FILTER_FILES = 'f'
+    FILTER_LINKS = 'l'
+
+    def execute(self):
+        if not self.arg(1):
+            self.fm.thisdir.inode_type_filter = None
+        else:
+            self.fm.thisdir.inode_type_filter = lambda file: (
+                    True if ((self.FILTER_DIRS  in self.arg(1) and file.is_directory) or
+                             (self.FILTER_FILES in self.arg(1) and file.is_file and not file.is_link) or
+                             (self.FILTER_LINKS in self.arg(1) and file.is_link)) else False)
+        self.fm.thisdir.refilter()
+
+
 class grep(Command):
     """:grep <string>
-
     Looks for a string in all marked files or directories
     """
 
@@ -1144,101 +1266,202 @@ class grep(Command):
             action.extend(f.path for f in self.fm.thistab.get_selection())
             self.fm.execute_command(action, flags='p')
 
+class flat(Command):
+    """
+    :flat <level>
+    Flattens the directory view up to the specified level.
+        -1 fully flattened
+         0 remove flattened view
+    """
+
+    def execute(self):
+        try:
+            level = self.rest(1)
+            level = int(level)
+        except ValueError:
+            level = self.quantifier
+        if level < -1:
+            self.fm.notify("Need an integer number (-1, 0, 1, ...)", bad=True)
+        self.fm.thisdir.unload()
+        self.fm.thisdir.flat = level
+        self.fm.thisdir.load_content()
 
 # Version control commands
 # --------------------------------
+
 class stage(Command):
     """
     :stage
-
     Stage selected files for the corresponding version control system
     """
     def execute(self):
         from ranger.ext.vcs import VcsError
 
-        filelist = [f.path for f in self.fm.thistab.get_selection()]
-        self.fm.thisdir.vcs_outdated = True
-#        for f in self.fm.thistab.get_selection():
-#            f.vcs_outdated = True
-
-        try:
-            self.fm.thisdir.vcs.add(filelist)
-        except VcsError:
-            self.fm.notify("Could not stage files.")
-
-        self.fm.reload_cwd()
-
+        if self.fm.thisdir.vcs and self.fm.thisdir.vcs.track:
+            filelist = [f.path for f in self.fm.thistab.get_selection()]
+            try:
+                self.fm.thisdir.vcs.action_add(filelist)
+            except VcsError as error:
+                self.fm.notify('Unable to stage files: {0:s}'.format(str(error)))
+            self.fm.ui.vcsthread.process(self.fm.thisdir)
+        else:
+            self.fm.notify('Unable to stage files: Not in repository')
 
 class unstage(Command):
     """
     :unstage
-
     Unstage selected files for the corresponding version control system
     """
     def execute(self):
         from ranger.ext.vcs import VcsError
 
-        filelist = [f.path for f in self.fm.thistab.get_selection()]
-        self.fm.thisdir.vcs_outdated = True
-#        for f in self.fm.thistab.get_selection():
-#            f.vcs_outdated = True
-
-        try:
-            self.fm.thisdir.vcs.reset(filelist)
-        except VcsError:
-            self.fm.notify("Could not unstage files.")
-
-        self.fm.reload_cwd()
-
-
-class diff(Command):
-    """
-    :diff
-
-    Displays a diff of selected files against last last commited version
-    """
-    def execute(self):
-        from ranger.ext.vcs import VcsError
-        import tempfile
-
-        L = self.fm.thistab.get_selection()
-        if len(L) == 0: return
-
-        filelist = [f.path for f in L]
-        vcs = L[0].vcs
-
-        diff = vcs.get_raw_diff(filelist=filelist)
-        if len(diff.strip()) > 0:
-            tmp = tempfile.NamedTemporaryFile()
-            tmp.write(diff.encode('utf-8'))
-            tmp.flush()
-
-            pager = os.environ.get('PAGER', ranger.DEFAULT_PAGER)
-            self.fm.run([pager, tmp.name])
+        if self.fm.thisdir.vcs and self.fm.thisdir.vcs.track:
+            filelist = [f.path for f in self.fm.thistab.get_selection()]
+            try:
+                self.fm.thisdir.vcs.action_reset(filelist)
+            except VcsError as error:
+                self.fm.notify('Unable to unstage files: {0:s}'.format(str(error)))
+            self.fm.ui.vcsthread.process(self.fm.thisdir)
         else:
-            raise Exception("diff is empty")
+            self.fm.notify('Unable to unstage files: Not in repository')
 
+# Metadata commands
+# --------------------------------
 
-class log(Command):
+class prompt_metadata(Command):
     """
-    :log
-
-    Displays the log of the current repo or files
+    :prompt_metadata <key1> [<key2> [<key3> ...]]
+    Prompt the user to input metadata for multiple keys in a row.
     """
+
+    _command_name = "meta"
+    _console_chain = None
     def execute(self):
-        from ranger.ext.vcs import VcsError
-        import tempfile
+        prompt_metadata._console_chain = self.args[1:]
+        self._process_command_stack()
 
-        L = self.fm.thistab.get_selection()
-        if len(L) == 0: return
+    def _process_command_stack(self):
+        if prompt_metadata._console_chain:
+            key = prompt_metadata._console_chain.pop()
+            self._fill_console(key)
+        else:
+            for col in self.fm.ui.browser.columns:
+                col.need_redraw = True
 
-        filelist = [f.path for f in L]
-        vcs = L[0].vcs
+    def _fill_console(self, key):
+        metadata = self.fm.metadata.get_metadata(self.fm.thisfile.path)
+        if key in metadata and metadata[key]:
+            existing_value = metadata[key]
+        else:
+            existing_value = ""
+        text = "%s %s %s" % (self._command_name, key, existing_value)
+        self.fm.open_console(text, position=len(text))
 
-        log = vcs.get_raw_log(filelist=filelist)
-        tmp = tempfile.NamedTemporaryFile()
-        tmp.write(log.encode('utf-8'))
-        tmp.flush()
 
-        pager = os.environ.get('PAGER', ranger.DEFAULT_PAGER)
-        self.fm.run([pager, tmp.name])
+class meta(prompt_metadata):
+    """
+    :meta <key> [<value>]
+    Change metadata of a file.  Deletes the key if value is empty.
+    """
+
+    def execute(self):
+        key = self.arg(1)
+        value = self.rest(1)
+        update_dict = dict()
+        update_dict[key] = self.rest(2)
+        selection = self.fm.thistab.get_selection()
+        for f in selection:
+            self.fm.metadata.set_metadata(f.path, update_dict)
+        self._process_command_stack()
+
+    def tab(self, tabnum):
+        key = self.arg(1)
+        metadata = self.fm.metadata.get_metadata(self.fm.thisfile.path)
+        if key in metadata and metadata[key]:
+            return [" ".join([self.arg(0), self.arg(1), metadata[key]])]
+        else:
+            return [self.arg(0) + " " + key for key in sorted(metadata)
+                    if key.startswith(self.arg(1))]
+
+
+class linemode(default_linemode):
+    """
+    :linemode <mode>
+    Change what is displayed as a filename.
+    - "mode" may be any of the defined linemodes (see: ranger.core.linemode).
+      "normal" is mapped to "filename".
+    """
+
+    def execute(self):
+        mode = self.arg(1)
+
+        if mode == "normal":
+            mode = DEFAULT_LINEMODE
+
+        if mode not in self.fm.thisfile.linemode_dict:
+            self.fm.notify("Unhandled linemode: `%s'" % mode, bad=True)
+            return
+
+        self.fm.thisdir._set_linemode_of_children(mode)
+
+        # Ask the browsercolumns to redraw
+        for col in self.fm.ui.browser.columns:
+            col.need_redraw = True
+#
+# Please refer to commands_full.py for all the default commands and a complete
+# documentation.  Do NOT add them all here, or you may end up with defunct
+# commands when upgrading ranger.
+
+# You always need to import ranger.api.commands here to get the Command class:
+from ranger.api.commands import *
+
+# A simple command for demonstration purposes follows.
+#------------------------------------------------------------------------------
+
+# You can import any python module as needed.
+import os
+
+# Any class that is a subclass of "Command" will be integrated into ranger as a
+# command.  Try typing ":my_edit<ENTER>" in ranger!
+class my_edit(Command):
+    # The so-called doc-string of the class will be visible in the built-in
+    # help that is accessible by typing "?c" inside ranger.
+    """:my_edit <filename>
+
+    A sample command for demonstration purposes that opens a file in an editor.
+    """
+
+    # The execute method is called when you run this command in ranger.
+    def execute(self):
+        # self.arg(1) is the first (space-separated) argument to the function.
+        # This way you can write ":my_edit somefilename<ENTER>".
+        if self.arg(1):
+            # self.rest(1) contains self.arg(1) and everything that follows
+            target_filename = self.rest(1)
+        else:
+            # self.fm is a ranger.core.filemanager.FileManager object and gives
+            # you access to internals of ranger.
+            # self.fm.thisfile is a ranger.container.file.File object and is a
+            # reference to the currently selected file.
+            target_filename = self.fm.thisfile.path
+
+        # This is a generic function to print text in ranger.
+        self.fm.notify("Let's edit the file " + target_filename + "!")
+
+        # Using bad=True in fm.notify allows you to print error messages:
+        if not os.path.exists(target_filename):
+            self.fm.notify("The given file does not exist!", bad=True)
+            return
+
+        # This executes a function from ranger.core.acitons, a module with a
+        # variety of subroutines that can help you construct commands.
+        # Check out the source, or run "pydoc ranger.core.actions" for a list.
+        self.fm.edit_file(target_filename)
+
+    # The tab method is called when you press tab, and should return a list of
+    # suggestions that the user will tab through.
+    # tabnum is 1 for <TAB> and -1 for <S-TAB> by default
+    def tab(self, tabnum):
+        # This is a generic tab-completion function that iterates through the
+        # content of the current directory.
+        return self._tab_directory_content()

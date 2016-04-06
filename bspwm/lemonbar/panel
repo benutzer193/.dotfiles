@@ -1,12 +1,11 @@
 #! /bin/sh
 
+WD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 PANEL_FIFO=/tmp/panel-fifo
 PANEL_HEIGHT=24
 PANEL_FONT_FAMILY="-*-terminus-medium-r-normal-*-12-*-*-*-c-*-*-1"
-export PANEL_FIFO PANEL_HEIGHT PANEL_FONT_FAMILY
-
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
+PANEL_WM_NAME=lemonpanel
+export PANEL_FIFO PANEL_HEIGHT PANEL_FONT_FAMILY PANEL_WM_NAME
 
 if [ $(pgrep -cx panel) -gt 1 ] ; then
 	printf "%s\n" "The panel is already running." >&2
@@ -20,10 +19,11 @@ mkfifo "$PANEL_FIFO"
 
 bspc config top_padding $PANEL_HEIGHT
 bspc control --subscribe > "$PANEL_FIFO" &
-#xtitle -sf 'T%s' > "$PANEL_FIFO" &
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+clock -sf 'S%a %H:%M' > "$PANEL_FIFO" &
 
-. ${DIR}/panel_colors
+. ${WD}/panel_colors
 
-cat "$PANEL_FIFO" | panel_bar | lemonbar -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" -F "$COLOR_FOREGROUND" -B "$COLOR_BACKGROUND" &
+cat "$PANEL_FIFO" | ${WD}/panel_bar | lemonbar -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT_FAMILY" -F "$COLOR_FOREGROUND" -B "$COLOR_BACKGROUND" &
 
 wait

@@ -5,50 +5,36 @@ alias pac="pacman"
 alias paci="sudo pacman --sync"
 
 # Installs packages from files.
-alias pacI="sudo pacman --upgrade"
-
-# Removes packages and unneeded dependencies.
-alias pacx="sudo pacman --remove"
+alias paci-from-file="sudo pacman --upgrade"
 
 # Removes packages, their configuration, and unneeded dependencies.
-alias pacX="sudo pacman --remove --nosave --recursive"
+alias pac-del="sudo pacman --remove --nosave --recursive"
+alias pacx="pac-del"
 
 # Displays information about a package from the repositories.
-alias pacq="pacman --sync --info"
-
-# Displays information about a package from the local database.
-alias pacQ="pacman --query --info"
+alias pac-info="pacman --sync --info"
 
 # Searches for packages in the repositories.
-alias pacs="pacman --sync --search"
+alias pac-search="pacman --sync --search"
 
 # Searches for packages in the local database.
-alias pacS="pacman --query --search"
-
-# Lists orphan packages.
-alias pacman-list-orphans="sudo pacman --query --deps --unrequired"
-
-# Removes orphan packages.
-alias pacman-remove-orphans="sudo pacman --remove --recursive \$(pacman --quiet --query --deps --unrequired)"
-
-# Synchronizes the local package and Arch Build System databases against the
-# repositories.
-if (( $+commands[abs] )); then
-  alias pacu="sudo pacman --sync --refresh && sudo abs"
-else
-  alias pacu="sudo pacman --sync --refresh"
-fi
+alias pac-search-local="pacman --query --search"
 
 # Synchronizes the local package database against the repositories then
 # upgrades outdated packages.
-alias pacU="sudo pacman --sync --refresh --sysupgrade"
+alias pacu="sudo pacman --sync --refresh --sysupgrade"
 
-# Update Mirrors
-alias pacman-update-mirrors="sudo reflector --verbose -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist"
-
-
+# Maintenance
+alias pacm-update-mirrors="sudo reflector --threads 8 --verbose -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist"
+alias pacm-remove-orphans="sudo pacman --remove --recursive \$(pacman --quiet --query --deps --unrequired)"
+alias pacm-list-orphans="sudo pacman --query --deps --unrequired"
+alias pacm-update-db="sudo pacman-update-db"
+alias pacm-optimize="sudo pacman-optimize"
 
 # pacaur
 alias auri="pacaur -S"
-alias aurU="pacaur -Syu"
-alias pacq="pacaur -Si"
+alias auru="pacaur -Syu"
+alias auru-all="auru --devel --needed"
+alias auru-dev="pacaur --update --devel --needed"
+alias aur-info="pacaur -Si"
+alias aur-search="pacaur -Ss"

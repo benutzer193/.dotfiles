@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-paccache -r
-paccache -ruk0
