@@ -1,5 +1,4 @@
-# shortcut to this dotfiles path is $ZSH
-export ZSH=$HOME/.dotfiles
+export _DF=$HOME/.dotfiles
 
 # your project folder that we can `c [tab]` to
 # export PROJECTS=~/Code
@@ -12,17 +11,17 @@ then
 fi
 
 # all of our zsh files
-typeset -U config_files
-config_files=($ZSH/**/zsh-config/*.zsh)
+typeset -U _CONF
+_CONF=($_DF/**/zsh-config/*.zsh)
 
 # load the path files
-for file in ${(M)config_files:#*/path.zsh}
+for file in ${(M)_CONF:#*/path.zsh}
 do
   source $file
 done
 
 # load everything but the path and completion files
-for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
+for file in ${${_CONF:#*/path.zsh}:#*/completion.zsh}
 do
   source $file
 done
@@ -32,12 +31,15 @@ autoload -U compinit
 compinit
 
 # load every completion after autocomplete loads
-for file in ${(M)config_files:#*/completion.zsh}
+for file in ${(M)_CONF:#*/completion.zsh}
 do
   source $file
 done
 
-unset config_files
 
-source $ZSH/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting
-source $ZSH/zsh/zsh-history-substring-search/zsh-history-substring-search
+source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $_DF/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+unset _CONF
+unset _DF
