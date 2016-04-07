@@ -8,7 +8,7 @@
 
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'kien/ctrlp.vim'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
 Plug 'scrooloose/syntastic'
@@ -18,6 +18,7 @@ Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-fugitive'
 
 " install cmake & python2
 
@@ -39,6 +40,7 @@ let mapleader=","
 """""""""""""
 
 set autowrite			" Autosave on buffer switch
+set autoread
 set backspace=indent,eol,start	" allow backspacing over everything in insert mode
 set backup			" enable backup
 set backupdir=~/.config/nvim/backupdir
@@ -52,6 +54,9 @@ set laststatus=2		" tells if last window has statusline
 set mouse=a
 set number			" Linenumbers
 set relativenumber
+set scrolloff=5
+set sidescrolloff=5
+"set display+=lastline
 set smartcase
 set spell spelllang=de
 set textwidth=80
@@ -88,7 +93,7 @@ map <C-l> <C-w>l
 nmap <silent> <leader>/ :nohlsearch<CR>
 cmap ## w !sudo tee > /dev/null %
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
+nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.config/nvim/init.vim<CR>
 nnoremap <space> za
 nmap <silent> <leader><CR> i<CR><ESC>
 
