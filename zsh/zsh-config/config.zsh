@@ -8,9 +8,9 @@ export EDITOR="vim"
 export LSCOLORS="exfxcxdxbxegedabagacad"
 export CLICOLOR=true
 
-fpath=($ZSH/functions $fpath)
+fpath=($_DF/functions $fpath)
 
-autoload -U $ZSH/functions/*(:t)
+autoload -U $_DF/functions/*(:t)
 
 setopt NO_BG_NICE # don't nice background tasks
 setopt NO_HUP
