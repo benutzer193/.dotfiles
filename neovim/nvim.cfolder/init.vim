@@ -86,11 +86,12 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 nmap <silent> <leader>/ :nohlsearch<CR>
-cmap w!! w !sudo tee > /dev/null %
+cmap ## w !sudo tee > /dev/null %
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
 nnoremap <space> za
 nmap <silent> <leader><CR> i<CR><ESC>
+
 
 """"""""""""""""""
 "  autocommands  "
@@ -111,8 +112,8 @@ let g:airline#extensions#tabline#fnameod = ':t'
 "  Ctrlp  "
 """""""""""
 
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_cmd = 'CtrlPMRUFiles'
+let g:ctrlp_show_hidden=1
+let g:ctrlp_cmd='CtrlPMRUFiles'
 
 """""""""""""""
 "  ultisnips  "
@@ -122,7 +123,7 @@ let g:UltiSnipsExpandTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-y>"
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsUsePythonVersion = 2
+let g:UltiSnipsUsePythonVersion=2
 
 """"""""""""
 "  base16  "
@@ -138,8 +139,8 @@ colorscheme base16-default
 
 let g:LatexBox_ignore_warnings=['Underfull', 'Overfull', 'specifier changed to', 'Using preliminary']
 let g:tex_flavor='latex'
-let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
-let g:LatexBox_Folding = 1
+let g:LatexBox_cite_pattern='\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
+let g:LatexBox_Folding=1
 
 nnoremap <F6> :call CompileTex()<CR>
 autocmd FileType tex setlocal omnifunc=LatexBox_Complete
@@ -176,4 +177,4 @@ autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
 "  YouCompleteMe  "
 """""""""""""""""""
 
-let g:ycm_min_num_of_chars_for_completion = 2
+let g:ycm_min_num_of_chars_for_completion=2
