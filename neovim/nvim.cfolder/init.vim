@@ -22,7 +22,7 @@ Plug 'tpope/vim-fugitive'
 
 " install cmake & python2
 
-Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py' }
+Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py' }
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 call plug#end()
@@ -128,15 +128,14 @@ let g:UltiSnipsExpandTrigger="<c-b>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-y>"
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsUsePythonVersion=2
+let g:UltiSnipsUsePythonVersion=3
 
 """"""""""""
 "  base16  "
 """"""""""""
 
-set background=dark
 let base16colorspace=256
-colorscheme base16-default
+colorscheme base16-default-dark
 
 """""""""""""""
 "  Latex-Box  "

@@ -1,30 +1,71 @@
 #!/usr/bin/env bash
 [[ $EUID != 0 ]] && exec sudo -- "$0" "$@"
 
-DNSCONF="/etc/dnsmasq.conf"
+_DNSCONF="/etc/dnsmasq.conf"
 
 dnsadd(){
-case "$1" in
-		us)
-/bin/cat << EOF >> $DNSCONF
-server=/netflix.com/netflix.net/nflximg.com/192.169.69.169
-server=/netflix.com/netflix.net/nflximg.com/192.169.69.168
-EOF
-;;
-		uni)
-/bin/cat << EOF >> $DNSCONF
-server=134.93.8.13
-server=134.93.8.159
-EOF
-;;
+for _ITEM in $@
+do
+case "$_ITEM" in
+    tmp)
+        echo "server=/gamesrepublic.com/54.93.169.181" >> $_DNSCONF
+        ;;
+    getflix)
+        echo "server=54.93.169.181" >> $_DNSCONF
+        echo "server=46.166.189.67" >> $_DNSCONF
+        ;;
+    opennic)
+        echo "server=5.9.49.12" >> $_DNSCONF
+        echo "server=193.183.98.154" >> $_DNSCONF
+        ;;
+    google)
+        echo "server=8.8.8.8" >> $_DNSCONF
+        echo "server=8.8.4.4" >> $_DNSCONF
+        ;;
+    us)
+        _IPONE="54.93.169.181"
+        _IPTWO="46.166.189.67"
+
+        _HOSTS="/getflix.com.au"
+        _HOSTS="$_HOSTS/e.akamai.net/akamaihd.net/uplynk.com/edgefcs.net/edgesuite.net/footprint.net/llnwd.net/llnwi.net/theplatform.com/brightcove.com"
+
+        _HOSTS="$_HOSTS/crackle.com"
+        _HOSTS="$_HOSTS/flixter.comi/cinemanow.now/roxionow.com"
+        _HOSTS="$_HOSTS/netflix.com/netflix.net/nflxext.com/nflxvideo.net/nflximg.net/nflximg.com"
+
+        _HOSTS="$_HOSTS/crunchyroll.com"
+        _HOSTS="$_HOSTS/bbc.co.uk/bbc.net.uk/bbc.com"
+        _HOSTS="$_HOSTS/itv.com"
+        _HOSTS="$_HOSTS/vh1.com"
+
+        _HOSTS="$_HOSTS/eurosportplayer.co.uk/eurosport.co.uk/eurosport.com"
+        _HOSTS="$_HOSTS/livestream.com"
+        _HOSTS="$_HOSTS/starsports.com"
+
+        _HOSTS="$_HOSTS/pandora.com"
+        _HOSTS="$_HOSTS/mtv.com/mtvnservices.com"
+        _HOSTS="$_HOSTS/rhapsody.com"
+        _HOSTS="$_HOSTS/slacker.com"
+        _HOSTS="$_HOSTS/songza.com"
+        _HOSTS="$_HOSTS/vevo.com"
+
+        echo "server=$_HOSTS/$_IPONE" >> $_DNSCONF
+        echo "server=$_HOSTS/$_IPTWO" >> $_DNSCONF
+        ;;
+
+    uni)
+        echo "server=134.93.8.13" >> $_DNSCONF
+        echo "server=134.93.8.159" >> $_DNSCONF
+        ;;
 esac
+done
 }
 
 dnsrestart(){
-	systemctl restart dnsmasq
+    systemctl restart dnsmasq
 }
 
-/bin/cat << EOF > $DNSCONF
+/bin/cat << EOF > $_DNSCONF
 listen-address=127.0.0.1
 bind-interfaces
 domain-needed
@@ -33,25 +74,35 @@ all-servers
 cache-size=10000
 no-resolv
 no-hosts
-server=8.8.8.8
-server=8.8.4.4
 server=/bit/bbs/dyn/free/fur/geek/glue/gopher/indy/ing/micro/neo/null/oss/oz/parody/pirate/stl/62.113.200.106
 server=/bit/bbs/dyn/free/fur/geek/glue/gopher/indy/ing/micro/neo/null/oss/oz/parody/pirate/stl/108.61.210.58
 EOF
 
 for item in $@
 do
-	case "${item}" in
-		-u|--us)
-			dnsadd us
-			;;
-		--uni)
-			dnsadd uni
-			;;
-		-h|--help)
-			echo "Usage sudo dnschange [-u|--us] [--uni]"
-			;;
-	esac
+    case "${item}" in
+        -f|--getflix)
+            dnsadd google
+            ;;
+        -g|--google)
+            dnsadd google
+            ;;
+        -n|--nic)
+            dnsadd opennic
+            ;;
+        -t|--tmp)
+            dnsadd tmp
+            ;;
+        -u|--us)
+    	    dnsadd us
+	    ;;
+	--uni)
+	    dnsadd uni
+	    ;;
+	-h|--help)
+	    echo "Usage sudo dnschange [-u|--us] [--uni]"
+	    ;;
+    esac
 done
 dnsrestart
 # vim: set filetye=sh

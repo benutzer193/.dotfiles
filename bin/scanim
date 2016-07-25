@@ -1,0 +1,76 @@
+#!/usr/bin/env sh
+
+
+############
+#  scanim  #
+############
+
+
+##############
+#  defaults  #
+##############
+
+_FORMAT='tiff'
+_DEV='hpaio:/net/Photosmart_Prem_C310_series?ip=192.168.178.20'
+_RES='600'
+_COMPRESSION='JPEG'
+_QUAL='10'
+
+###############
+#  arguments  #
+###############
+
+usage(){
+    echo "Usage: scanim    [option]             <argument> filename.type"
+    echo "                 -f | --format        <pnm|tiff|png|jpeg>       "
+    echo "                                      Set image format [default=tiff]"
+    echo "                 -r | --resolution    <75|100|150|200|300|600|1200dpi>       "
+    echo "                                      Specify dpi [default=600]"
+    echo "                 -c | --compression   <None|JPEG>   "
+    echo "                                      Compress image? [default=JPEG]"
+    echo "                 -q | --quality       <0..100>      "
+    echo "                                      JPEG compression factor, higher number means faster scan, for possible loss of quality [default=10]"
+    echo "                 -d | --device        <dev-name>        "
+    echo "                                      Set scanner device [default=hpaio:/net/Photosmart_Prem_C310_series?ip=192.168.178.20]"
+    echo "                 -h | --help          Show this help."
+}
+
+while [[ $# -gt 0 ]] && [[ ."$1" = .-* ]] ; do
+    opt="$1"
+    shift
+    case "$opt" in
+        -f|--format)
+            _FORMAT="$1"
+            shift ;;
+        -d|--device)
+            _DEV="$1"
+            shift ;;
+        -c|--compression)
+            _COMPRESSION="$1"
+            shift ;;
+        -r|--resolution)
+            _RES="$1"
+            shift ;;
+        -q|--quality)
+            _QUAL="$1"
+            shift ;;
+        -h|--help)
+            usage
+            exit 0 ;;
+        *)
+            echo "Wrong option: $opt $1"
+            echo ""
+            usage
+            exit 0 ;;
+    esac
+done
+
+
+scanimage \
+    --device "$_DEV" \
+    --format "$_FORMAT" \
+    --resolution "$_RES" \
+    --compression "$_COMPRESSION" \
+    --jpeg-quality "$_QUAL" \
+    --progress \
+    > "${@: -1}"

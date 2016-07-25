@@ -1,0 +1,13 @@
+# download PKGBUILDS
+
+wget "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=pacaur"
+wget "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=cower"
+
+# install  expac, git
+
+pacman -S expac git
+
+# install cower, pacaur
+
+rename to PKGBUILD
+makepkg -sri

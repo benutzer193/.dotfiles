@@ -2,47 +2,47 @@
 "                                   vimrc                                    "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-set nocompatible
-filetype off
+""""""""""""""
+"  vim-plug  "
+""""""""""""""
 
-""""""""""""
-"  Vundle  "
-""""""""""""
+call plug#begin('~/.config/nvim/plugged')
 
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'kien/ctrlp.vim'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'chriskempson/base16-vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'gmarik/Vundle.vim'
-Plugin 'majutsushi/tagbar'
-Plugin 'LaTeX-Box-Team/LaTeX-Box'
-Plugin 'bling/vim-airline'
-Plugin 'Lokaltog/vim-easymotion'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'Shougo/neocomplete.vim'
-Plugin 'SirVer/ultisnips'
-call vundle#end()
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'altercation/vim-colors-solarized'
+Plug 'chriskempson/base16-vim'
+Plug 'scrooloose/syntastic'
+Plug 'majutsushi/tagbar'
+Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for': ['tex', 'bib'] }
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-fugitive'
 
-filetype plugin indent on
-syntax enable
+" install cmake & python2
+
+Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py' }
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+
+call plug#end()
 
 """""""""""""""""""
 "  vim variables  "
 """""""""""""""""""
 
 let mapleader=","
-let g:clipbrdDefaultReg="+"
 
 """""""""""""
 "  options  "
 """""""""""""
 
 set autowrite			" Autosave on buffer switch
+set autoread
 set backspace=indent,eol,start	" allow backspacing over everything in insert mode
 set backup			" enable backup
 set backupdir=~/.vim/backupdir
+set clipboard=unnamedplus
 set foldlevelstart=99
 set hidden			" allow buffer switch without closing
 set hlsearch			" Search highlights
@@ -52,6 +52,9 @@ set laststatus=2		" tells if last window has statusline
 set mouse=a
 set number			" Linenumbers
 set relativenumber
+set scrolloff=5
+set sidescrolloff=5
+"set display+=lastline
 set smartcase
 set spell spelllang=de
 set textwidth=80
@@ -86,7 +89,7 @@ map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 nmap <silent> <leader>/ :nohlsearch<CR>
-cmap w!! w !sudo tee > /dev/null %
+cmap ## w !sudo tee > /dev/null %
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 nnoremap <silent> <Leader>ev :tabnew<CR>:e ~/.vimrc<CR>
 nnoremap <space> za
@@ -114,32 +117,26 @@ let g:airline#extensions#tabline#fnameod = ':t'
 "  Ctrlp  "
 """""""""""
 
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_cmd = 'CtrlPMRUFiles'
+let g:ctrlp_show_hidden=1
+let g:ctrlp_cmd='CtrlPMRUFiles'
 
 """""""""""""""
 "  ultisnips  "
 """""""""""""""
 
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<C-tab>"
+let g:UltiSnipsExpandTrigger="<c-b>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-y>"
 let g:UltiSnipsEditSplit="vertical"
-let g:UltiSnipsUsePythonVersion = 2
+let g:UltiSnipsUsePythonVersion=3
 
-"""""""""""""""""
-"  neocomplete  "
-"""""""""""""""""
-
-let g:neocomplete#enable_at_startup = 1
 
 """"""""""""
 "  base16  "
 """"""""""""
 
-set background=dark
 let base16colorspace=256
-colorscheme base16-default
+colorscheme base16-default-dark
 
 """""""""""""""
 "  Latex-Box  "
@@ -147,8 +144,8 @@ colorscheme base16-default
 
 let g:LatexBox_ignore_warnings=['Underfull', 'Overfull', 'specifier changed to', 'Using preliminary']
 let g:tex_flavor='latex'
-let g:LatexBox_cite_pattern = '\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
-let g:LatexBox_Folding = 1
+let g:LatexBox_cite_pattern='\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
+let g:LatexBox_Folding=1
 
 nnoremap <F6> :call CompileTex()<CR>
 autocmd FileType tex setlocal omnifunc=LatexBox_Complete
