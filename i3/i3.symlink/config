@@ -39,7 +39,6 @@ for_window [class="^xfreerdp|Uzbl-core|Google-chrome|libreoffice"] focus
 #  autostart  #
 ###############
 
-exec $noid urxvtd -q -f -o
 #exec $noid pulseaudio --start
 exec $chrome
 
@@ -50,7 +49,7 @@ exec $chrome
 new_window pixel 1
 new_float pixel 3
 #hide_edge_borders both
-font pango:Monoid 10
+font pango:Monoid 12
 popup_during_fullscreen smart
 workspace_auto_back_and_forth yes
 force_display_urgency_hint 500 ms
@@ -88,7 +87,7 @@ bindsym $mod+d exec dmenu_run
 bindsym $mod+m exec i3-msg $ws $ws9; exec urxvtc -title 'mutt mail' -e mutt -n
 bindsym XF86AudioLowerVolume exec ponymix decrease 5
 bindsym XF86AudioRaiseVolume exec ponymix increase 5
-bindsym XF86AudioMute exec $(amixer get Master | grep off > /dev/null && amixer -q set Master unmute) || amixer -q set Master mute
+bindsym XF86AudioMute exec ponymix toggle
 
 bindsym XF86MonBrightnessUp exec xbacklight -inc 20
 bindsym XF86MonBrightnessDown exec xbacklight -dec 20
@@ -219,7 +218,7 @@ bar {
 	status_command $HOME/.i3/conky
 	# conky with FontAwesome
 	#font pango:FontAwesome 10
-	font pango: Monoid 8
+	font pango: Monoid 10
 	#status_command $HOME/.i3/faconky
 	position top
 	colors {

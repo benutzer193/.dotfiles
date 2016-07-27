@@ -36,10 +36,10 @@ alias rm=" timeout 3 rm -Iv --one-file-system"
 alias xcopy="xclip -selection c"
 alias xpaste="xclip -selection clipboard -o"
 
+# misc
+alias running="ps ax GG -v grep GG"
+
 # systemd
 alias journalctl-errors="journalctl -p 0..4 -xlkr"
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"
-
-# steam
-alias weam="WINEDEBUG=-all primusrun wine ~/.wine/drive_c/Program\ Files\ \(x86\)/Steam/Steam.exe >/dev/null 2>&1 &"

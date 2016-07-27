@@ -9,20 +9,26 @@
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'altercation/vim-colors-solarized'
+"Plug 'altercation/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
 Plug 'scrooloose/syntastic'
 Plug 'majutsushi/tagbar'
-Plug 'LaTeX-Box-Team/LaTeX-Box', { 'for': ['tex', 'bib'] }
-Plug 'bling/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'lervag/vimtex'
+Plug 'itchyny/lightline.vim'
+"Plug 'bling/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
 Plug 'Lokaltog/vim-easymotion'
 Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-fugitive'
+Plug 'Konfekt/FastFold'
 
-" install cmake & python2
+" install cmake & python3
 
-Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py' }
+"Plug 'Valloric/YouCompleteMe', { 'do': 'python ./install.py' }
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
 call plug#end()
@@ -34,6 +40,7 @@ call plug#end()
 """""""""""""""""""
 
 let mapleader=","
+let maplocalleader=","
 
 """""""""""""
 "  options  "
@@ -45,6 +52,7 @@ set backspace=indent,eol,start	" allow backspacing over everything in insert mod
 set backup			" enable backup
 set backupdir=~/.config/nvim/backupdir
 set clipboard=unnamedplus
+set encoding=utf-8
 set foldlevelstart=99
 set hidden			" allow buffer switch without closing
 set hlsearch			" Search highlights
@@ -53,6 +61,8 @@ set incsearch			" search while typing
 set laststatus=2		" tells if last window has statusline
 set mouse=a
 set number			" Linenumbers
+set noshowmode
+set omnifunc=syntaxcomplete#Complete
 set relativenumber
 set scrolloff=5
 set sidescrolloff=5
@@ -60,7 +70,7 @@ set sidescrolloff=5
 set smartcase
 set spell spelllang=de
 set textwidth=80
-set ttimeoutlen=50
+set ttimeoutlen=10
 set undodir=~/.config/nvim/tmp/undo
 set undofile
 set undolevels=1000
@@ -105,13 +115,155 @@ nmap <silent> <leader><CR> i<CR><ESC>
 autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 autocmd VimEnter * if argc()==0|CtrlPMRUFiles|endif
 
+""""""""""""""""
+"  easymotion  "
+""""""""""""""""
+
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map  <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+
+"""""""""""""""
+"  lightline  "
+"""""""""""""""
+
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'fugitive', 'filename' ],
+      \             [ 'ctrlpmark' ] ],
+      \   'right': [ [ 'syntastic', 'lineinfo' ],
+      \              ['percent'],
+      \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function': {
+      \   'fugitive': 'LightLineFugitive',
+      \   'filename': 'LightLineFilename',
+      \   'fileformat': 'LightLineFileformat',
+      \   'filetype': 'LightLineFiletype',
+      \   'fileencoding': 'LightLineFileencoding',
+      \   'mode': 'LightLineMode',
+      \   'ctrlpmark': 'CtrlPMark',
+      \ },
+      \ 'component_expand': {
+      \   'syntastic': 'SyntasticStatuslineFlag',
+      \ },
+      \ 'component_type': {
+      \   'syntastic': 'error',
+      \ },
+      \ 'separator': { 'left': '', 'right': '' },
+      \ 'subseparator': { 'left': '|', 'right': '|' }
+      \ }
+
+function! LightLineModified()
+  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+endfunction
+
+function! LightLineReadonly()
+  return &ft !~? 'help' && &readonly ? '' : ''
+endfunction
+
+function! LightLineFilename()
+  let fname = expand('%:t')
+  return fname == 'ControlP' && has_key(g:lightline, 'ctrlp_item') ? g:lightline.ctrlp_item :
+        \ fname == '__Tagbar__' ? g:lightline.fname :
+        \ ('' != LightLineReadonly() ? LightLineReadonly() . ' ' : '') .
+        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != LightLineModified() ? ' ' . LightLineModified() : '')
+endfunction
+
+function! LightLineFugitive()
+  try
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
+      let mark = ''  " edit here for cool mark
+      let branch = fugitive#head()
+      return branch !=# '' ? mark.branch : ''
+    endif
+  catch
+  endtry
+  return ''
+endfunction
+
+function! LightLineFileformat()
+  return winwidth(0) > 70 ? &fileformat : ''
+endfunction
+
+function! LightLineFiletype()
+  return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+endfunction
+
+function! LightLineFileencoding()
+  return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+endfunction
+
+function! LightLineMode()
+  let fname = expand('%:t')
+  return fname == '__Tagbar__' ? 'Tagbar' :
+        \ fname == 'ControlP' ? 'CtrlP' :
+        \ winwidth(0) > 60 ? lightline#mode() : ''
+endfunction
+
+function! CtrlPMark()
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_item')
+    call lightline#link('iR'[g:lightline.ctrlp_regex])
+    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+          \ , g:lightline.ctrlp_next], 0)
+  else
+    return ''
+  endif
+endfunction
+
+let g:ctrlp_status_func = {
+  \ 'main': 'CtrlPStatusFunc_1',
+  \ 'prog': 'CtrlPStatusFunc_2',
+  \ }
+
+function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+  let g:lightline.ctrlp_regex = a:regex
+  let g:lightline.ctrlp_prev = a:prev
+  let g:lightline.ctrlp_item = a:item
+  let g:lightline.ctrlp_next = a:next
+  return lightline#statusline(0)
+endfunction
+
+function! CtrlPStatusFunc_2(str)
+  return lightline#statusline(0)
+endfunction
+
+let g:tagbar_status_func = 'TagbarStatusFunc'
+
+function! TagbarStatusFunc(current, sort, fname, ...) abort
+    let g:lightline.fname = a:fname
+  return lightline#statusline(0)
+endfunction
+
+augroup AutoSyntastic
+  autocmd!
+  autocmd BufWritePost *.c,*.cpp call s:syntastic()
+augroup END
+function! s:syntastic()
+  SyntasticCheck
+  call lightline#update()
+endfunction
+
 """""""""""""""""
 "  vim-airline  "
 """""""""""""""""
 
-set noshowmode
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#fnameod = ':t'
+"let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#fnameod = ':t'
 
 """""""""""
 "  Ctrlp  "
@@ -137,37 +289,44 @@ let g:UltiSnipsUsePythonVersion=3
 let base16colorspace=256
 colorscheme base16-default-dark
 
-"""""""""""""""
-"  Latex-Box  "
-"""""""""""""""
+""""""""""""
+"  vimtex  "
+""""""""""""
 
-let g:LatexBox_ignore_warnings=['Underfull', 'Overfull', 'specifier changed to', 'Using preliminary']
+let g:vimtex_fold_enabled=1
+let g:vimtex_quickfix_ignored_warnings = [
+            \ 'Underfull',
+            \ 'Overfull',
+            \ 'specifier changed to',
+            \ 'Using preliminary'
+            \ ]
 let g:tex_flavor='latex'
-let g:LatexBox_cite_pattern='\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
-let g:LatexBox_Folding=1
+let g:vimtex_view_method='zathura'
+"let g:LatexBox_cite_pattern='\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
+"let g:LatexBox_Folding=1
 
-nnoremap <F6> :call CompileTex()<CR>
-autocmd FileType tex setlocal omnifunc=LatexBox_Complete
-autocmd FileType tex command -buffer W write | call CompileTex()<CR>
+"nnoremap <F6> :call CompileTex()<CR>
+"autocmd FileType tex setlocal omnifunc=LatexBox_Complete
+"autocmd FileType tex command -buffer W write | call CompileTex()<CR>
 
-function! CompileTex()
-	silent write!
-	call setqflist([])
-	echon "compiling with arara ..."
-	exec "lcd %:h"
-	setlocal makeprg=arara\ --verbose\ --log\ %
-	silent make!
+"function! CompileTex()
+	"silent write!
+	"call setqflist([])
+	"echon "compiling with arara ..."
+	"exec "lcd %:h"
+	"setlocal makeprg=arara\ --verbose\ --log\ %
+	"silent make!
 
-	if !empty(getqflist())
-		copen
-		wincmd J
-		redraw!
-	else
-		cclose
-		redraw!
-		echon "successfully compiled"
-	endif
-endfunction
+	"if !empty(getqflist())
+		"copen
+		"wincmd J
+		"redraw!
+	"else
+		"cclose
+		"redraw!
+		"echon "successfully compiled"
+	"endif
+"endfunction
 
 """"""""""""
 "  tagbar  "
@@ -180,5 +339,23 @@ autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
 """""""""""""""""""
 "  YouCompleteMe  "
 """""""""""""""""""
+"let g:ycm_min_num_of_chars_for_completion=2
 
-let g:ycm_min_num_of_chars_for_completion=2
+""""""""""""""
+"  deoplete  "
+""""""""""""""
+let g:deoplete#enable_at_startup = 1
+
+if !exists('g:deoplete#omni#input_patterns')
+    let g:deoplete#omni#input_patterns = {}
+endif
+let g:deoplete#omni#input_patterns.tex = '\\(?:'
+            \ .  '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+            \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
+            \ . '|hyperref\s*\[[^]]*'
+            \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|(?:include(?:only)?|input)\s*\{[^}]*'
+            \ . '|\w*(gls|Gls|GLS)(pl)?\w*(\s*\[[^]]*\]){0,2}\s*\{[^}]*'
+            \ . '|includepdf(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ . '|includestandalone(\s*\[[^]]*\])?\s*\{[^}]*'
+            \ .')'

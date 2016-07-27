@@ -2,5 +2,6 @@ editor=vim
 displaybuildfiles=diff
 fallback=true
 sortby=popularity
+sortorder=ascending
 sudoloop=true
 clonedir=~/.builds

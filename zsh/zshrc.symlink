@@ -37,9 +37,13 @@ do
 done
 
 
-source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $_DF/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+
+zmodload zsh/terminfo
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
 
 unset _CONF
 unset _DF
