@@ -8,6 +8,6 @@ alias ga='git add'
 alias gco='git checkout'
 alias gcb='git copy-branch-name'
 alias gb='git branch'
-alias gs='git status -sb' # upgrade your git if -sb breaks for you. it's fun.
+alias gs='git status -sb'
 
 alias git-update-submodules='git pull --recurse-submodules && git submodule update'

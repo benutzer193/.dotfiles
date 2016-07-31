@@ -28,7 +28,7 @@ alias pacu="sudo pacman --sync --refresh --sysupgrade"
 alias pacm-update-mirrors="sudo reflector --threads 8 --verbose -l 200 -p http --sort rate --save /etc/pacman.d/mirrorlist"
 alias pacm-remove-orphans="sudo pacman --remove --recursive \$(pacman --quiet --query --deps --unrequired)"
 alias pacm-list-orphans="sudo pacman --query --deps --unrequired"
-alias pacm-update-db="sudo pacman-update-db"
+alias pacm-update-db="sudo pacman-db-upgrade"
 alias pacm-optimize="sudo pacman-optimize"
 
 # pacaur

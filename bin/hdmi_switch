@@ -28,9 +28,3 @@ else
 	sleep 2
 	switch_audio $HDMISOUND
 fi
-
-unset EXT
-unset IN
-unset HDMISOUND
-unset ANALOG
-unset USER

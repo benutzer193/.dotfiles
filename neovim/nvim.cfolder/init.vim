@@ -8,11 +8,14 @@
 
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' } |
+            \ Plug 'junegunn/fzf.vim'
+"Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'altercation/vim-colors-solarized'
 Plug 'chriskempson/base16-vim'
+Plug 'junegunn/goyo.vim'
 Plug 'scrooloose/syntastic'
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 Plug 'lervag/vimtex'
 Plug 'itchyny/lightline.vim'
 "Plug 'bling/vim-airline'
@@ -48,6 +51,7 @@ let maplocalleader=","
 
 set autowrite			" Autosave on buffer switch
 set autoread
+set autochdir
 set backspace=indent,eol,start	" allow backspacing over everything in insert mode
 set backup			" enable backup
 set backupdir=~/.config/nvim/backupdir
@@ -111,9 +115,8 @@ nmap <silent> <leader><CR> i<CR><ESC>
 """"""""""""""""""
 "  autocommands  "
 """"""""""""""""""
-
 autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
-autocmd VimEnter * if argc()==0|CtrlPMRUFiles|endif
+"autocmd VimEnter * if argc()==0|CtrlPMRUFiles|endif
 
 """"""""""""""""
 "  easymotion  "
@@ -269,8 +272,8 @@ endfunction
 "  Ctrlp  "
 """""""""""
 
-let g:ctrlp_show_hidden=1
-let g:ctrlp_cmd='CtrlPMRUFiles'
+"let g:ctrlp_show_hidden=1
+"let g:ctrlp_cmd='CtrlPMRUFiles'
 
 """""""""""""""
 "  ultisnips  "
@@ -289,6 +292,41 @@ let g:UltiSnipsUsePythonVersion=3
 let base16colorspace=256
 colorscheme base16-default-dark
 
+"""""""""
+"  fzf  "
+"""""""""
+
+map <Leader>o :FZF ~<CR>
+map <Leader>b :Buffers<CR>
+map <Leader>c :Commands<CR>
+map <Leader><F8> :BTags<CR>
+
+
+command! FZFMru call fzf#run({
+\ 'source':  reverse(s:all_files()),
+\ 'sink':    'edit',
+\ 'options': '-m -x +s',
+\ 'down':    '40%' })
+
+function! s:all_files()
+  return extend(
+  \ filter(copy(v:oldfiles),
+  \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
+  \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
+endfunction
+
+function! s:fzf_statusline()
+  " Override statusline as you like
+  highlight fzf1 ctermfg=161 ctermbg=251
+  highlight fzf1 ctermfg=23 ctermbg=251
+  highlight fzf3 ctermfg=237 ctermbg=251
+  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+endfunction
+let $FZF_DEFAULT_COMMAND = 'find .'
+let g:fzf_layout = { 'window': 'enew' }
+"autocmd VimEnter * if argc()==0|FZF ~|endif
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
 """"""""""""
 "  vimtex  "
 """"""""""""
@@ -302,44 +340,6 @@ let g:vimtex_quickfix_ignored_warnings = [
             \ ]
 let g:tex_flavor='latex'
 let g:vimtex_view_method='zathura'
-"let g:LatexBox_cite_pattern='\C\\\(auto\|foot\|footfull\|full\|paren\|text\|smart\|super\)\?cite\(p\|t\|author\|year\|yearpart\|title\|date\|url\)\=\*\=\(\[[^\]]*\]\)*\_\s*{'
-"let g:LatexBox_Folding=1
-
-"nnoremap <F6> :call CompileTex()<CR>
-"autocmd FileType tex setlocal omnifunc=LatexBox_Complete
-"autocmd FileType tex command -buffer W write | call CompileTex()<CR>
-
-"function! CompileTex()
-	"silent write!
-	"call setqflist([])
-	"echon "compiling with arara ..."
-	"exec "lcd %:h"
-	"setlocal makeprg=arara\ --verbose\ --log\ %
-	"silent make!
-
-	"if !empty(getqflist())
-		"copen
-		"wincmd J
-		"redraw!
-	"else
-		"cclose
-		"redraw!
-		"echon "successfully compiled"
-	"endif
-"endfunction
-
-""""""""""""
-"  tagbar  "
-""""""""""""
-
-nmap <F8> :TagbarToggle<CR>
-
-autocmd BufEnter * execute "chdir ".escape(expand("%:p:h"), ' ')
-
-"""""""""""""""""""
-"  YouCompleteMe  "
-"""""""""""""""""""
-"let g:ycm_min_num_of_chars_for_completion=2
 
 """"""""""""""
 "  deoplete  "

@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-[[ $EUID != 0 ]] && exec sudo -- "$0" "$@"
-
 _TLDB="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && \
     cd ../texlive/ && pwd )/texlivedb$(date +%y%m%d)"
 

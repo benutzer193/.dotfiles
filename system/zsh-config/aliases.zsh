@@ -4,9 +4,10 @@ alias -g GG=" | grep"
 alias -g grep="grep --color"
 
 # ls commands
-alias ls="ls -X --color=auto"
-alias la="ls -a"
+alias ls="ls -X --color=auto --group-directories-first"
+alias la="ls -A"
 alias ll="ls -lh"
+alias lla="la -lh"
 alias l.="ls -d .*"
 
 # sudo
@@ -30,16 +31,16 @@ alias .5='cd ../../../../../'
 # cp / mv / rm / mkdir commands
 alias cp="cp -iv"
 alias trash="mv -t ~/trash"
-alias mv=" timeout 8 mv -iv"
+alias mv=" mv -iv"
 alias mkdir="mkdir -pv"
-alias rm=" timeout 3 rm -Iv --one-file-system"
-alias xcopy="xclip -selection c"
-alias xpaste="xclip -selection clipboard -o"
+alias rm=" rm -Iv --one-file-system --preserve-root"
 
 # misc
-alias running="ps ax GG -v grep GG"
+alias e='extract'
+alias process="ps aux | grep -v grep | grep -i -e VSZ -e"
+alias wget="wget -c"
 
 # systemd
-alias journalctl-errors="journalctl -p 0..4 -xlkr"
+alias journalctl-errors='journalctl -p 0..4 -xlkr'
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"

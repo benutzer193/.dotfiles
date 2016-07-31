@@ -1,5 +1,9 @@
-export _DF=$HOME/.dotfiles
+################################################################################
+#                                    zshrc                                     #
+################################################################################
 
+
+_DF=$( cd "${${(%):-%N}:A:h}/.." && pwd )
 # your project folder that we can `c [tab]` to
 # export PROJECTS=~/Code
 
@@ -19,6 +23,7 @@ for file in ${(M)_CONF:#*/path.zsh}
 do
   source $file
 done
+export PATH=$_DF/bin:$PATH
 
 # load everything but the path and completion files
 for file in ${${_CONF:#*/path.zsh}:#*/completion.zsh}
@@ -37,13 +42,14 @@ do
 done
 
 
-source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $_DF/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
 
-unset _CONF
-unset _DF
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
