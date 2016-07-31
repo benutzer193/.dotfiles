@@ -14,6 +14,7 @@ then
   source ~/.localrc
 fi
 
+[[ -f ~/.zshconf ]] && source ~/.zshconf
 # all of our zsh files
 typeset -U _CONF
 _CONF=($_DF/**/zsh-config/*.zsh)
@@ -41,12 +42,16 @@ do
   source $file
 done
 
+#######################
+#  plugin submodules  #
+#######################
 
 source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $_DF/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 zmodload zsh/terminfo
+
 bindkey "$terminfo[kcuu1]" history-substring-search-up
 bindkey "$terminfo[kcud1]" history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up

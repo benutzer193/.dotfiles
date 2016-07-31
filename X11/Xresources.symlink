@@ -81,9 +81,9 @@ URxvt.scrollBar: 	false
 URxvt.intensityStyles: 	false
 URxvt*font:		xft:Monoid:size=12:style=Regular:antialias=true
 URxvt*boldFont:		xft:Monoid:size=12:style=Bold:antialias=true
-URxvt.perl-ext-common: default,matcher
-URxvt.url-launcher: /usr/bin/xdg-open
-URxvt.matcher.button: 1
+URxvt.perl-ext-common:  default,matcher
+URxvt.url-launcher:     /usr/bin/xdg-open
+URxvt.matcher.button:   1
 !URxvt.secondaryScreen: 1
 !URxvt.secondaryScroll: 0
-!URxvt.secondaryWheel: 1
+!URxvt.secondaryWheel:  1
