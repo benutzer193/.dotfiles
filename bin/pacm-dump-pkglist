@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+_PKGS="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && \
+    cd ../pacman/ && pwd )/pacman-installed-pkgs$(date +%y%m%d)"
+
+pacman -Qqen > $_PKGS
