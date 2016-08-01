@@ -109,7 +109,8 @@ if [[ -z $(get_out) ]]; then
 fi
 
 OUT="$(get_out)"
-CONFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd ../config-files && pwd )"
+CONFDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" \
+    && cd ../config-files && pwd )"
 HOSTAPDCONF="${CONFDIR}/hostapd-${IN}.conf"
 DNSCONF="${CONFDIR}/dnsmasq-${IN}.conf"
 
@@ -159,7 +160,7 @@ sysctl -w net.ipv4.ip_forward=1 &
 hostapd -B $HOSTAPDCONF 1> /dev/null
 
 clear
-echo "Acces Point: $APNAME"
+echo "Access Point: $APNAME"
 echo
 usage
 $EMPTY

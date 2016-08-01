@@ -29,10 +29,10 @@ alias .4='cd ../../../../'
 alias .5='cd ../../../../../'
 
 # cp / mv / rm / mkdir commands
-alias cp="cp -iv"
-alias trash="mv -t ~/trash"
+alias cp=" cp -iv"
+alias trash=" mv -t ~/trash"
 alias mv=" mv -iv"
-alias mkdir="mkdir -pv"
+alias mkdir=" mkdir -pv"
 alias rm=" rm -Iv --one-file-system --preserve-root"
 
 # misc
@@ -41,6 +41,37 @@ alias process="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias wget="wget -c"
 
 # systemd
-alias journalctl-errors='journalctl -p 0..4 -xlkr'
+alias journalctl-errors='journalctl -p 0..3 -xlkr'
+alias journalctl-warnings='journalctl -p 0..4 -xlkr'
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"
+
+# suffix aliases
+BROWSER="chromium --disk-cache-dir=/tmp/cache"
+VPLAYER="primusrun mpv"
+IMAGEVIEWER="sxiv"
+
+for suffix in org com de
+do
+    alias -s $suffix=$BROWSER
+done
+
+for suffix in mp4 avi mkv
+do
+    alias -s $suffix=$VPLAYER
+done
+
+for suffix in jpg jpeg png gif
+do
+    alias -s $suffix=$IMAGEVIEWER
+done
+
+for suffix in tex bib html htm md
+do
+    alias -s $suffix=$EDITOR
+done
+
+unset suffix
+unset BROWSER
+unset VPLAYER
+unset IMAGEVIEWER

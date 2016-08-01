@@ -3,7 +3,7 @@
 ################################################################################
 
 
-_DF=$( cd "${${(%):-%N}:A:h}/.." && pwd )
+export DOTFILES=$( cd "${${(%):-%N}:A:h}/.." && pwd )
 # your project folder that we can `c [tab]` to
 # export PROJECTS=~/Code
 
@@ -15,17 +15,17 @@ then
 fi
 # all of our zsh files
 typeset -U _CONF
-_CONF=($_DF/**/zsh-config/*.zsh)
+_CONF=($DOTFILES/**/zsh-config/*.zsh)
 
 # load the path files
 for file in ${(M)_CONF:#*/path.zsh}
 do
   source $file
 done
-export PATH=$_DF/bin:$PATH
+export PATH=$DOTFILES/bin:$PATH
 
-fpath=( $fpath(N) $_DF/functions )
-typeset -U fpath
+fpath=($fpath "$DOTFILES/functions")
+autoload -Uz md extract rd
 
 # load everything but the path and completion files
 for file in ${${_CONF:#*/path.zsh}:#*/completion.zsh}
@@ -34,8 +34,11 @@ do
 done
 
 # initialize autocomplete here, otherwise functions won't be loaded
-autoload -U compinit
+autoload -Uz compinit promptinit
 compinit
+promptinit
+
+prompt pure
 
 # load every completion after autocomplete loads
 for file in ${(M)_CONF:#*/completion.zsh}
@@ -47,9 +50,9 @@ done
 #  plugin submodules  #
 #######################
 
-source $_DF/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $_DF/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $_DF/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
+source $DOTFILES/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $DOTFILES/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $DOTFILES/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 zmodload zsh/terminfo
 
