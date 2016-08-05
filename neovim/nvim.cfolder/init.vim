@@ -329,7 +329,6 @@ autocmd! User FzfStatusLine call <SID>fzf_statusline()
 """"""""""""
 "  vimtex  "
 """"""""""""
-
 let g:vimtex_fold_enabled=1
 let g:vimtex_quickfix_ignored_warnings = [
             \ 'Underfull',

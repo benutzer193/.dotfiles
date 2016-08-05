@@ -7,6 +7,7 @@ autoconf
 automake
 bash
 bbswitch
+bind-tools
 binutils
 bison
 btrfs-progs
@@ -34,12 +35,14 @@ gcc-libs
 gettext
 gimp
 git
+glances
 glibc
 graphicsmagick
 grep
 groff
 gzip
 highlight
+htop
 i3-wm
 i3lock
 iasl

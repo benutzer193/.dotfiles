@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-rd () {
-    cd "$DOTFILES/steam/ASF/"
-
-    mono ASF.exe --client "redeem $1"
-}
