@@ -41,8 +41,8 @@ alias process="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias wget="wget -c"
 
 # systemd
-alias journalctl-errors='journalctl -p 0..3 -xlkr'
-alias journalctl-warnings='journalctl -p 0..4 -xlkr'
+alias journalctl-errors='journalctl -p 3 -xleb'
+alias journalctl-warnings='journalctl -p 4 -xleb'
 alias shutdown="systemctl poweroff"
 alias reboot="systemctl reboot"
 

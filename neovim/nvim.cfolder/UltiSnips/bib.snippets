@@ -1,0 +1,26 @@
+snippet inc "In a Collection"
+@incollection{$1,
+	crossref = {$2},
+	author   = {$3},
+	title    = {$4},
+	pages    = {$5--$6},
+}
+
+$0
+endsnippet
+
+
+snippet col "Collection"
+@collection{$1,
+	year     = {$2},
+	editor   = {$3},
+	title    = {$4},
+	series   = {$5}
+	publisher= {$5},
+	location = {$6},
+}
+
+$0
+endsnippet
+
+# vim: set ft=snippets:

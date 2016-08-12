@@ -91,6 +91,7 @@ psmisc
 pulseaudio
 pulseaudio-alsa
 python-neovim
+python-unidecode
 rxvt-unicode
 sed
 shadow
@@ -126,5 +127,6 @@ xorg-xsetroot
 xsel
 youtube-dl
 zathura
+zathura-djvu
 zathura-pdf-mupdf
 zsh
