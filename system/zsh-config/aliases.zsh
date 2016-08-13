@@ -36,7 +36,7 @@ alias mkdir=" mkdir -pv"
 alias rm=" rm -Iv --one-file-system --preserve-root"
 
 # misc
-alias e='extract'
+alias e='$EDITOR'
 alias process="ps aux | grep -v grep | grep -i -e VSZ -e"
 alias wget="wget -c"
 
