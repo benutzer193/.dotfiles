@@ -291,7 +291,7 @@ call plug#end()
   "set display+=lastline
 
   set backup backupdir=~/.config/nvim/backupdir
-  set undofile undodir=~/.config/nvim/tmp/undo
+  set undofile undodir=~/.config/nvim/undodir
   set undolevels=1000
   set undoreload=10000
 
@@ -400,18 +400,6 @@ call plug#end()
   augroup AutoNeomake
     au!
     au BufWritePost * Neomake
-  augroup END
-
-  function! s:MyFollowSymlink()
-    silent! let s:fname = resolve(expand('%:p'))
-    silent! bwipeout
-    silent! exec "edit " .s:fname
-  endfunction
-  command! FollowSymlink call s:MyFollowSymlink()
-
-  augroup followsymlink
-    autocmd!
-    autocmd BufReadPost * FollowSymlink
   augroup END
 
   au BufReadPost *
