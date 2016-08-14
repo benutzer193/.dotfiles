@@ -23,10 +23,12 @@ dvipdfmx.x86_64-linux
 dvips
 dvips.x86_64-linux
 enctex
+environ
 etex
 etex-pkg
 etoolbox
 euenc
+filehook
 fontspec
 geometry
 german
@@ -61,6 +63,7 @@ latexmk.x86_64-linux
 lm
 logreq
 lua-alt-getopt
+lualatex-math
 lualibs
 luaotfload
 luaotfload.x86_64-linux
@@ -78,11 +81,13 @@ mflogo
 mfware
 mfware.x86_64-linux
 microtype
+ms
 ntheorem
 oberdiek
 parskip
 pdftex
 pdftex.x86_64-linux
+pgf
 plain
 polyglossia
 scheme-infraonly
@@ -91,6 +96,7 @@ setspace
 tetex
 tetex.x86_64-linux
 tex
+tex-gyre-math
 tex-ini-files
 tex.x86_64-linux
 texconfig
@@ -105,10 +111,14 @@ texlive.infra
 texlive.infra.x86_64-linux
 tipa
 tools
+trimspaces
+ucharcat
 unicode-data
+unicode-math
 updmap-map
 url
 wrapfig
+xcolor
 xdvi
 xdvi.x86_64-linux
 xkeyval

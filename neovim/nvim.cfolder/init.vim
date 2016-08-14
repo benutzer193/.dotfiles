@@ -17,7 +17,7 @@ endif
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Lokaltog/vim-easymotion'
-Plug 'Yggdroot/indentLine'
+"Plug 'Yggdroot/indentLine'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-signify'
 Plug 'neomake/neomake'
@@ -232,6 +232,7 @@ call plug#end()
 
 " {{{ vimtex
   let g:vimtex_fold_enabled=1
+  let g:vimtex_format_enabled=1
   let g:vimtex_quickfix_ignored_warnings = [
     \ 'Underfull',
     \ 'Overfull',
@@ -399,6 +400,18 @@ call plug#end()
   augroup AutoNeomake
     au!
     au BufWritePost * Neomake
+  augroup END
+
+  function! s:MyFollowSymlink()
+    silent! let s:fname = resolve(expand('%:p'))
+    silent! bwipeout
+    silent! exec "edit " .s:fname
+  endfunction
+  command! FollowSymlink call s:MyFollowSymlink()
+
+  augroup followsymlink
+    autocmd!
+    autocmd BufReadPost * FollowSymlink
   augroup END
 
   au BufReadPost *

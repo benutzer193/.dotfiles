@@ -104,37 +104,41 @@ link_file () {
 }
 
 install_dotfiles () {
-    info 'installing dotfiles'
+  info 'installing dotfiles'
 
-    local overwrite_all=false backup_all=false skip_all=false
+  local overwrite_all=false backup_all=false skip_all=false
 
-    for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink')
-    do
-        dst="$HOME/.$(basename "${src%.*}")"
-        link_file "$src" "$dst"
-    done
+  for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink')
+  do
+    dst="$HOME/.$(basename "${src%.*}")"
+    link_file "$src" "$dst"
+  done
 }
 
 install_dotfiles_conffolder () {
-    info 'installing dotfiles'
+  info 'installing dotfiles'
 
-    local overwrite_all=false backup_all=false skip_all=false
+  local overwrite_all=false backup_all=false skip_all=false
 
-    for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.cfolder')
-    do
-	dst="$HOME/.config/$(basename "${src%.*}")"
-       	link_file "$src" "$dst"
-    done
+  for src in $(find "$DOTFILES_ROOT" -maxdepth 2 -name '*.cfolder')
+  do
+    dst="$HOME/.config/$(basename "${src%.*}")"
+    link_file "$src" "$dst"
+  done
 }
 
 install_neovim_plugins (){
-    if command -v nvim >/dev/null 2>&1
-    then
-        nvim +PlugUpgrade +PlugInstall +PlugUpdate +qall
-        printf "Installed and Updated Neovim Plugins."
-    else
-        printf "Please install Neovim!"
-    fi
+  if command -v nvim >/dev/null 2>&1
+  then
+    nvim +PlugUpgrade +PlugInstall +PlugUpdate +qall
+    printf "Installed and Updated Neovim Plugins."
+  elif command -v vim >/dev/null 2>&1
+  then
+    vim +PlugUpgrade +PlugInstall +PlugUpdate +qall
+    printf "Installed and Updated Vim Plugins."
+  else
+    printf "Please install Vim or Neovim!"
+  fi
 }
 
 install_dotfiles
