@@ -10,4 +10,4 @@ alias gcb='git copy-branch-name'
 alias gb='git branch'
 alias gs='git status -sb'
 
-alias git-update-submodules='git pull --recurse-submodules && git submodule update'
+alias git-update-submodules='git submodule foreach git pull origin master'
