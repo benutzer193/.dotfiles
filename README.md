@@ -25,8 +25,10 @@ script/bootstrap
 This will symlink the appropriate files in `Dotfiles` to your home directory.
 Everything is configured and tweaked within `~/Dotfiles`.
 
-I don't recommend to hide the Dotfiles like `~/.dotfiles` because [fzf](https://github.com/junegunn/fzf.git) is configured to exclude hidden folders and won't find files in `~/.dotfiles`.
-.
+I don't recommend to hide the Dotfiles like `~/.dotfiles` because
+[fzf](https://github.com/junegunn/fzf.git) is configured to exclude hidden folders
+and won't find files in `~/.dotfiles`.
+
 
 ## topical
 
@@ -41,17 +43,16 @@ symlinked without extension into `$HOME` when you run `script/bootstrap`.
 
 There's a few special files in the hierarchy.
 
-- **bin/**: Anything in `bin/` and `private/bin` will get added to your `$PATH` and be made
-  available everywhere.
-  **note**: Git will ignore everything inside `private/`!
+- **bin/**: Anything in `bin/` and `private/bin` will get added to your `$PATH`
+  and be made available everywhere.
 - **topic/\*.symlink**: Any files ending in `*.symlink` get symlinked into
   your `$HOME`. This is so you can keep all of those versioned in your dotfiles
   but still keep those autoloaded files in your home directory. These get
   symlinked in when you run `script/bootstrap`.
 - **topic/\*.cfolder**: Any files ending in `*.cfolder` get symlinked into
-  your `$HOME/.config` folder. This is so you can keep all of those versioned in your dotfiles
-  but still keep those autoloaded files in your home directory. These get
-  symlinked in when you run `script/bootstrap`.
+  your `$HOME/.config` folder. This is so you can keep all of those versioned in
+  your dotfiles but still keep those autoloaded files in your home directory.
+  These get symlinked in when you run `script/bootstrap`.
 
 The following files have to be located inside a **topic/\*\*/config-files/** folder:
 - **\*.zsh**: Any files ending in `.zsh` get loaded into your
@@ -61,16 +62,26 @@ The following files have to be located inside a **topic/\*\*/config-files/** fol
 
 Every file in a **topic/\*\*/env/** folder with a specific name will be added
 to the corresponding environmental variable.
+
 Possible filenames are **path.zsh**, **manpath.zsh** and **infopath.zsh**.
 The files should contain only the paths separated by lines!
 e.g.:
 
-    /usr/bin
-		/usr/sbin
+**path.zsh**
+```
+/usr/bin
+/usr/sbin
+```
 
 ## notes
 
 The Dotfile directory is available as `$DOTFILES`.
+
+Git will ignore everything inside `private/`!
+
+`bootstrap` will also install and update Neovim or Vim plugins (incl. fzf),
+depending on what is installed on the system. If both is installed Neovim
+will be preferred.
 
 ## thanks
 

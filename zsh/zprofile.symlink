@@ -1,0 +1,65 @@
+#!/usr/bin/env zsh
+
+# make DOTFILES available as environmental variable
+export DOTFILES=$( cd "${${(%):-%N}:A:h}/.." && pwd )
+
+
+# EDITOR
+export EDITOR='vim'
+
+
+# LESS
+export LESS=-RiNs
+export LESS_TERMCAP_me=$(printf '\e[0m')
+export LESS_TERMCAP_se=$(printf '\e[0m')
+export LESS_TERMCAP_ue=$(printf '\e[0m')
+export LESS_TERMCAP_mb=$(printf '\e[1;32m')
+export LESS_TERMCAP_md=$(printf '\e[1;34m')
+export LESS_TERMCAP_us=$(printf '\e[1;32m')
+export LESS_TERMCAP_so=$(printf '\e[1;44;1m')
+
+
+# set path variables
+typeset -U path{,files}
+
+for pathentry in $DOTFILES{/private,}/bin
+do
+  [[ -d $pathentry ]] && path+=($pathentry)
+done
+
+
+pathfiles=($DOTFILES/**/env/path.zsh)
+
+if [[ ${#pathfiles[@]} -ne 0 ]]
+then
+  for pathentry in $(cat $pathfiles)
+  do
+    [[ -d $pathentry ]] && path+=($pathentry)
+  done
+fi
+
+
+pathfiles=($DOTFILES/**/env/manpath.zsh)
+
+if [[ ${#pathfiles[@]} -ne 0 ]]
+then
+  typeset -U manpath
+  for pathentry in $(cat $pathfiles)
+  do
+    [[ -d $pathentry ]] && manpath+=($pathentry)
+  done
+fi
+
+
+pathfiles=($DOTFILES/**/env/infopath.zsh)
+
+if [[ ${#pathfiles[@]} -ne 0 ]]
+then
+  typeset -UT INFOPATH infopath
+  for pathentry in $(cat $pathfiles)
+  do
+    [[ -d $pathentry ]] && infopath+=($pathentry)
+  done
+fi
+
+unset path{fiĺes,entry}
