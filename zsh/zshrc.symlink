@@ -1,9 +1,10 @@
+#!/usr/bin/env zsh
 ################################################################################
+#
 #                                    zshrc                                     #
 ################################################################################
 
 
-export DOTFILES=$( cd "${${(%):-%N}:A:h}/.." && pwd )
 # your project folder that we can `c [tab]` to
 # export PROJECTS=~/Code
 
@@ -13,22 +14,16 @@ if [[ -a ~/.localrc ]]
 then
   source ~/.localrc
 fi
-# all of our zsh files
-typeset -U _CONF
-_CONF=($DOTFILES/**/zsh-config/*.zsh)
-
-# load the path files
-for file in ${(M)_CONF:#*/path.zsh}
-do
-  source $file
-done
-export PATH=$DOTFILES/bin:$DOTFILES/private/bin:$PATH
 
 fpath=($fpath "$DOTFILES/functions")
 autoload -Uz md extract big-files
 
+# all of our zsh files
+typeset -U _CONF
+_CONF=($DOTFILES/**/zsh-config/*.zsh)
+
 # load everything but the path and completion files
-for file in ${${_CONF:#*/path.zsh}:#*/completion.zsh}
+for file in ${_CONF:#*/completion.zsh}
 do
   source $file
 done
@@ -46,7 +41,7 @@ do
   source $file
 done
 
-unset $_CONF
+unset _CONF
 
 #######################
 #  plugin submodules  #
@@ -64,4 +59,3 @@ bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-# vim: set ft=zsh:

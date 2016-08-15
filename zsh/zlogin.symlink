@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 if [[ $(tty) = "/dev/tty1" ]]; then
     exec startx > .xlog_i3-tty1 2>&1
 elif [[ $(tty) = "/dev/tty2" ]]; then
