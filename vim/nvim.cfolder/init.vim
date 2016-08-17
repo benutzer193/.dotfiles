@@ -64,17 +64,6 @@ call plug#end()
     \    "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
     \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
   endfunction
-
-  "let g:fzf_layout = { 'window': 'enew' }
-
-  "function! s:fzf_statusline()
-    "" Override statusline as you like
-    "highlight fzf1 ctermfg=161 ctermbg=251
-    "highlight fzf1 ctermfg=23 ctermbg=251
-    "highlight fzf3 ctermfg=237 ctermbg=251
-    "setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
-  "endfunction
-  "autocmd! User FzfStatusLine call <SID>fzf_statusline()
 "}}}
 
 " {{{ vim-signify
@@ -214,7 +203,7 @@ call plug#end()
     let g:deoplete#omni#input_patterns = {}
   endif
   let g:deoplete#omni#input_patterns.tex = '\\(?:'
-    \ .  '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
+    \ . '\w*cite\w*(?:\s*\[[^]]*\]){0,2}\s*{[^}]*'
     \ . '|\w*ref(?:\s*\{[^}]*|range\s*\{[^,}]*(?:}{)?)'
     \ . '|hyperref\s*\[[^]]*'
     \ . '|includegraphics\*?(?:\s*\[[^]]*\]){0,2}\s*\{[^}]*'
@@ -232,7 +221,6 @@ call plug#end()
 
 " {{{ vimtex
   let g:vimtex_fold_enabled=1
-  let g:vimtex_format_enabled=1
   let g:vimtex_quickfix_ignored_warnings = [
     \ 'Underfull',
     \ 'Overfull',
@@ -241,7 +229,7 @@ call plug#end()
     \ ]
   let g:tex_flavor='latex'
   let g:vimtex_view_method='zathura'
-  let g:vimtex_view_use_temp_files=1
+  "let g:vimtex_view_use_temp_files=1
   let g:vimtex_latexmk_progname='nvr'
   " temporary fix for missing --remote support in neovim
   " install neovm-remote from AUR
@@ -306,6 +294,16 @@ call plug#end()
   " {{{  vim keybindings
   let mapleader=","
   let maplocalleader=","
+  " use <F16> (menukey) as imapleader
+
+" {{{ vim-plug
+	nnoremap <silent> <leader>pd :PlugDiff<cr>
+	nnoremap <silent> <leader>pi :PlugInstall<cr>
+	nnoremap <silent> <leader>pu :PlugUpgrade<cr>
+	nnoremap <silent> <leader>pp :PlugUpdate<cr>
+	nnoremap <silent> <leader>ps :PlugStatus<cr>
+	nnoremap <silent> <leader>pc :PlugClean<cr>
+" }}}
 
   " {{{ fzf
   nnoremap <silent> <Leader><Leader>o :FZF! ~<CR>
@@ -335,6 +333,7 @@ call plug#end()
   map  <Leader>w <Plug>(easymotion-bd-w)
   nmap <Leader>w <Plug>(easymotion-overwin-w)
 " }}}
+
 
 " {{{ UltiSnips
   let g:UltiSnipsExpandTrigger="<c-b>"
@@ -402,15 +401,18 @@ call plug#end()
     au BufWritePost * Neomake
   augroup END
 
-  au BufReadPost *
-        \ if line("'\"") > 1 && line("'\"") <= line("$") |
-        \   exe "normal! g'\"" |
-        \ endif
-  au BufRead * normal zz
+  augroup vim_commands
+    au!
+    au VimEnter * if argc()==0 | History! | endif
+    au BufReadPost *
+          \ if line("'\"") > 1 && line("'\"") <= line("$") |
+          \   exe "normal! g'\"" |
+          \ endif
 
-  au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
-  au VimEnter * if argc()==0 | History! | endif
-" }}}
+    au BufRead * normal zz
+    au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
+  augroup END
+  " }}}
 " }}}
 
 " vim: foldlevel=1 foldmethod=marker:

@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-_TLDB="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && \
-    cd ../texlive/ && pwd )/texlivedb$(date +%y%m%d)"
+_TLDB="$DOTFILES/texlive/texlivedb$(date +%y%m%d)"
 
 tlmgr dump-tlpdb --local | sed -n 's/^name //gp' > $_TLDB

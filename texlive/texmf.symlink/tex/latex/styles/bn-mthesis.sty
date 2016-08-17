@@ -12,11 +12,6 @@
 
 %\usepackage[automark]{scrlayer-scrpage}
 
-\usepackage{mathtools}
-\usepackage[amsmath,thmmarks,standard]{ntheorem}
-\usepackage{amssymb}
-\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
-
 \usepackage{tabularx}
 \usepackage{fontspec}
 \usepackage{polyglossia}
@@ -25,7 +20,14 @@
 \usepackage[onehalfspacing]{setspace}
 \usepackage{microtype}
 
+\usepackage{tikz}
+\usepackage{environ}
 \usepackage[style=authoryear-icomp,backend=biber,maxcitenames=2,maxbibnames=4]{biblatex}
+
+\usepackage{mathtools}
+\usepackage[amsmath,thmmarks,standard]{ntheorem}
+\usepackage{amssymb}
+\usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
 
 
 %%%%%%%%%%%%%%
@@ -40,9 +42,17 @@
 \setmonofont{TeX Gyre Termes}
 \setmathfont{TeX Gyre Termes Math}
 
-%\setmainfont{Arno Pro}
-%\setsansfont{Arno Pro}
-%\setmonofont{Arno Pro}
+\newsavebox{\measure@tikzpicture}
+\NewEnviron{scaletikzpicturetowidth}[1]{%
+  \def\tikz@width{#1}%
+  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
+  \BODY%
+  \end{lrbox}%
+  \pgfmathparse{#1/\wd\measure@tikzpicture}%
+  \edef\tikzscale{\pgfmathresult}%
+  \BODY%
+}
+\usetikzlibrary{decorations.fractals}
 
 
 \graphicspath{{./images/}}

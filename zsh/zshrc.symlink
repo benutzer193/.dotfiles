@@ -10,13 +10,13 @@
 
 # use .localrc for SUPER SECRET CRAP that you don't
 # want in your public, versioned repo.
-if [[ -a ~/.localrc ]]
-then
-  source ~/.localrc
-fi
+[[ -a ~/.localrc ]] && source ~/.localrc
 
 fpath=($fpath "$DOTFILES/functions")
-autoload -Uz md extract big-files
+for func in $DOTFILES/functions/*
+do
+  autoload -Uz ${func:t}
+done
 
 # all of our zsh files
 typeset -U _CONF
