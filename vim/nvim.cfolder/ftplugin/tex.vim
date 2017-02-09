@@ -21,7 +21,7 @@
   augroup vimtex
     au!
     au User VimtexEventQuit     VimtexClean
-    au User VimtexEventInitPost VimtexCompile
+    "au User VimtexEventInitPost VimtexCompile
   augroup END
 
 
@@ -30,3 +30,4 @@
 " {{{ keymaps
   imap üü \
 " }}}
+" vim: set fdm=marker:

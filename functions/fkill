@@ -1,0 +1,6 @@
+#!/bin/bash
+#kill using fzf
+fkill() {
+  local pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+  [ "x$pid" != "x" ] && echo $pid | xargs kill -${1:-9}
+}

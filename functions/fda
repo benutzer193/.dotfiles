@@ -1,0 +1,6 @@
+#!/bin/bash
+#cd (incl. hidden dirs) using fzf
+fda() {
+  local dir
+  dir=$(find ${1:-$HOME} -type d 2> /dev/null | fzf +m) && cd "$dir"
+}

@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-_ASF="$DOTFILES/steam/ASF/ASF.exe"
-mono "$_ASF" --client "redeem ${1:-$(xsel -b)}"

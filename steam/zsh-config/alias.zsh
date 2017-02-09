@@ -1,3 +1,6 @@
-alias asf="mono $DOTFILES/steam/ASF/ASF.exe"
-alias asfc="asf --client"
-alias asfs="asf --server"
+asfdir="mono $DOTFILES/steam/ASF"
+asfbin="ASF.exe --path='../'"
+alias asfc="$asfdir/client/$asfbin --client"
+alias asfs="$asfdir/server/$asfbin --server"
+alias rdy="echo y | rd"
+unset asfdir asfbin

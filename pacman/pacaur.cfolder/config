@@ -1,5 +1,5 @@
 editor=vim
-displaybuildfiles=diff
+displaybuildfiles=full
 fallback=true
 sortby=popularity
 sortorder=ascending

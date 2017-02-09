@@ -12,7 +12,7 @@ case "$_ITEM" in
         ;;
     getflix)
         echo "server=54.93.169.181" >> $_DNSCONF
-        echo "server=46.166.189.67" >> $_DNSCONF
+        echo "server=95.141.39.238" >> $_DNSCONF
         ;;
     opennic)
         echo "server=5.9.49.12" >> $_DNSCONF
@@ -24,12 +24,13 @@ case "$_ITEM" in
         ;;
     us)
         _IPONE="54.93.169.181"
-        _IPTWO="46.166.189.67"
+        _IPTWO="95.141.39.238"
 
         _HOSTS="/getflix.com.au"
         _HOSTS="$_HOSTS/e.akamai.net/akamaihd.net/uplynk.com/edgefcs.net/edgesuite.net/footprint.net/llnwd.net/llnwi.net/theplatform.com/brightcove.com"
 
         _HOSTS="$_HOSTS/crackle.com"
+        #_HOSTS="$_HOSTS/amazon.com"
         _HOSTS="$_HOSTS/flixter.comi/cinemanow.now/roxionow.com"
         _HOSTS="$_HOSTS/netflix.com/netflix.net/nflxext.com/nflxvideo.net/nflximg.net/nflximg.com"
 

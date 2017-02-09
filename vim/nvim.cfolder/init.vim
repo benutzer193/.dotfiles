@@ -79,6 +79,7 @@ call plug#end()
 " {{{ goyo
 
   function! s:goyo_enter()
+    let g:vimtex_index_split_pos='full'
     set noshowcmd
     set nocursorline
     set scrolloff=999
@@ -87,6 +88,7 @@ call plug#end()
   endfunction
 
   function! s:goyo_leave()
+    let g:vimtex_index_split_pos='vert leftabove'
     set showcmd
     set cursorline
     set scrolloff=5
@@ -214,12 +216,17 @@ call plug#end()
     \ . ')'
 " }}}
 
+" {{{ vim-easymotion
+  let g:EasyMotion_smartcase = 1
+" }}}
+
 " {{{ UltiSnips
   let g:UltiSnipsEditSplit="vertical"
   let g:UltiSnipsUsePythonVersion=3
 " }}}
 
 " {{{ vimtex
+  let g:vimtex_index_split_pos='vert leftabove'
   let g:vimtex_fold_enabled=1
   let g:vimtex_quickfix_ignored_warnings = [
     \ 'Underfull',
@@ -228,6 +235,11 @@ call plug#end()
     \ 'Using preliminary'
     \ ]
   let g:tex_flavor='latex'
+
+  function! ViewerCallback() dict
+    call self.forward_search(self.out)
+  endfunction
+  let g:vimtex_view_zathura_hook_callback = 'ViewerCallback'
   let g:vimtex_view_method='zathura'
   "let g:vimtex_view_use_temp_files=1
   let g:vimtex_latexmk_progname='nvr'
@@ -240,7 +252,7 @@ call plug#end()
 " {{{ general settings
   if has('nvim')
     let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-    "let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    "set termguicolors
   else
     if empty($TMUX)
       let &t_SI = "\<Esc>]50;CursorShape=1\x7"
@@ -271,6 +283,7 @@ call plug#end()
   set laststatus=2
   set noshowmode
   set showcmd
+  set synmaxcol=300
   set visualbell
   set cursorline
 
@@ -318,20 +331,17 @@ call plug#end()
 " }}}
 
 " {{{ vim-easymotion
-  " <Leader>f{char} to move to {char}
-  map  <Leader>f <Plug>(easymotion-bd-f)
-  nmap <Leader>f <Plug>(easymotion-overwin-f)
+  let g:EasyMotion_do_mapping=0
 
-  " s{char}{char} to move to {char}{char}
-  nmap s <Plug>(easymotion-overwin-f2)
-
-  " Move to line
-  map  <Leader>L <Plug>(easymotion-bd-jk)
-  nmap <Leader>L <Plug>(easymotion-overwin-line)
-
-  " Move to word
-  map  <Leader>w <Plug>(easymotion-bd-w)
-  nmap <Leader>w <Plug>(easymotion-overwin-w)
+  map  <Leader>f  <Plug>(easymotion-bd-f)
+  imap <F16>f     <C-o><Plug>(easymotion-bd-f)
+  nmap <Leader>f  <Plug>(easymotion-overwin-f)
+  nmap s          <Plug>(easymotion-overwin-f2)
+  map  <Leader>l  <Plug>(easymotion-bd-jk)
+  imap <F16>l     <C-o><Plug>(easymotion-bd-jk)
+  nmap <Leader>l  <Plug>(easymotion-overwin-line)
+  map  <Leader>w  <Plug>(easymotion-bd-w)
+  nmap <Leader>w  <Plug>(easymotion-overwin-w)
 " }}}
 
 
@@ -396,6 +406,10 @@ call plug#end()
     au BufWritePost init.vim,.vimrc nested if expand('%') !~ 'fugitive' | source % | endif
   augroup END
 
+  augroup filetypes
+    au BufRead,BufNewFile *.tikz setfiletype tex
+  augroup END
+
   augroup AutoNeomake
     au!
     au BufWritePost * Neomake
@@ -409,7 +423,6 @@ call plug#end()
           \   exe "normal! g'\"" |
           \ endif
 
-    au BufRead * normal zz
     au BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
   augroup END
   " }}}

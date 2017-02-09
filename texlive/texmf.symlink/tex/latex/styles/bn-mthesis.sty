@@ -20,14 +20,20 @@
 \usepackage[onehalfspacing]{setspace}
 \usepackage{microtype}
 
+\usepackage{wrapfig}
 \usepackage{tikz}
+\usepackage{tikzscale}
 \usepackage{environ}
 \usepackage[style=authoryear-icomp,backend=biber,maxcitenames=2,maxbibnames=4]{biblatex}
 
+\usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage[amsmath,thmmarks,standard]{ntheorem}
-\usepackage{amssymb}
 \usepackage[warnings-off={mathtools-colon,mathtools-overbracket}]{unicode-math}
+
+\usepackage{luacode}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
 
 
 %%%%%%%%%%%%%%
@@ -42,17 +48,7 @@
 \setmonofont{TeX Gyre Termes}
 \setmathfont{TeX Gyre Termes Math}
 
-\newsavebox{\measure@tikzpicture}
-\NewEnviron{scaletikzpicturetowidth}[1]{%
-  \def\tikz@width{#1}%
-  \def\tikzscale{1}\begin{lrbox}{\measure@tikzpicture}%
-  \BODY%
-  \end{lrbox}%
-  \pgfmathparse{#1/\wd\measure@tikzpicture}%
-  \edef\tikzscale{\pgfmathresult}%
-  \BODY%
-}
-\usetikzlibrary{decorations.fractals}
+\usetikzlibrary{decorations.fractals,intersections,calc,angles}
 
 
 \graphicspath{{./images/}}
