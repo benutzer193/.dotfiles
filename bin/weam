@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #export WINEPREFIX="$HOME/.wineprefix/gamehub"
-export WINEPREFIX="$HOME/.PlayOnLinux/wineprefix/Steam"
+export WINEPREFIX="$HOME/Winehub/steam"
 #export WINEDEBUG=-all
 
-exec optirun wine "$WINEPREFIX/drive_c/Program Files (x86)/Steam/Steam.exe" -no-cef-sandbox
+exec optirun wine "$WINEPREFIX/drive_c/Program Files/Steam/Steam.exe" -no-cef-sandbox

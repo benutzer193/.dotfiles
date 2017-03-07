@@ -7,40 +7,57 @@
 #  files and folders  #
 #######################
 
-set folder		= ~/Mail
-set header_cache	= ~/.mutt/cache/headers
-set message_cachedir	= ~/.mutt/cache/bodies
-set tmpdir		= ~/.mutt/tmp
-set signature		= ~/.mutt/config/signature.muttrc
-set alias_file		= ~/.mutt/config/alias.muttrc
-set certificate_file	= ~/.mutt/certificates.muttrc
-set mailcap_path	= ~/.mutt/config/mailcap.muttrc
+set folder		        = ~/Mail
+set header_cache	    = ~/.config/mutt/cache/headers
+set message_cachedir	= ~/.config/mutt/cache/bodies
+set tmpdir		        = ~/.config/mutt/tmp
+set signature		      = ~/.config/mutt/config/signature.muttrc
+set alias_file		    = ~/.config/mutt/config/alias.muttrc
+set certificate_file	= ~/.config/mutt/certificates.muttrc
+set mailcap_path	    = ~/.config/mutt/config/mailcap.muttrc
 
-#####################
-#  generel options  #
-#####################
-#
-set date_format		= "%m/%d"
+#############
+#  general  #
+#############
+
+set date_format		= "%m/%d at %H:%M"
 set index_format	= "[%Z]  %D  %-20.20F  %s"
 set sort		= threads
 set sort_aux		= reverse-last-date-received
 set uncollapse_jump
-
+set delete
+unset confirmappend
+set quit
 set editor		= "/usr/bin/vim -c 'set tw=80 ft=mail' -c 'set wrap' -c 'set nocp' -c '+/^--.$/-1'"
 set sleep_time		= 0
 set mail_check		= 0
+set timeout       = 3
 unset imap_passive
+unset move
 unset mark_old
-set imap_check_subscribed
+set beep_new
 set imap_keepalive	= 300
 set mbox_type		= Maildir
 set pipe_decode
 set thorough_search
 set wait_key		= no
+
+#############
+#  sidebar  #
+#############
+
 set sidebar_visible 	= yes
 set sidebar_width	= 40
-set sidebar_delim	= '|'
-set sidebar_sort=yes
+set sidebar_divider_char=" | "
+set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
+set mail_check_stats
+set mail_check_stats_interval = 10
+set sidebar_short_path
+set sidebar_delim_chars="/"
+set sidebar_folder_indent
+set sidebar_indent_string="  "
+# # Mailboxes to show in sidebar
+set imap_check_subscribed=yes
 
 ###########
 #  pager  #
@@ -73,8 +90,6 @@ ignore *
 unignore from: to: cc: date: subject:
 hdr_order from: to: cc: date: subject:
 
-#mailboxes
-#mailboxes +WEB/INBOX +WEB/Archive +WEB/Sent +WEB/Draft +WEB/Trash
 
 ###################
 #  sourced files  #
@@ -85,14 +100,12 @@ source ~/.mutt/config/base.muttrc
 source ~/.mutt/config/colorscheme-solarize.muttrc
 source "gpg2 -dq $HOME/.mutt/accounts/.my-pwds.gpg |"
 source "~/.mutt/accounts/account_2.muttrc
+
 ##############
 #  accounts  #
 ##############
 
-folder-hook $folder 'source ~/.mutt/accounts/account_2.muttrc'
-
-source "~/.mutt/accounts/account_1.muttrc"
-folder-hook $folder 'source ~/.mutt/accounts/account_1.muttrc'
+source ~/.config/mutt/private/accounts
 
 #####################
 #  composing mails  #

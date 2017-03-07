@@ -79,8 +79,11 @@
 
 URxvt.scrollBar: 	false
 URxvt.intensityStyles: 	false
-URxvt*font:		xft:Monoid:size=12:style=Regular:antialias=true
-URxvt*boldFont:		xft:Monoid:size=12:style=Bold:antialias=true
+URxvt.font: xft:Fira Code:regular:pixelsize=18:antialias=true:hinting=true,xft:Monoid:regular:pixelsize=16:antialias=true:hinting=true,xft:DejaVu Sans Mono:pixelsize=18:antialias=true:hinting=true
+URxvt.boldFont: xft:Fira Code:bold:pixelsize=18:antialias=true:hinting=true,xft:Monoid:bold:pixelsize=16:antialias=true:hinting=true,xft:DejaVu Sans Mono:bold:pixelsize=18:antialias=true:hinting=true
+URxvt.italicFont: xft:Fira Code:italic:pixelsize=18:antialias=true:hinting=true,xft:Monoid:italic:pixelsize=16:antialias=true:hinting=true,xft:DejaVu Sans Mono:italic:pixelsize=18:antialias=true:hinting=true
+URxvt.boldItalicFont: xft:Fira Code:bold:italic:pixelsize=18:antialias=true:hinting=true,xft:Monoid:bold:italic:pixelsize=16:antialias=true:hinting=true,xft:DejaVu Sans Mono:bold:italic:pixelsize=18:antialias=true:hinting=true
+
 URxvt.perl-ext-common:  default,matcher
 URxvt.url-launcher:     /usr/bin/xdg-open
 URxvt.matcher.button:   1

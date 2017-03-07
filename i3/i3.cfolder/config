@@ -39,6 +39,7 @@ for_window [class="^xfreerdp|Uzbl-core|Google-chrome|libreoffice"] focus
 #  autostart  #
 ###############
 
+exec $noid compton -b --config $HOME/.config/compton.conf
 #exec $noid pulseaudio --start
 exec $chrome
 
@@ -49,7 +50,7 @@ exec $chrome
 new_window pixel 1
 new_float pixel 3
 #hide_edge_borders both
-font pango:Monoid 12
+font pango:Fira Code 12
 popup_during_fullscreen smart
 workspace_auto_back_and_forth yes
 force_display_urgency_hint 500 ms
@@ -66,8 +67,8 @@ mode "$power_menu" {
 	bindsym d exec --no-startup-id sh ~/.i3/i3pm poweroff; mode "default"
 	bindsym r exec --no-startup-id sh ~/.i3/i3pm reboot; mode "default"
 
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
 }
 bindsym $mod+Escape mode "$power_menu"
 
@@ -168,18 +169,18 @@ bindsym $mod+Shift+r restart
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
+  bindsym h resize shrink width 10 px or 10 ppt
+  bindsym j resize grow height 10 px or 10 ppt
+  bindsym k resize shrink height 10 px or 10 ppt
+  bindsym l resize grow width 10 px or 10 ppt
 
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+  bindsym Left resize shrink width 10 px or 10 ppt
+  bindsym Down resize grow height 10 px or 10 ppt
+  bindsym Up resize shrink height 10 px or 10 ppt
+  bindsym Right resize grow width 10 px or 10 ppt
 
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
@@ -215,10 +216,10 @@ client.urgent 	 		$BASE08 $BASE08 $BASE05 $BASE09
 
 bar {
 	#status_command i3status -c $HOME/.i3/i3status
-	status_command $HOME/.i3/conky
+	status_command $HOME/.config/i3/conky
 	# conky with FontAwesome
 	#font pango:FontAwesome 10
-	font pango: Monoid 10
+	font pango: Noto 12
 	#status_command $HOME/.i3/faconky
 	position top
 	colors {
