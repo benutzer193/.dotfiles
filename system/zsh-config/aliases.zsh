@@ -36,6 +36,7 @@ alias mkdir=" mkdir -pv"
 alias rm=" rm -Iv --one-file-system --preserve-root"
 
 # misc
+alias -g rot13='tr "[A-Za-z]" "[N-ZA-Mn-za-m]"'
 alias e='$EDITOR'
 alias se='sudo $EDITOR'
 alias process="ps aux | grep -v grep | grep -i -e VSZ -e"

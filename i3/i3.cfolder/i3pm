@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
-SCREENSHOT="/tmp/screenshot.png"
 screenshot_blur () {
-    gm import -quality 1 -silent -window root $SCREENSHOT
-    gm mogrify -scale 5% -scale 2000% $SCREENSHOT
+  import -quality 0 -quiet -window root png:- |\
+    convert -thumbnail 4% -sample 2500% - -
 }
 
 lock() {
-    screenshot_blur
-    i3lock -i $SCREENSHOT
+  screenshot_blur | i3lock -e -f -i /dev/stdin
 }
 
 case "$1" in
@@ -18,7 +16,7 @@ case "$1" in
 	i3-msg exit
 	;;
     suspend)
-	lock && systemctl suspend
+	lock && sleep 0.13 && systemctl suspend
 	;;
     reboot)
 	systemctl reboot

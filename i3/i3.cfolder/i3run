@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+count=$(ps aux | grep -vE "(i3run|grep)" | grep -c "$1")
+
+if [ $count -eq 0 ]; then
+  eval $(echo "$2")
+else
+  i3-msg "[title=\"(?i)$1\"] focus; [class=\"(?i)$1\"] focus"
+fi

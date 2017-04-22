@@ -47,14 +47,14 @@ set wait_key		= no
 #############
 
 set sidebar_visible 	= yes
-set sidebar_width	= 40
+set sidebar_width	= 35
 set sidebar_divider_char=" | "
 set sidebar_format = "%B%?F? [%F]?%* %?N?%N/?%S"
 set mail_check_stats
 set mail_check_stats_interval = 10
 set sidebar_short_path
 set sidebar_delim_chars="/"
-set sidebar_folder_indent
+set sidebar_folder_indent=yes
 set sidebar_indent_string="  "
 # # Mailboxes to show in sidebar
 set imap_check_subscribed=yes
@@ -96,10 +96,8 @@ hdr_order from: to: cc: date: subject:
 ###################
 
 source $alias_file
-source ~/.mutt/config/base.muttrc
-source ~/.mutt/config/colorscheme-solarize.muttrc
-source "gpg2 -dq $HOME/.mutt/accounts/.my-pwds.gpg |"
-source "~/.mutt/accounts/account_2.muttrc
+source ~/.config/mutt/private/mailboxes
+source ~/.config/mutt/config/colorscheme-solarize.muttrc
 
 ##############
 #  accounts  #
@@ -130,7 +128,8 @@ set send_charset	= "utf-8"
 #  keybindings  #
 #################
 
-bind pager q            exit
+bind pager <return>     exit
+bind pager <space>      exit
 bind pager /            search
 bind pager <up>         previous-line
 bind pager <down>       next-line
@@ -138,10 +137,12 @@ bind pager k            previous-line
 bind pager j            next-line
 bind pager gg           top
 bind pager G            bottom
-bind index gg           first-entry
-bind index G            last-entry
 bind pager K            previous-undeleted
 bind pager J            next-undeleted
+
+
+bind index gg           first-entry
+bind index G            last-entry
 bind index K            previous-unread
 bind index J            next-unread
 bind index W            clear-flag
@@ -150,14 +151,18 @@ bind index,pager R      group-reply
 bind compose p          pgp-menu
 bind attach <return>    view-mailcap
 
-bind index,pager \CK 	sidebar-prev
-bind index,pager \CJ 	sidebar-next
-bind index,pager \CO 	sidebar-open
+bind index,pager \CK    sidebar-prev
+bind index,pager \CJ 	  sidebar-next
+bind index,pager \CO 	  sidebar-open
 
 # macros
-macro index,pager <F1> "<shell-escape>less /usr/share/doc/mutt/manual.txt<enter>" "Show Mutt documentation"
+
+macro index z '<enter-command>unmailboxes *;source ~/.config/mutt/private/mailboxes<enter>'
+macro index Z '<enter-command>unmailboxes *<enter><change-folder>!<enter>'
+
+# macro index,pager <F1> "<shell-escape>less /usr/share/doc/mutt/manual.txt<enter>" "Show Mutt documentation"
 macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help status line"
-macro index,pager <F5> ":source ~/.mutt/muttrc\n"              "Reload the muttrc"
+macro index,pager <F5> ":source ~/.config/mutt/muttrc<enter>"              "Reload the muttrc"
 macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
 macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
 macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_1.muttrc<enter><change-folder>!<enter>'

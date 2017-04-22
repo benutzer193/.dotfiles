@@ -1,16 +1,23 @@
 #!/usr/bin/env zsh
 
 if [[ $(tty) = "/dev/tty1" ]]; then
-    exec startx > .xlog_i3-tty1 2>&1
+  exec startx > .xlog_i3-tty1 2>&1
 elif [[ $(tty) = "/dev/tty2" ]]; then
-    session=$(dialog --stdout \
-        --backtitle "HerrNieschnells Display Manager" \
-        --title "WM / DE Selection" \
-        --menu "Use the UP and DOWN arrow keys to select a Window Manager or a Desktop Environment."\
-        15 50 4 \
-        i3 "i3 Window Manager" \
-        b "bspwm" \
-        s "steam" \
-        c "chrome")
-    exec xinit $session > .xlog_$session-tty2 2>&1
+  session=$(dialog --stdout \
+    --backtitle "HerrNieschnells Display Manager" \
+    --title "WM / DE Selection" \
+    --menu "Use the UP and DOWN arrow keys to select a Window Manager or a Desktop Environment."\
+    15 50 4 \
+    i3 "i3 Window Manager" \
+    sw "sway" \
+    b "bspwm" \
+    s "steam" \
+    c "chrome")
+  if [[ $session = "sw" ]]; then
+    export XKB_DEFAULT_LAYOUT=de
+    export XKB_DEFAULT_VARIANT=deadgraveacute
+    export XKB_DEFAULT_OPTIONS=shift:both_capslock,caps:none
+    exec sway > .wayland_sway-tty2 2>&1
+  fi
+  exec xinit $session > .xlog_$session-tty2 2>&1
 fi

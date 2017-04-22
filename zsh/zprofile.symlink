@@ -1,5 +1,9 @@
 #!/usr/bin/env zsh
 
+# SDL fix
+export SDL_VIDEO_MINIMIZE_ON_FOCUS_LOSS=0
+
+
 # make DOTFILES available as environmental variable
 export DOTFILES=$( cd "${${(%):-%N}:A:h}/.." && pwd )
 

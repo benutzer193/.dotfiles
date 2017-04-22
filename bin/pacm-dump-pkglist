@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
-_PKGS="$DOTFILES/pacman/pacman-installed-pkgs$(date +%y%m%d)"
+_PKGS="$DOTFILES/pacman/repo-installed-pkgs$(date +%y%m%d)"
+_AUR_PKGS="$DOTFILES/pacman/aur-installed-pkgs$(date +%y%m%d)"
 
 pacman -Qqen > $_PKGS
+pacman -Qqem | grep -v "^bn-"> $_AUR_PKGS

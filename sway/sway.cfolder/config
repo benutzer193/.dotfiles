@@ -23,8 +23,8 @@ set $ws10 10: processes
 
 set $noid --no-startup-id
 
-set $i3run ~/.config/i3/i3run
-set $i3pm ~/.config/i3/i3pm
+set $swayrun ~/.config/sway/swayrun
+set $swaypm ~/.config/sway/sway-pm
 
 set $chrome chromium --disk-cache-dir=/tmp/cache --process-per-site
 set $terminal urxvtc
@@ -48,7 +48,9 @@ for_window [class="Uzbl-core|Google-chrome|Chromium"] focus
 #  autostart  #
 ###############
 
-exec $noid compton -b --config $HOME/.config/compton.conf
+exec $noid numlockx
+exec $noid urxvtd -q -o -f
+exec $noid xrdb -merge ~/.Xresources
 #exec $noid pulseaudio --start
 exec $noid urxvtc -title 'startup-mutt mail' -e zsh -i -c mutt
 exec $chrome
@@ -71,11 +73,11 @@ force_display_urgency_hint 500 ms
 
 set $power_menu Power Menu: (e)xit | (l)ock | (s)leep | (r)eboot | shut(d)own
 mode "$power_menu" {
-	bindsym l exec $noid $i3pm lock; mode "default"
-	bindsym e exec $noid $i3pm exit; mode "default"
-	bindsym s exec $noid $i3pm suspend; mode "default"
-	bindsym d exec $noid $i3pm poweroff; mode "default"
-	bindsym r exec $noid $i3pm reboot; mode "default"
+	bindsym l exec $noid $swaypm lock; mode "default"
+	bindsym e exec $noid $swaypm exit; mode "default"
+	bindsym s exec $noid $swaypm suspend; mode "default"
+	bindsym d exec $noid $swaypm poweroff; mode "default"
+	bindsym r exec $noid $swaypm reboot; mode "default"
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
@@ -93,10 +95,10 @@ floating_modifier $mod
 bindsym $mod+u exec uzbl-browser
 bindsym $mod+Return exec $terminal
 bindsym $mod+t exec $terminal
-bindsym $mod+g exec $i3run chromium "$chrome"
+bindsym $mod+g exec $swayrun chromium "$chrome"
 bindsym $mod+d exec dmenu_run
 bindsym Mod1+Escape exec zenity --info --text="Küsschen mein Gieräffchen"
-bindsym $mod+m exec $i3run mutt "$mail"
+bindsym $mod+m exec $swayrun mutt "$mail"
 
 bindsym XF86AudioLowerVolume exec ponymix decrease 5
 bindsym XF86AudioRaiseVolume exec ponymix increase 5
@@ -218,18 +220,25 @@ set $BASE0D	#7CAFC2
 set $BASE0E	#BA8BAf
 set $BASE0F	#A16946
 
-# background
-exec_always $noid hsetroot -solid '$BASE01'
-
 # clientclass 			border  backgr. text 	indicator
 client.focused 			$BASE0B	$BASE0B	$BASE01 $BASE09
 client.focused_inactive		$BASE01	$BASE01	$BASE05 $BASE09
 client.unfocused  		$BASE03 $BASE03 $BASE05 $BASE09
 client.urgent 	 		$BASE08 $BASE08 $BASE05 $BASE09
 
+input 2:14:ETPS\/2_Elantech_Touchpad {
+  accel_profile adaptive
+  click_method clickfinger
+  dwb enabled
+  middle_emulation enabled
+  natural_scroll enabled
+  scroll_method two_finger
+  tab enabled
+}
+
 bar {
 	#status_command i3status -c $HOME/.i3/i3status
-	status_command $HOME/.config/i3/conky
+	status_command $HOME/.config/sway/conky
 	# conky with FontAwesome
 	#font pango:FontAwesome 10
 	font pango: Noto 12

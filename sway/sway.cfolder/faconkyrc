@@ -1,0 +1,96 @@
+out_to_x no
+own_window no
+out_to_console yes
+background no
+max_text_width 0
+update_interval 0.5
+total_run_times 0
+short_units yes
+if_up_strictness address
+use_spacer left
+override_utf8_locale no
+cpu_avg_samples 2
+
+# base16 colorscheme
+#default_color 7CAFC2
+#color0 7CAFC2
+#color1 A1B56C
+#color2 DC9656
+#color3 AB4642
+
+
+TEXT
+[
+  {
+    "full_text"	: "  ${exec whoami}@${nodename} ",
+    "color"	: "\#BA8BAF"
+  },
+
+${if_match ${exec ponymix get-volume}>60}
+  {
+    "full_text"	: "  ${exec ponymix get-volume} ",
+    "color"	:"\#A1B56C"
+  },
+${else}${if_match ${exec ponymix get-volume}>0}
+  {
+    "full_text"	: "  ${exec ponymix get-volume} ",
+    "color"	:"\#DC9656"
+  },
+${else}
+  {
+    "full_text"	: "  ",
+    "color"	:"\#AB4642"
+  },
+${endif}${endif}
+
+  {
+    "full_text" : "  ${memperc} ",
+    "color"	: ${if_match ${memperc}<70}"\#A1B56C"\
+      ${else}${if_match ${memperc}<90}"\#DC9656"\
+      ${else}"\#AB4642"\
+      ${endif}${endif}
+  },
+
+  {
+    "full_text"	: "  ${cpu} ",
+    "color"	: ${if_match ${cpu}<70}"\#A1B56C"\
+      ${else}${if_match ${cpu}<90}"\#DC9656"\
+      ${else}"\#AB4642"\
+      ${endif}${endif}
+  },
+
+  {
+    "full_text"	: " ⇅ ${diskio /dev/sda} ",
+    "color"	: "\#7CAFC2"
+  },
+
+  {
+    "full_text"	: " ▲ ${upspeed} ",
+    "color"	: "\#AB4642"
+  },
+
+  {
+    "full_text"	: " ▼ ${downspeed} ",
+    "color"	: "\#A1B56C"
+  },
+
+${if_existing /sys/class/power_supply/AC/online 0}
+  {
+    "full_text"	: "  ${battery_percent} ",
+    "color"	: ${if_match ${battery_percent}>60}"\#A1B56C"
+      ${else}${if_match ${battery_percent}>15}"\#DC9656"
+      ${else}"\#AB4642"
+      ${endif}${endif}
+  },
+${else}
+  {
+    "full_text"	: "  ${battery_percent} ",
+    "color"	: "\#7CAFC2"
+  },
+${endif}
+
+  {
+    "full_text"	: "  ${time %a %d %b}  ${time %H:%M:%S} ",
+    "color"	: "\#7CAFC2"
+  }
+],
