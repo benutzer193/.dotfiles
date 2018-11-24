@@ -1,1 +1,4 @@
-*.txt
+*
+!.gitignore
+!config
+!current

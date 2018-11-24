@@ -12,8 +12,13 @@
 # want in your public, versioned repo.
 [[ -a ~/.localrc ]] && source ~/.localrc
 
-fpath=($fpath "$DOTFILES/functions")
+fpath=($fpath "$DOTFILES/functions" "$DOTFILES/private/functions")
 for func in $DOTFILES/functions/*
+do
+  autoload -Uz ${func:t}
+done
+
+for func in $DOTFILES/private/functions/*
 do
   autoload -Uz ${func:t}
 done
