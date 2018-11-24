@@ -52,9 +52,14 @@ source $DOTFILES/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source $DOTFILES/zsh/zsh-history-substring-search/zsh-history-substring-search.zsh
 
 zmodload zsh/terminfo
+[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
+[[ -n "$terminfo[cuu1]"  ]] && bindkey "$terminfo[cuu1]"  history-substring-search-up
+[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
+[[ -n "$terminfo[cud1]"  ]] && bindkey "$terminfo[cud1]"  history-substring-search-down
+bindkey "^[[A" history-substring-search-up
+bindkey "^[[B"  history-substring-search-down
 
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
+
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 

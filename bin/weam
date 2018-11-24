@@ -2,7 +2,7 @@
 
 #export WINEPREFIX="$HOME/.wineprefix/gamehub"
 export WINEPREFIX="$HOME/Winehub/steam"
-#export WINEDEBUG=-all
+export WINEDEBUG=-all
 export DRI_PRIME=1
 
 exec wine "$WINEPREFIX/drive_c/Program Files/Steam/Steam.exe" -no-cef-sandbox

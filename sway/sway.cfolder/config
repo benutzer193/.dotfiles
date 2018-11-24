@@ -10,60 +10,61 @@ set $mod Mod4
 
 set $move move container to
 set $ws workspace
-set $ws1 1: main
-set $ws2 2: browser
-set $ws3 3: workspace
-set $ws4 4: term
-set $ws5 5: misc
-set $ws6 6
-set $ws7 7: remote
-set $ws8 8: J + B
-set $ws9 9: mail
-set $ws10 10: processes
-
-set $noid --no-startup-id
+set $ws1 1 main
+set $ws2 2 browser
+set $ws3 3 office
+set $ws4 4 gaming
+set $ws5 5 term
+set $ws6 6 other
+set $ws7 7 remote
+set $ws8 8 J + B
+set $ws9 9 mail
+set $ws10 10 processes
 
 set $swayrun ~/.config/sway/swayrun
-set $swaypm ~/.config/sway/sway-pm
+set $swaypm ~/.config/sway/swaypm
 
-set $chrome chromium --disk-cache-dir=/tmp/cache --process-per-site
-set $terminal urxvtc
-set $mail urxvtc -title 'mutt mail' -e zsh -i -c mutt
+set $browser chromium --disk-cache-dir=/tmp/cache --process-per-site
+set $terminal termite
+set $mail termite --title='neomutt' --exec='zsh -i -c neomutt'
+#set $mail urxvtc -title 'neomutt' -e zsh -i -c neomutt
 
 ##########################
 #  application settings  #
 ##########################
 
-assign [title="mutt mail$"] $ws9
+
+assign [title="neomutt$"] $ws9
 assign [class="^xfreerdp"] $ws7
-assign [class="Uzbl-core|Google-chrome|Chromium"] $ws2
+assign [class="(qutebrowser|Uzbl-core|Google-chrome|Chromium)"] $ws2
+assign [class="(Steam|retroarch)"] $ws4
 assign [class="libreoffice"] $ws3
 for_window [class="libreoffice"] focus
-for_window [title="^mutt mail$"] focus
+for_window [class="retroarch"] focus
+for_window [title="^neomutt$"] focus
 for_window [class="^xfreerdp"] focus
-for_window [class="Uzbl-core|Google-chrome|Chromium"] focus
-
+for_window [class="(qutebrowser|Google-chrome|Chromium)"] focus
 
 ###############
 #  autostart  #
 ###############
 
-exec $noid numlockx
-exec $noid urxvtd -q -o -f
-exec $noid xrdb -merge ~/.Xresources
-#exec $noid pulseaudio --start
-exec $noid urxvtc -title 'startup-mutt mail' -e zsh -i -c mutt
-exec $chrome
+exec $browser
+#exec urxvtd -q -o -f && xrdb -merge ~/.Xresources
+# && urxvtc -title 'startup-neomutt' -e zsh -i -c neomutt
+exec termite --title='startup-neomutt' --exec='zsh -i -c neomutt'
+
+#exec pulseaudio --start
 
 ##############
 #  settings  #
 ##############
 
-new_window pixel 1
-new_float pixel 3
+default_border pixel 1
+default_floating_border pixel 3
 #hide_edge_borders both
 font pango:Fira Code 12
-popup_during_fullscreen smart
+#popup_during_fullscreen smart
 workspace_auto_back_and_forth yes
 force_display_urgency_hint 500 ms
 
@@ -73,32 +74,39 @@ force_display_urgency_hint 500 ms
 
 set $power_menu Power Menu: (e)xit | (l)ock | (s)leep | (r)eboot | shut(d)own
 mode "$power_menu" {
-	bindsym l exec $noid $swaypm lock; mode "default"
-	bindsym e exec $noid $swaypm exit; mode "default"
-	bindsym s exec $noid $swaypm suspend; mode "default"
-	bindsym d exec $noid $swaypm poweroff; mode "default"
-	bindsym r exec $noid $swaypm reboot; mode "default"
+	bindsym l exec $swaypm lock; mode "default"
+	bindsym e exit; mode "default"
+	bindsym s exec $swaypm suspend; mode "default"
+	bindsym d exec $swaypm poweroff; mode "default"
+	bindsym r exec $swaypm reboot; mode "default"
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
 bindsym $mod+Escape mode "$power_menu"
 
+exec swayidle \
+    timeout 300 '$swaypm lock' \
+    timeout 600 'swaymsg "output * dpms off"' \
+         resume 'swaymsg "output * dpms on"'
+    #before-sleep '$swaypm lock'
+
+
 # Use Mouse+$mod to drag floating windows to their wanted position
-floating_modifier $mod
+floating_modifier $mod normal
 
 #################
 #  keybindings  #
 #################
 
 # applications
-bindsym $mod+u exec uzbl-browser
+bindsym $mod+u exec $swayrun qutebrowser qutebrowser
 bindsym $mod+Return exec $terminal
 bindsym $mod+t exec $terminal
-bindsym $mod+g exec $swayrun chromium "$chrome"
+bindsym $mod+g exec $swayrun chromium "$browser"
 bindsym $mod+d exec dmenu_run
 bindsym Mod1+Escape exec zenity --info --text="Küsschen mein Gieräffchen"
-bindsym $mod+m exec $swayrun mutt "$mail"
+bindsym $mod+m exec $swayrun neomutt "$mail"
 
 bindsym XF86AudioLowerVolume exec ponymix decrease 5
 bindsym XF86AudioRaiseVolume exec ponymix increase 5
@@ -178,9 +186,11 @@ bindsym $mod+Shift+8 $move $ws $ws8
 bindsym $mod+Shift+9 $move $ws $ws9
 bindsym $mod+Shift+0 $move $ws $ws10
 
-# reload/restart the configuration file
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+r restart
+# reload the configuration file
+bindsym $mod+Shift+r reload
+
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -189,70 +199,68 @@ mode "resize" {
   bindsym k resize shrink height 4 px or 4 ppt
   bindsym l resize grow width 4 px or 4 ppt
 
+  bindsym $mod+h resize shrink width 40 px or 40 ppt
+  bindsym $mod+j resize grow height 40 px or 40 ppt
+  bindsym $mod+k resize shrink height 40 px or 40 ppt
+  bindsym $mod+l resize grow width 40 px or 40 ppt
+
   bindsym Left resize shrink width 4 px or 4 ppt
   bindsym Down resize grow height 4 px or 4 ppt
   bindsym Up resize shrink height 4 px or 4 ppt
   bindsym Right resize grow width 4 px or 4 ppt
+
+  bindsym $mod+Left resize shrink width 40 px or 40 ppt
+  bindsym $mod+Down resize grow height 40 px or 40 ppt
+  bindsym $mod+Up resize shrink height 40 px or 40 ppt
+  bindsym $mod+Right resize grow width 40 px or 40 ppt
 
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
 
-#################
-#  colorscheme  #
-#################
 
-set $BASE00	#181818
-set $BASE01	#282828
-set $BASE02	#383838
-set $BASE03	#585858
-set $BASE04	#B8B8B8
-set $BASE05	#D8D8D8
-set $BASE06	#E8E8E8
-set $BASE07	#F8F8F8
-set $BASE08	#AB4642
-set $BASE09	#DC9656
-set $BASE0A	#F7CA88
-set $BASE0B	#A1B56C
-set $BASE0C	#86C1B9
-set $BASE0D	#7CAFC2
-set $BASE0E	#BA8BAf
-set $BASE0F	#A16946
-
-# clientclass 			border  backgr. text 	indicator
-client.focused 			$BASE0B	$BASE0B	$BASE01 $BASE09
-client.focused_inactive		$BASE01	$BASE01	$BASE05 $BASE09
-client.unfocused  		$BASE03 $BASE03 $BASE05 $BASE09
-client.urgent 	 		$BASE08 $BASE08 $BASE05 $BASE09
-
-input 2:14:ETPS\/2_Elantech_Touchpad {
-  accel_profile adaptive
-  click_method clickfinger
-  dwb enabled
-  middle_emulation enabled
-  natural_scroll enabled
+# available options: libinput-list-devices
+# devices: swaymsg -t get_inputs
+input "2:14:ETPS/2_Elantech_Touchpad" {
+  tap enabled
+  # disable while typing
+  dwt enabled
   scroll_method two_finger
-  tab enabled
+  natural_scroll enabled
 }
 
+input "1133:50470:Logitech_USB_Re" {
+  natural_scroll enabled
+}
+
+input "1:1:AT_Translated_Set_2_keyboard" {
+  xkb_layout de
+  xkb_variant deadgraveacute
+  xkb_options shift:both_capslock,caps:none
+  xkb_capslock disabled
+  xkb_numlock enabled
+
+}
+
+include ./sway-base16.theme
+
 bar {
-	#status_command i3status -c $HOME/.i3/i3status
 	status_command $HOME/.config/sway/conky
 	# conky with FontAwesome
 	#font pango:FontAwesome 10
 	font pango: Noto 12
-	#status_command $HOME/.i3/faconky
+	#status_command $HOME/.config/sway/faconky
 	position top
 	colors {
-		separator	$BASE02
+		separator	  $BASE02
 		background	$BASE00
 		statusline	$BASE03
-		# clientclass		border	backgr	text
-		focused_workspace	$BASE01 $BASE01 $BASE0B
-		active_workspace	$BASE01 $BASE01 $BASE0C
+	# clientclass		      border  backgr  text
+		focused_workspace	  $BASE01 $BASE01 $BASE0B
+		active_workspace  	$BASE01 $BASE01 $BASE0C
 		inactive_workspace	$BASE01 $BASE01 $BASE05
-		urgent_workspace	$BASE08 $BASE08 $BASE01
+		urgent_workspace	  $BASE08 $BASE08 $BASE01
 	}
 }
 

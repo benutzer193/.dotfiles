@@ -1,9 +1,10 @@
 #!/bin/bash
 
-EXT="HDMI1"
-IN="eDP1"
+EXT="HDMI-1"
+IN="eDP-1"
 HDMISOUND="alsa_output.pci-0000_00_03.0.hdmi-stereo-extra1"
 ANALOG="alsa_output.pci-0000_00_1b.0.analog-stereo"
+HDMISOUND="alsa_output.pci-0000_00_1b.0.analog-stereo"
 USER="bnichell"
 
 switch_audio(){
@@ -24,7 +25,7 @@ if (xrandr | grep "$EXT disconnected"); then
 	sleep 2
 	switch_audio $ANALOG
 else
-	xrandr --output $IN --auto --primary --output $EXT --mode 1920x1080 -r 60 --above $IN
+	xrandr --output $IN --auto --primary --output $EXT --mode 1280x720 -r 60 --above $IN
 	sleep 2
 	switch_audio $HDMISOUND
 fi

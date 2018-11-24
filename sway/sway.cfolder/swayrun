@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
-count=$(ps aux | grep -vE "(swaymsg|grep)" | grep -c "$1")
+count=$(ps aux | grep -vE "(swayrun|grep)" | grep -c "$1")
 
 if [ $count -eq 0 ]; then
-  eval $(echo "$2")
+  eval $(echo "exec $2")
 else
   swaymsg "[title=\"(?i)$1\"] focus; [class=\"(?i)$1\"] focus"
 fi

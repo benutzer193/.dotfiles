@@ -90,6 +90,50 @@ ignore *
 unignore from: to: cc: date: subject:
 hdr_order from: to: cc: date: subject:
 
+#################
+#  keybindings  #
+#################
+
+bind index,pager g      noop
+
+bind pager <return>     exit
+bind pager <space>      exit
+bind pager /            search
+bind pager <up>         previous-line
+bind pager <down>       next-line
+bind pager k            previous-line
+bind pager j            next-line
+bind pager gg           top
+bind pager G            bottom
+bind pager K            previous-undeleted
+bind pager J            next-undeleted
+
+bind index gg           first-entry
+bind index G            last-entry
+bind index K            previous-unread
+bind index J            next-unread
+bind index W            clear-flag
+bind index w            set-flag
+bind index,pager R      group-reply
+bind compose p          pgp-menu
+bind attach <return>    view-mailcap
+
+bind index,pager \CK    sidebar-prev
+bind index,pager \CJ 	  sidebar-next
+bind index,pager \CO 	  sidebar-open
+
+# macros
+
+macro index z '<enter-command>unmailboxes *;source ~/.config/mutt/private/mailboxes<enter>'
+macro index Z '<enter-command>unmailboxes *<enter><change-folder>!<enter>'
+
+# macro index,pager <F1> "<shell-escape>less /usr/share/doc/mutt/manual.txt<enter>" "Show Mutt documentation"
+macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help status line"
+macro index,pager <F5> ":source ~/.config/mutt/muttrc<enter>"              "Reload the muttrc"
+macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
+macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
+macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_1.muttrc<enter><change-folder>!<enter>'
+macro index gh		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_2.muttrc<enter><change-folder>!<enter>'
 
 ###################
 #  sourced files  #
@@ -123,47 +167,3 @@ set reverse_name
 set include
 set forward_quote
 set send_charset	= "utf-8"
-
-#################
-#  keybindings  #
-#################
-
-bind pager <return>     exit
-bind pager <space>      exit
-bind pager /            search
-bind pager <up>         previous-line
-bind pager <down>       next-line
-bind pager k            previous-line
-bind pager j            next-line
-bind pager gg           top
-bind pager G            bottom
-bind pager K            previous-undeleted
-bind pager J            next-undeleted
-
-
-bind index gg           first-entry
-bind index G            last-entry
-bind index K            previous-unread
-bind index J            next-unread
-bind index W            clear-flag
-bind index w            set-flag
-bind index,pager R      group-reply
-bind compose p          pgp-menu
-bind attach <return>    view-mailcap
-
-bind index,pager \CK    sidebar-prev
-bind index,pager \CJ 	  sidebar-next
-bind index,pager \CO 	  sidebar-open
-
-# macros
-
-macro index z '<enter-command>unmailboxes *;source ~/.config/mutt/private/mailboxes<enter>'
-macro index Z '<enter-command>unmailboxes *<enter><change-folder>!<enter>'
-
-# macro index,pager <F1> "<shell-escape>less /usr/share/doc/mutt/manual.txt<enter>" "Show Mutt documentation"
-macro index,pager <F2> ":toggle help<enter>:set ?help<enter>"  "toggle help status line"
-macro index,pager <F5> ":source ~/.config/mutt/muttrc<enter>"              "Reload the muttrc"
-macro index b		'<enter-command>toggle sidebar_visible<enter><refresh>'
-macro pager b		'<enter-command>toggle sidebar_visible<enter><redraw-screen>'
-macro index gw		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_1.muttrc<enter><change-folder>!<enter>'
-macro index gh		'<sync-mailbox><enter-command>source ~/.mutt/accounts/account_2.muttrc<enter><change-folder>!<enter>'

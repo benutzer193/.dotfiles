@@ -50,7 +50,7 @@ alias reboot="systemctl reboot"
 
 # suffix aliases
 BROWSER="chromium --disk-cache-dir=/tmp/cache"
-VPLAYER="primusrun mpv"
+VPLAYER="DRI_PRIME=1 mpv"
 IMAGEVIEWER="sxiv"
 
 for suffix in org com de

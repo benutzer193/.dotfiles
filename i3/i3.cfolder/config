@@ -28,7 +28,7 @@ set $i3pm ~/.config/i3/i3pm
 
 set $chrome chromium --disk-cache-dir=/tmp/cache --process-per-site
 set $terminal urxvtc
-set $mail urxvtc -title 'mutt mail' -e zsh -i -c mutt
+set $mail urxvtc -title 'mutt mail' -e zsh -i -c neomutt
 
 ##########################
 #  application settings  #

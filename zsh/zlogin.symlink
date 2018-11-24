@@ -1,23 +1,41 @@
 #!/usr/bin/env zsh
 
+function swayrun(){
+  #export GDK_BACKEND=wayland
+  #export QT_QPA_PLATFORM=wayland-egl
+  #export QT_DISABLE_WINDOWDECORATION=1
+  #export SDL_VIDEODRIVER=wayland
+  #export XKB_DEFAULT_LAYOUT="de"
+  #export XKB_DEFAULT_VARIANT="deadgraveacute"
+  #export XKB_DEFAULT_OPTIONS="shift:both_capslock,caps:none"
+  exec sway -V > .swaylog 2>&1
+}
+
 if [[ $(tty) = "/dev/tty1" ]]; then
-  exec startx > .xlog_i3-tty1 2>&1
+  swayrun
 elif [[ $(tty) = "/dev/tty2" ]]; then
   session=$(dialog --stdout \
     --backtitle "HerrNieschnells Display Manager" \
     --title "WM / DE Selection" \
     --menu "Use the UP and DOWN arrow keys to select a Window Manager or a Desktop Environment."\
-    15 50 4 \
+    15 50 6 \
     i3 "i3 Window Manager" \
     sw "sway" \
     b "bspwm" \
     s "steam" \
+    r "retroarch" \
     c "chrome")
-  if [[ $session = "sw" ]]; then
-    export XKB_DEFAULT_LAYOUT=de
-    export XKB_DEFAULT_VARIANT=deadgraveacute
-    export XKB_DEFAULT_OPTIONS=shift:both_capslock,caps:none
-    exec sway > .wayland_sway-tty2 2>&1
-  fi
-  exec xinit $session > .xlog_$session-tty2 2>&1
+  case $session in
+    sw)
+      swayrun
+      ;;
+    r)
+      bluetoothctl power on
+      exec retroarch --verbose --config="$HOME/.config/retroarch/retroarch-kms.cfg" > .retroarch-tty2 2>&1
+      ;;
+    *)
+      exec xinit $session > .xlog_$session-tty2 2>&1
+      ;;
+  esac
 fi
+

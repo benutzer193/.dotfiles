@@ -1,4 +1,4 @@
 #!/bin/bash
 big-files(){
-    du -ha ${1:-~} | sort -hr | head -n 25
+    du -ha ${1:-~} | sort -hr | less
 }

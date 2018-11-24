@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-screenshot_blur () {
-  import -quality 0 -quiet -window root png:- |\
-    convert -thumbnail 4% -sample 2500% - -
-}
 
 lock() {
-  screenshot_blur | swaylock -e -f -i /dev/stdin
+  _lockscreen="/run/user/$(id -u)/swaylock.png"
+  grim - | convert - -thumbnail 4% -sample 2500% $_lockscreen
+  #convert -depth 8 -size 1920x1080 rgba:- -flip -thumbnail 4% -sample 2500% $_lockscreen
+  swaylock -e --scaling=stretch -i $_lockscreen &
 }
 
 case "$1" in
@@ -16,7 +15,9 @@ case "$1" in
     swaymsg exit
     ;;
   suspend)
-    lock && systemctl suspend
+    lock
+    sleep 0.09
+    systemctl suspend
     ;;
   reboot)
     systemctl reboot
