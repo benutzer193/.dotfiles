@@ -1,0 +1,28 @@
+# base16
+
+set $BASE00	#181818
+set $BASE01	#282828
+set $BASE02	#383838
+set $BASE03	#585858
+set $BASE04	#B8B8B8
+set $BASE05	#D8D8D8
+set $BASE06	#E8E8E8
+set $BASE07	#F8F8F8
+set $BASE08	#AB4642
+set $BASE09	#DC9656
+set $BASE0A	#F7CA88
+set $BASE0B	#A1B56C
+set $BASE0C	#86C1B9
+set $BASE0D	#7CAFC2
+set $BASE0E	#BA8BAf
+set $BASE0F	#A16946
+
+# clientclass           border  backgr. text    indic.  child b.
+client.focused 		  	  $BASE0B	$BASE0B	$BASE01 $BASE09 $BASE0B
+client.focused_inactive	$BASE01	$BASE01	$BASE05 $BASE09 $BASE01
+client.unfocused  		  $BASE03 $BASE03 $BASE05 $BASE09 $BASE03
+client.urgent 	 		    $BASE08 $BASE08 $BASE05 $BASE09 $BASE08
+
+output "*" background $BASE02 solid_color
+
+# vim:filetype=i3

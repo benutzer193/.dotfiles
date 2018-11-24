@@ -1,0 +1,5 @@
+player=mpv --cache 2048 --force-seekable=yes --hr-seek=yes --hr-seek-framedrop=yes --title="streamlink (mpv)"
+player-no-close
+default-stream=best
+twitch-disable-hosting
+#twitch-oauth-token=mytoken

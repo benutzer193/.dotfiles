@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+aurx () {
+  package="$1"
+  find /var/cache/pacman -name '*.db.tar' -execdir repo-remove {} "$package" \;
+  if pacman -Qs "$package" &> /dev/null ; then
+    sudo pacman -R "$package"
+  fi
+}
