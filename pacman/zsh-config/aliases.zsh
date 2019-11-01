@@ -32,8 +32,8 @@ alias pacm-update-db="sudo pacman-db-upgrade"
 alias pacm-optimize="sudo pacman-optimize"
 
 # pacaur
-alias auri="aursync"
-alias auru="aursync -u"
+alias auri="aur sync"
+alias auru="aur sync -u"
 #alias auri="pacaur -S"
 #alias auru="pacaur -Syu"
 #alias auru-all="auru --devel --needed"

@@ -23,6 +23,7 @@ Plug 'mhinz/vim-signify'
 Plug 'neomake/neomake'
 Plug 'Konfekt/FastFold'
 Plug 'lervag/vimtex'
+Plug 'lambdalisue/suda.vim'
 
 Plug 'chriskempson/base16-vim'
 Plug 'junegunn/seoul256.vim', { 'on': 'Goyo' }
@@ -408,8 +409,11 @@ augroup END
   xnoremap <  <gv
   xnoremap >  >gv
 
-  cmap ## w !sudo tee > /dev/null %
-  noremap <Leader>#  :w !sudo tee > /dev/null %
+  "cmap ## w !sudo tee > /dev/null %
+  "noremap <Leader>#  :w !sudo tee > /dev/null %
+  cmap ## w suda://%
+  noremap <Leader>#  :w suda://%
+
   inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
   nnoremap <silent> <Leader>ev :vsp ~/.config/nvim/init.vim<CR>

@@ -68,6 +68,12 @@ font pango:Fira Code 12
 workspace_auto_back_and_forth yes
 force_display_urgency_hint 500 ms
 
+
+seat * {
+  hide_cursor 6500
+}
+
+
 ################
 #  power menu  #
 ################
@@ -85,11 +91,11 @@ mode "$power_menu" {
 }
 bindsym $mod+Escape mode "$power_menu"
 
-exec swayidle \
-    timeout 300 '$swaypm lock' \
-    timeout 600 'swaymsg "output * dpms off"' \
-         resume 'swaymsg "output * dpms on"'
-    #before-sleep '$swaypm lock'
+#exec swayidle \
+#    timeout 300 '$swaypm lock' \
+#    timeout 600 'swaymsg "output * dpms off"' \
+#         resume 'swaymsg "output * dpms on"'
+#    before-sleep '$swaypm lock'
 
 
 # Use Mouse+$mod to drag floating windows to their wanted position
@@ -104,7 +110,7 @@ bindsym $mod+u exec $swayrun qutebrowser qutebrowser
 bindsym $mod+Return exec $terminal
 bindsym $mod+t exec $terminal
 bindsym $mod+g exec $swayrun chromium "$browser"
-bindsym $mod+d exec dmenu_run
+bindsym $mod+d exec rofi -show combi
 bindsym Mod1+Escape exec zenity --info --text="Küsschen mein Gieräffchen"
 bindsym $mod+m exec $swayrun neomutt "$mail"
 
@@ -237,7 +243,7 @@ input "1133:50470:Logitech_USB_Re" {
 input "1:1:AT_Translated_Set_2_keyboard" {
   xkb_layout de
   xkb_variant deadgraveacute
-  xkb_options shift:both_capslock,caps:none
+  xkb_options shift:both_capslock_cancel,caps:hyper
   xkb_capslock disabled
   xkb_numlock enabled
 
